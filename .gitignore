@@ -1,0 +1,7 @@
+#FILES
+*.vcxproj.filters
+*.vcxproj.user
+
+#FOLDERS
+.vs/
+x64/
