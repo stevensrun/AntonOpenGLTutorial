@@ -1,5 +1,6 @@
 #include "ShaderManager.h"
 
+#include <cassert>
 #include <GL/glew.h>
 #include "ShaderProgram.h"
 
@@ -146,7 +147,7 @@ void ShaderManager::SetUniform(const std::string& shaderName, const std::string&
 
 }
 
-void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int size, bool transpose, float* value)
+void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int rows, int columns, bool transpose, float* value)
 {
     if (!UseShader(shaderName))
     {
@@ -160,18 +161,20 @@ void ShaderManager::SetUniform(const std::string& shaderName, const std::string&
         return;
     }
 
-    switch (size)
+    assert(rows == columns);
+
+    switch (rows)
     {
     case 2:
-        glUniformMatrix2fv(location, 1, false, value);
+        glUniformMatrix2fv(location, 1, transpose, value);
         break;
 
     case 3:
-        glUniformMatrix3fv(location, 1, false, value);
+        glUniformMatrix3fv(location, 1, transpose, value);
         break;
 
     case 4:
-        glUniformMatrix4fv(location, 1, false, value);
+        glUniformMatrix4fv(location, 1, transpose, value);
         break;
     }
 

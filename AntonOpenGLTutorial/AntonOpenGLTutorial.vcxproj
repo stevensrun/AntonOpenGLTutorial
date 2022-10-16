@@ -49,7 +49,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm\include;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -66,7 +66,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm\include;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,8 +93,9 @@
     <ClInclude Include="source\shader\ShaderProgram.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\interpolatedColor.glsl" />
     <None Include="shaders\red.glsl" />
-    <None Include="shaders\test.glsl" />
+    <None Include="shaders\dynamicColor.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
