@@ -72,16 +72,23 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    float positions[] = {
-        0.0, 0.5, 0.0,
-        0.5, -0.5, 0.0,
-        -0.5, -0.5, 0.0,
+    glm::vec3 positions[] = {
+        { 0.0, 0.5, 0.0 },
+        { 0.5, -0.5, 0.0 },
+        { -0.5, -0.5, 0.0 },
     };
 
-    float colors[] = {
-        1.0, 0.0, 0.0,
-        0.0, 1.0, 0.0,
-        0.0, 0.0, 1.0,
+    glm::vec3 colors[] = {
+        { 1.0, 0.0, 0.0 },
+        { 0.0, 1.0, 0.0 },
+        { 0.0, 0.0, 1.0 },
+    };
+
+    glm::vec3 normal = glm::normalize(glm::cross(positions[0], positions[1])) * 0.25f;
+
+    glm::vec3 arrowPositions[] = {
+        {0.0, 0.0, 0.0},
+        { normal }
     };
 
     unsigned int vao;
@@ -104,8 +111,21 @@ int main(int argc, char** argv)
     glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
 
+    unsigned int arrowVao;
+    glGenVertexArrays(1, &arrowVao);
+    glBindVertexArray(arrowVao);
+
+    unsigned int arrowVbo;
+    glGenBuffers(1, &arrowVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, arrowVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(arrowPositions), arrowPositions, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+    glEnableVertexAttribArray(0);
+
     ShaderManager shaderManager;
     shaderManager.LoadShader("interpolatedColor", "shaders/interpolatedColor.glsl");
+    shaderManager.LoadShader("dynamicColor", "shaders/dynamicColor.glsl");
 
     glm::mat4 model = glm::mat4(1.0);
     glm::mat4 view = glm::lookAt(camera.position, camera.rotation, glm::vec3(0.0, 1.0, 0.0));
@@ -129,6 +149,16 @@ int main(int argc, char** argv)
         shaderManager.SetUniform("interpolatedColor", "projection", 4, 4, false, glm::value_ptr(projection));
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glm::vec4 arrowColor(1.0, 1.0, 1.0, 1.0);
+        shaderManager.UseShader("dynamicColor");
+        shaderManager.SetUniform("dynamicColor", "model", 4, 4, false, glm::value_ptr(model));
+        shaderManager.SetUniform("dynamicColor", "view", 4, 4, false, glm::value_ptr(view));
+        shaderManager.SetUniform("dynamicColor", "projection", 4, 4, false, glm::value_ptr(projection));
+        shaderManager.SetUniform("dynamicColor", "u_color", 4, glm::value_ptr(arrowColor));
+        glBindVertexArray(arrowVao);
+        glLineWidth(8.0);
+        glDrawArrays(GL_LINES, 0, 2);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
