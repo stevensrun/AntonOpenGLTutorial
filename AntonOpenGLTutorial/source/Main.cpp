@@ -117,7 +117,7 @@ int main(int argc, char** argv)
     {
         static double previousSeconds = glfwGetTime();
         double currentSeconds = glfwGetTime();
-        double elapsedSeconds = currentSeconds - previousSeconds;
+        float elapsedSeconds = static_cast<float>(currentSeconds - previousSeconds);
         previousSeconds = currentSeconds;
 
         glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
