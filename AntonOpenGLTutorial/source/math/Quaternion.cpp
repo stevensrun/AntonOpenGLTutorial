@@ -65,6 +65,21 @@ float Quaternion::DotProduct(const Quaternion& q1, const Quaternion& q2)
     return q1.m_x * q2.m_x + q1.m_y * q2.m_y + q1.m_z * q2.m_z + q1.m_w * q2.m_w;
 }
 
+float Quaternion::GetRotationAngle(const glm::mat4& matrix)
+{
+    return acos(0.5 * (matrix[0][0] + matrix[1][1] + matrix[2][2] + matrix[3][3] - 2));
+}
+
+glm::vec3 Quaternion::GetRotationAxis(const glm::mat4& matrix, float angleInRadians)
+{
+    float denominator = 2.0 * sin(angleInRadians);
+    float x = (matrix[2][1] - matrix[1][2]) / denominator;
+    float y = (matrix[0][2] - matrix[2][0]) / denominator;
+    float z = (matrix[1][0] - matrix[0][1]) / denominator;
+
+    return glm::vec3(x, y, z);
+}
+
 Quaternion::Quaternion()
 {
 }
