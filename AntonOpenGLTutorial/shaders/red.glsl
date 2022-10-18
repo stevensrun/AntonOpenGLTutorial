@@ -1,11 +1,11 @@
 #SHADERV VERTEX
 #version 460
 
-layout(location = 0) in vec3 vp;
+layout(location = 0) in vec4 vp;
 
 void main() 
 {
-    gl_Position = vec4(vp, 1.0);
+    gl_Position = vp;
 }
 
 #SHADER FRAGMENT

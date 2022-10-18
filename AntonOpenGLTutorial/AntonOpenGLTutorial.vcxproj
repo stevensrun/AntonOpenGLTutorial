@@ -79,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\math\Quaternion.cpp" />
     <ClCompile Include="source\shader\Shader.cpp" />
     <ClCompile Include="source\shader\ShaderManager.cpp" />
     <ClCompile Include="source\shader\ShaderProgram.cpp" />
@@ -88,6 +89,7 @@
     <ClInclude Include="dependencies\glew\include\GL\glew.h" />
     <ClInclude Include="dependencies\glew\include\GL\glxew.h" />
     <ClInclude Include="dependencies\glew\include\GL\wglew.h" />
+    <ClInclude Include="source\math\Quaternion.h" />
     <ClInclude Include="source\shader\Shader.h" />
     <ClInclude Include="source\shader\ShaderManager.h" />
     <ClInclude Include="source\shader\ShaderProgram.h" />
