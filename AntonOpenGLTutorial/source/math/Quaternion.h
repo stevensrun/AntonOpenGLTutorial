@@ -4,6 +4,7 @@
 
 /*
 * To rotate using a quaternion we need to first get a delta rotation with AngleAxis(). Then we need to convert the quaternion to a 4x4 matrix which we then use to transform the points as normal.
+* glm::mat4 is column major so the the entries are indexed as [column][row]
 */
 
 class Quaternion
