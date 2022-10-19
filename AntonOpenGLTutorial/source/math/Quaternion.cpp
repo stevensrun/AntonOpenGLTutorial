@@ -14,6 +14,16 @@ Quaternion Quaternion::AngleAxis(float radians, glm::vec3 axis)
 
 Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t)
 {
+    if (t < 0.0)
+    {
+        t = 0.0;
+    }
+
+    if (t > 1.0)
+    {
+        t = 1.0;
+    }
+
     Quaternion temp = q2;
     float dotProduct = DotProduct(q1, temp);
 
