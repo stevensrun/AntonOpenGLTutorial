@@ -26,8 +26,8 @@ public:
     glm::mat4 ToMatrix() const;
 
 public:
-    float m_w;
-    float m_x;
-    float m_y;
-    float m_z;
+    float w;
+    float x;
+    float y;
+    float z;
 };

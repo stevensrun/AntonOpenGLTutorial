@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     glm::mat4 projection = glm::perspective(glm::radians(67.0), 1280.0 / 760.0, 0.1, 100.0);
     
     glEnable(GL_DEPTH_TEST);
-    Quaternion q = Quaternion::AngleAxis(glm::radians(1.75), glm::vec3(0.0, 0.0, 1.0));
+    Quaternion q = Quaternion::AngleAxis(glm::radians(1.75), glm::vec3(1.0, 1.0, 0.0));
     glm::mat4 matrix = q.ToMatrix();
     float angleInRadians = Quaternion::GetRotationAngle(matrix);
     glm::vec3 rotationAxis = Quaternion::GetRotationAxis(matrix, angleInRadians);
