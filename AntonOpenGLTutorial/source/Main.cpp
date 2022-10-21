@@ -38,10 +38,10 @@ int main(int argc, char** argv)
     };
 
     Camera camera {
-        glm::vec3(0.0, 0.0, 5.0),
-        glm::vec3(0.0, 0.0, 0.0),
-        1.0,
-        45.0
+        glm::vec3(0.0f, 0.0f, 5.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        1.0f,
+        45.0f
     };
 
     glfwMakeContextCurrent(window);
@@ -55,15 +55,15 @@ int main(int argc, char** argv)
     }
 
     glm::vec4 positions[] = {
-        { 0.0, 0.5, 0.0, 1.0 },
-        { 0.5, -0.5, 0.0, 1.0 },
-        { -0.5, -0.5, 0.0, 1.0 },
+        { 0.0f, 0.5f, 0.0f, 1.0f },
+        { 0.5f, -0.5f, 0.0f, 1.0f },
+        { -0.5f, -0.5f, 0.0f, 1.0f },
     };
 
     glm::vec3 colors[] = {
-        { 1.0, 0.0, 0.0 },
-        { 0.0, 1.0, 0.0 },
-        { 0.0, 0.0, 1.0 },
+        { 1.0f, 0.0f, 0.0f },
+        { 0.0f, 1.0f, 0.0f },
+        { 0.0f, 0.0f, 1.0f },
     };
 
     unsigned int vao;
@@ -90,17 +90,12 @@ int main(int argc, char** argv)
     shaderManager.LoadShader("interpolatedColor", "shaders/interpolatedColor.glsl");
     shaderManager.LoadShader("dynamicColor", "shaders/dynamicColor.glsl");
 
-    glm::mat4 model(1.0);
-    glm::mat4 view = glm::lookAt(camera.position, camera.rotation, glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 projection = glm::perspective(glm::radians(67.0), 1280.0 / 760.0, 0.1, 100.0);
-    
-    glEnable(GL_DEPTH_TEST);
-    Quaternion q = Quaternion::AngleAxis(glm::radians(1.75), glm::vec3(1.0, 1.0, 0.0));
-    glm::mat4 matrix = q.ToMatrix();
-    float angleInRadians = Quaternion::GetRotationAngle(matrix);
-    glm::vec3 rotationAxis = Quaternion::GetRotationAxis(matrix, angleInRadians);
+    glm::mat4 view = glm::lookAt(camera.position, camera.rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(67.0f), 1280.0f / 760.0f, 0.1f, 100.0f);
 
-    std::cout << "Angle: " << glm::degrees(angleInRadians) << " Axis: " << rotationAxis.x << ", " << rotationAxis.y << ", " << rotationAxis.z << "\n";
+    Quaternion q = Quaternion::AngleAxis(glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    Quaternion r = Quaternion::AngleAxis(glm::radians(-270.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    float t = 0.0f;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -110,17 +105,12 @@ int main(int argc, char** argv)
         previousSeconds = currentSeconds;
 
         glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        for (int i = 0; i < 3; i++)
-        {
-            glm::vec4& position = positions[i];
-            position = matrix * position;
-        }
+        t += 0.001f;
+        Quaternion s = Quaternion::Slerp(q, r, t);
+        glm::mat4 model = s.ToMatrix();
 
-        glBindBuffer(GL_ARRAY_BUFFER, positionVbo);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(positions), positions);
-        
         shaderManager.UseShader("interpolatedColor");
         shaderManager.SetUniform("interpolatedColor", "model", 4, 4, false, glm::value_ptr(model));
         shaderManager.SetUniform("interpolatedColor", "view", 4, 4, false, glm::value_ptr(view));

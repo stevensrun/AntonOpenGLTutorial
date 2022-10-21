@@ -10,10 +10,11 @@
 class Quaternion
 {
 public:
-    static Quaternion AngleAxis(float radians, glm::vec3 axis);
-    static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
-    static Quaternion Multiply(const Quaternion& q1, const Quaternion& q2);
-    static float DotProduct(const Quaternion& q1, const Quaternion& q2);
+    static Quaternion Identity();
+    static Quaternion AngleAxis(float radians, const glm::vec3& axis);
+    static Quaternion Slerp(const Quaternion& q, const Quaternion& r, float t);
+    static Quaternion Multiply(const Quaternion& q, const Quaternion& r);
+    static float DotProduct(const Quaternion& q, const Quaternion& r);
     static float GetRotationAngle(const glm::mat4& matrix);
     static glm::vec3 GetRotationAxis(const glm::mat4& matrix, float angleInRadians);
 
@@ -21,9 +22,14 @@ public:
     Quaternion(float w, float x, float y, float z);
     ~Quaternion() = default;
 
+    Quaternion operator*(const Quaternion& rhs);
+
     float GetLength() const;
     void Normalize();
     void Negate();
+    Quaternion Negation();
+    void Invert();
+    Quaternion Inverse();
     glm::mat4 ToMatrix() const;
 
 public:

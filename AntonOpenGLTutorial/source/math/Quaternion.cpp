@@ -1,78 +1,72 @@
 #include "Quaternion.h"
 
-Quaternion Quaternion::AngleAxis(float radians, glm::vec3 axis)
-{
-    axis = glm::normalize(axis);
+#include <algorithm>
 
+Quaternion Quaternion::Identity()
+{
+    return Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
+}
+
+
+Quaternion Quaternion::AngleAxis(float radians, const glm::vec3& axis)
+{
+    float halfAngle = radians / 2.0f;
+    glm::vec3 rotationAxis = sin(halfAngle) * glm::normalize(axis);
     Quaternion q;
-    q.w = cos(radians / 2.0f);
-    q.x = sin(radians / 2.0f) * axis.x;
-    q.y = sin(radians / 2.0f) * axis.y;
-    q.z = sin(radians / 2.0f) * axis.z;
+    q.w = cos(halfAngle);
+    q.x = rotationAxis.x;
+    q.y = rotationAxis.y;
+    q.z = rotationAxis.z;
     return q;
 }
 
-Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t)
+Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t)
 {
-    if (t < 0.0)
-    {
-        t = 0.0;
-    }
+    t = std::clamp(t, 0.0f, 1.0f);
 
-    if (t > 1.0)
-    {
-        t = 1.0;
-    }
+    float dotProduct = DotProduct(q, r);
 
-    Quaternion temp = q2;
-    float dotProduct = DotProduct(q1, temp);
-
-    if (dotProduct < 0.0)
+    if (abs(dotProduct) >= 1.0f)
     {
-        temp.Negate();
-        dotProduct = DotProduct(q1, temp);
-    }
-
-    if (abs(dotProduct) >= 1.0)
-    {
-        return q1;
+        return q;
     }
 
     float omega = acos(dotProduct);
-    float denominator = sin(omega);
+    float sineOfOmega = sin(omega);
     Quaternion result;
+    float oneMinusT = (1.0f - t);
 
-    if (abs(denominator) < 0.001)
+    if (abs(sineOfOmega) < 0.001f)
     {
-        result.w = (1.0f - t) * q1.w + t * temp.w;
-        result.x = (1.0f - t) * q1.x + t * temp.x;
-        result.y = (1.0f - t) * q1.y + t * temp.y;
-        result.z = (1.0f - t) * q1.z + t * temp.z;
+        result.w = oneMinusT * q.w + t * r.w;
+        result.x = oneMinusT * q.x + t * r.x;
+        result.y = oneMinusT * q.y + t * r.y;
+        result.z = oneMinusT * q.z + t * r.z;
         return result;
     }
     
-    float a = sin((1.0f - t) * omega) / denominator;
-    float b = sin(t * omega) / denominator;
+    float a = sin(oneMinusT * omega) / sineOfOmega;
+    float b = sin(t * omega) / sineOfOmega;
 
-    result.w = a * q1.w + b * temp.w;
-    result.x = a * q1.x + b * temp.x;
-    result.y = a * q1.y + b * temp.y;
-    result.z = a * q1.z + b * temp.z;
+    result.w = a * q.w + b * r.w;
+    result.x = a * q.x + b * r.x;
+    result.y = a * q.y + b * r.y;
+    result.z = a * q.z + b * r.z;
     return result;
 }
 
 Quaternion Quaternion::Multiply(const Quaternion& q, const Quaternion& r)
 {
-    float w = r.w * q.w - r.x * q.x - r.y * q.y - r.z * q.z;
-    float x = r.w * q.x + r.x * q.w - r.y * q.z + r.z * q.y;
-    float y = r.w * q.y + r.x * q.z + r.y * q.w - r.z * q.x;
-    float z = r.w * q.z - r.w * q.y + r.y * q.x + r.z * q.w;
+    float w = q.w * r.w - q.x * r.x - q.y * r.y - q.z * r.z;
+    float x = q.w * r.x + q.x * r.w - q.y * r.z + q.z * r.y;
+    float y = q.w * r.y + q.x * r.z + q.y * r.w - q.z * r.x;
+    float z = q.w * r.z - q.x * r.y + q.y * r.x + q.z * r.w;
     return Quaternion(w, x, y, z);
 }
 
-float Quaternion::DotProduct(const Quaternion& q1, const Quaternion& q2)
+float Quaternion::DotProduct(const Quaternion& q, const Quaternion& r)
 {
-    return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+    return q.w * r.w + q.x * r.x + q.y * r.y + q.z * r.z;
 }
 
 float Quaternion::GetRotationAngle(const glm::mat4& matrix)
@@ -83,7 +77,7 @@ float Quaternion::GetRotationAngle(const glm::mat4& matrix)
 
 glm::vec3 Quaternion::GetRotationAxis(const glm::mat4& matrix, float angleInRadians)
 {
-    float denominator = 2.0 * sin(angleInRadians);
+    float denominator = 2.0f * sin(angleInRadians);
     float x = (matrix[1][2] - matrix[2][1]) / denominator;
     float y = (matrix[2][0] - matrix[0][2]) / denominator;
     float z = (matrix[0][1] - matrix[1][0]) / denominator;
@@ -92,6 +86,10 @@ glm::vec3 Quaternion::GetRotationAxis(const glm::mat4& matrix, float angleInRadi
 }
 
 Quaternion::Quaternion()
+    : w(0.0)
+    , x(0.0)
+    , y(0.0)
+    , z(0.0)
 {
 }
 
@@ -101,6 +99,11 @@ Quaternion::Quaternion(float w, float x, float y, float z)
     , y(y)
     , z(z)
 {
+}
+
+Quaternion Quaternion::operator*(const Quaternion& rhs)
+{
+    return Quaternion::Multiply(*this, rhs);
 }
 
 float Quaternion::GetLength() const
@@ -129,6 +132,23 @@ void Quaternion::Negate()
     x = -x;
     y = -y;
     z = -z;
+}
+
+Quaternion Quaternion::Negation()
+{
+    return Quaternion(-w, -x, -y, -z);
+}
+
+void Quaternion::Invert()
+{
+    x = -x;
+    y = -y;
+    z = -z;
+}
+
+Quaternion Quaternion::Inverse()
+{
+    return Quaternion(w, -x, -y, -z);
 }
 
 glm::mat4 Quaternion::ToMatrix() const
