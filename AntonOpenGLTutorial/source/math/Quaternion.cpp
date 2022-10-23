@@ -2,11 +2,15 @@
 
 #include <algorithm>
 
+Quaternion operator/(const float scalar, const Quaternion& q)
+{
+    return Quaternion(q.w / scalar, q.x / scalar, q.y / scalar, q.z / scalar);
+}
+
 Quaternion Quaternion::Identity()
 {
     return Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
 }
-
 
 Quaternion Quaternion::AngleAxis(float radians, const glm::vec3& axis)
 {
@@ -22,51 +26,13 @@ Quaternion Quaternion::AngleAxis(float radians, const glm::vec3& axis)
 
 Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t)
 {
-    t = std::clamp(t, 0.0f, 1.0f);
-
-    float dotProduct = DotProduct(q, r);
-
-    if (abs(dotProduct) >= 1.0f)
-    {
-        return q;
-    }
-
+    float dotProduct = q.DotProduct(r);
     float omega = acos(dotProduct);
     float sineOfOmega = sin(omega);
-    Quaternion result;
-    float oneMinusT = (1.0f - t);
-
-    if (abs(sineOfOmega) < 0.001f)
-    {
-        result.w = oneMinusT * q.w + t * r.w;
-        result.x = oneMinusT * q.x + t * r.x;
-        result.y = oneMinusT * q.y + t * r.y;
-        result.z = oneMinusT * q.z + t * r.z;
-        return result;
-    }
-    
-    float a = sin(oneMinusT * omega) / sineOfOmega;
+    float a = sin((1.0f - t) * omega) / sineOfOmega;
     float b = sin(t * omega) / sineOfOmega;
-
-    result.w = a * q.w + b * r.w;
-    result.x = a * q.x + b * r.x;
-    result.y = a * q.y + b * r.y;
-    result.z = a * q.z + b * r.z;
+    Quaternion result = q * a + r * b;
     return result;
-}
-
-Quaternion Quaternion::Multiply(const Quaternion& q, const Quaternion& r)
-{
-    float w = q.w * r.w - q.x * r.x - q.y * r.y - q.z * r.z;
-    float x = q.w * r.x + q.x * r.w - q.y * r.z + q.z * r.y;
-    float y = q.w * r.y + q.x * r.z + q.y * r.w - q.z * r.x;
-    float z = q.w * r.z - q.x * r.y + q.y * r.x + q.z * r.w;
-    return Quaternion(w, x, y, z);
-}
-
-float Quaternion::DotProduct(const Quaternion& q, const Quaternion& r)
-{
-    return q.w * r.w + q.x * r.x + q.y * r.y + q.z * r.z;
 }
 
 float Quaternion::GetRotationAngle(const glm::mat4& matrix)
@@ -86,10 +52,10 @@ glm::vec3 Quaternion::GetRotationAxis(const glm::mat4& matrix, float angleInRadi
 }
 
 Quaternion::Quaternion()
-    : w(0.0)
-    , x(0.0)
-    , y(0.0)
-    , z(0.0)
+    : w(0.0f)
+    , x(0.0f)
+    , y(0.0f)
+    , z(0.0f)
 {
 }
 
@@ -101,21 +67,50 @@ Quaternion::Quaternion(float w, float x, float y, float z)
 {
 }
 
-Quaternion Quaternion::operator*(const Quaternion& rhs)
+Quaternion Quaternion::operator+(const Quaternion& rhs) const
 {
-    return Quaternion::Multiply(*this, rhs);
+    return Quaternion(w + rhs.w, x + rhs.x, y + rhs.y, z + rhs.z);
+}
+
+Quaternion Quaternion::operator*(const Quaternion& rhs) const
+{
+    float tempW = w * rhs.w - x * rhs.x - y * rhs.y - z * rhs.z;
+    float tempX = w * rhs.x + x * rhs.w - y * rhs.z + z * rhs.y;
+    float tempY = w * rhs.y + x * rhs.z + y * rhs.w - z * rhs.x;
+    float tempZ = w * rhs.z - x * rhs.y + y * rhs.x + z * rhs.w;
+    return Quaternion(tempW, tempX, tempY, tempZ);
+}
+
+Quaternion Quaternion::operator*(float scalar) const
+{
+    return Quaternion(w * scalar, x * scalar, y * scalar, z * scalar);
+}
+
+Quaternion Quaternion::operator/(float scalar) const
+{
+    return Quaternion(w / scalar, x / scalar, y / scalar, z / scalar);
+}
+
+Quaternion Quaternion::GetConjugate() const
+{
+    return Quaternion(w, -x, -y, -z);
+}
+
+float Quaternion::GetNorm() const
+{
+    return (w * w + x * x + y * y + z * z);
 }
 
 float Quaternion::GetLength() const
 {
-    return sqrt(w * w + x * x + y * y + z * z);
+    return sqrt(GetNorm());
 }
 
 void Quaternion::Normalize()
 {
     float length = GetLength();
 
-    if (length <= 0.0001)
+    if (length <= 0.0001f)
     {
         return;
     }
@@ -148,31 +143,36 @@ void Quaternion::Invert()
 
 Quaternion Quaternion::Inverse()
 {
-    return Quaternion(w, -x, -y, -z);
+    return GetConjugate() / GetNorm();
+}
+
+float Quaternion::DotProduct(const Quaternion& rhs) const
+{
+    return w * rhs.w + x * rhs.x + y * rhs.y + z * rhs.z;
 }
 
 glm::mat4 Quaternion::ToMatrix() const
 {
     glm::mat4 matrix;
-    matrix[0][0] = 1 - 2 * y * y - 2 * z * z;
-    matrix[0][1] = 2 * x * y + 2 * w * z;
-    matrix[0][2] = 2 * x * z - 2 * w * y;
-    matrix[0][3] = 0;
+    matrix[0][0] = 1.0f - 2.0f * y * y - 2.0f * z * z;
+    matrix[0][1] = 2.0f * x * y + 2.0f * w * z;
+    matrix[0][2] = 2.0f * x * z - 2.0f * w * y;
+    matrix[0][3] = 0.0f;
 
-    matrix[1][0] = 2 * x * y - 2 * w * z;
-    matrix[1][1] = 1 - 2 * x * x - 2 * z * z;
-    matrix[1][2] = 2 * y * z + 2 * w * x;
-    matrix[1][3] = 0;
+    matrix[1][0] = 2.0f * x * y - 2.0f * w * z;
+    matrix[1][1] = 1.0f - 2.0f * x * x - 2.0f * z * z;
+    matrix[1][2] = 2.0f * y * z + 2 * w * x;
+    matrix[1][3] = 0.0f;
 
-    matrix[2][0] = 2 * x * z + 2 * w * y;
-    matrix[2][1] = 2 * y * z - 2 * w * x;
-    matrix[2][2] = 1 - 2 * x * x - 2 * y * y;
-    matrix[2][3] = 0;
+    matrix[2][0] = 2.0f * x * z + 2.0f * w * y;
+    matrix[2][1] = 2.0f * y * z - 2.0f * w * x;
+    matrix[2][2] = 1.0f - 2.0f * x * x - 2.0f * y * y;
+    matrix[2][3] = 0.0f;
 
-    matrix[3][0] = 0;
-    matrix[3][1] = 0;
-    matrix[3][2] = 0;
-    matrix[3][3] = 1;
+    matrix[3][0] = 0.0f;
+    matrix[3][1] = 0.0f;
+    matrix[3][2] = 0.0f;
+    matrix[3][3] = 1.0f;
 
     return matrix;
 }
