@@ -82,9 +82,12 @@
   <ItemGroup>
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\math\Quaternion.cpp" />
-    <ClCompile Include="source\shader\Shader.cpp" />
-    <ClCompile Include="source\shader\ShaderManager.cpp" />
-    <ClCompile Include="source\shader\ShaderProgram.cpp" />
+    <ClCompile Include="source\meshes\Dot.cpp" />
+    <ClCompile Include="source\meshes\Mesh.cpp" />
+    <ClCompile Include="source\meshes\Triangle.cpp" />
+    <ClCompile Include="source\shaders\Shader.cpp" />
+    <ClCompile Include="source\shaders\ShaderManager.cpp" />
+    <ClCompile Include="source\shaders\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\glew\include\GL\eglew.h" />
@@ -92,9 +95,12 @@
     <ClInclude Include="dependencies\glew\include\GL\glxew.h" />
     <ClInclude Include="dependencies\glew\include\GL\wglew.h" />
     <ClInclude Include="source\math\Quaternion.h" />
-    <ClInclude Include="source\shader\Shader.h" />
-    <ClInclude Include="source\shader\ShaderManager.h" />
-    <ClInclude Include="source\shader\ShaderProgram.h" />
+    <ClInclude Include="source\meshes\Dot.h" />
+    <ClInclude Include="source\meshes\Mesh.h" />
+    <ClInclude Include="source\meshes\Triangle.h" />
+    <ClInclude Include="source\shaders\Shader.h" />
+    <ClInclude Include="source\shaders\ShaderManager.h" />
+    <ClInclude Include="source\shaders\ShaderProgram.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\interpolatedColor.glsl" />
