@@ -94,8 +94,10 @@ int main(int argc, char** argv)
     glm::mat4 projection = glm::perspective(glm::radians(67.0f), 1280.0f / 760.0f, 0.1f, 100.0f);
 
     Quaternion q = Quaternion::AngleAxis(glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    Quaternion r = Quaternion::AngleAxis(glm::radians(-270.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    Quaternion r = Quaternion::AngleAxis(glm::radians(225.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     float t = 0.0f;
+
+    std::cout << q.DotProduct(r) << "\n";
 
     while (!glfwWindowShouldClose(window))
     {
@@ -107,7 +109,7 @@ int main(int argc, char** argv)
         glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        t += 0.001f;
+        t += 0.0025f;
         Quaternion s = Quaternion::Slerp(q, r, t);
         glm::mat4 model = s.ToMatrix();
 

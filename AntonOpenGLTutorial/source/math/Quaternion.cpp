@@ -2,11 +2,6 @@
 
 #include <algorithm>
 
-Quaternion operator/(const float scalar, const Quaternion& q)
-{
-    return Quaternion(q.w / scalar, q.x / scalar, q.y / scalar, q.z / scalar);
-}
-
 Quaternion Quaternion::Identity()
 {
     return Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
@@ -26,12 +21,20 @@ Quaternion Quaternion::AngleAxis(float radians, const glm::vec3& axis)
 
 Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t)
 {
+    t = std::clamp(t, 0.0f, 1.0f);
+
     float dotProduct = q.DotProduct(r);
     float omega = acos(dotProduct);
     float sineOfOmega = sin(omega);
+
+    if (sineOfOmega == 0.0f)
+    {
+        return (1.0f - t) * q + t * r;
+    }
+
     float a = sin((1.0f - t) * omega) / sineOfOmega;
     float b = sin(t * omega) / sineOfOmega;
-    Quaternion result = q * a + r * b;
+    Quaternion result = a * q + b * r;
     return result;
 }
 
@@ -177,3 +180,7 @@ glm::mat4 Quaternion::ToMatrix() const
     return matrix;
 }
 
+Quaternion operator*(float scalar, const Quaternion& q)
+{
+    return q * scalar;
+}

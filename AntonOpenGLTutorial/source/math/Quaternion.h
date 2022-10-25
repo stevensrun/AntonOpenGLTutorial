@@ -10,6 +10,8 @@
 class Quaternion
 {
 public:
+    friend Quaternion operator*(float scalar, const Quaternion& q);
+
     static Quaternion Identity();
     static Quaternion AngleAxis(float radians, const glm::vec3& axis);
     static Quaternion Slerp(const Quaternion& q, const Quaternion& r, float t);
