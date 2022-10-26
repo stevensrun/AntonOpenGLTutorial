@@ -1,8 +1,13 @@
 #include "Dot.h"
 
-float Dot::GetIntersectionParameter(const glm::vec3 rayOrigin, const glm::vec3& rayDirection)
+Dot::Dot()
 {
-    return -1.0f;
+    m_enabled = false;
+}
+
+bool Dot::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
+{
+    return false;
 }
 
 void Dot::Draw()
@@ -12,6 +17,7 @@ void Dot::Draw()
         return;
     }
 
-    glPointSize(0.5);
+    glBindVertexArray(m_vertexArray);
+    glPointSize(2.0f);
     glDrawArrays(GL_POINTS, 0, 1);
 }

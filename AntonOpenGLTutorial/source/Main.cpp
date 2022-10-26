@@ -4,16 +4,13 @@
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
-#include <fstream>
 #include <iostream>
 #include "math/Quaternion.h"
 #include "meshes/Dot.h"
 #include "meshes/Mesh.h"
 #include "meshes/Triangle.h"
 #include "shaders/ShaderManager.h"
-#include <sstream>
 #include <string>
-#include <unordered_map>
 
 struct Camera
 {
@@ -26,34 +23,53 @@ struct Camera
 };
 
 std::vector<Mesh*> meshes;
+Dot* dot = nullptr;
 
-void CursorPosCallback(GLFWwindow* window, double x, double y)
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+    if (action != GLFW_PRESS)
+    {
+        return;
+    }
+
+    if (button != GLFW_MOUSE_BUTTON_LEFT)
+    {
+        return;
+    }
+
+    double x;
+    double y;
+    glfwGetCursorPos(window, &x, &y);
     int width;
     int height;
     glfwGetWindowSize(window, &width, &height);
-    float tempX = (2.0f * static_cast<float>(x)) / width - 1.0f;
-    float tempY = 1.0f - (2.0f * static_cast<float>(y)) / height;
-    float tempZ = 1.0f;
-    glm::vec3 ray_nds(tempX, tempY, tempZ);
+    float tempX = 2.0f * static_cast<float>(x) / width - 1.0f;
+    float tempY = 1.0f - 2.0f * static_cast<float>(y) / height;
+    glm::vec3 ray_nds(tempX, tempY, 0.0f);
     glm::vec4 ray_clip(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
+    Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
     glm::vec4 ray_eye = glm::inverse(camera->projection) * ray_clip;
     ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
     glm::vec4 tempRay = glm::inverse(camera->view) * ray_eye;
     glm::vec3 ray_world(tempRay.x, tempRay.y, tempRay.z);
     ray_world = glm::normalize(ray_world);
 
+    dot->SetEnabled(false);
+
     for (Mesh* mesh : meshes)
     {
-        float t = mesh->GetIntersectionParameter(camera->position, ray_world);
+        glm::vec3 hitPoint;
+        glm::vec3 hitNormal;
+        bool hit = mesh->HitTest(camera->position, ray_world, hitPoint, hitNormal);
 
-        if (t <= 0.0f)
+        if (!hit)
         {
             continue;
         }
 
-        glm::vec3 hitPoint = camera->position + ray_world * t;
+        dot->ClearAttributes();
+        dot->AddAttribute(glm::vec4(hitPoint.x, hitPoint.y, hitPoint.z, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
+        dot->SetEnabled(true);
     }
 }
 
@@ -77,7 +93,7 @@ int main(int argc, char** argv)
     Camera* camera = new Camera { glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, glm::mat4(1.0f), glm::mat4(1.0f) };
 
     glfwSetWindowUserPointer(window, camera);
-    glfwSetCursorPosCallback(window, CursorPosCallback);
+    glfwSetMouseButtonCallback(window, MouseButtonCallback);
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
@@ -93,17 +109,25 @@ int main(int argc, char** argv)
 
     ShaderManager shaderManager;
     shaderManager.LoadShader("interpolatedColor", "shaders/interpolatedColor.glsl");
-    shaderManager.LoadShader("dynamicColor", "shaders/dynamicColor.glsl");
 
-    Triangle* triangle = new Triangle();
-    triangle->AddAttribute(glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    triangle->AddAttribute(glm::vec4(0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-    triangle->AddAttribute(glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true);
-    meshes.push_back(triangle);
+    Triangle* triangle0 = new Triangle();
+    triangle0->AddAttribute(glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+    triangle0->AddAttribute(glm::vec4(0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    triangle0->AddAttribute(glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true);
+    triangle0->m_position = glm::vec3(0.0f, 0.0f, 0.0f);
+    meshes.push_back(triangle0);
 
-    Quaternion q = Quaternion::AngleAxis(glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    Quaternion r = Quaternion::AngleAxis(glm::radians(225.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    float t = 0.0f;
+    Triangle* triangle1 = new Triangle();
+    triangle1->AddAttribute(glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+    triangle1->AddAttribute(glm::vec4(0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    triangle1->AddAttribute(glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true);
+    triangle1->m_position = glm::vec3(1.0f, 0.0f, 3.0f);
+    meshes.push_back(triangle1);
+
+    dot = new Dot();
+    dot->AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
+
+    glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -112,22 +136,24 @@ int main(int argc, char** argv)
         float elapsedSeconds = static_cast<float>(currentSeconds - previousSeconds);
         previousSeconds = currentSeconds;
 
-        glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        t += 0.001f;
-        Quaternion s = Quaternion::Slerp(q, r, t);
-        glm::mat4 model = s.ToMatrix();
-
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glm::mat4 model(1.0f);
         shaderManager.UseShader("interpolatedColor");
         shaderManager.SetUniform("interpolatedColor", "model", 4, 4, false, glm::value_ptr(model));
         shaderManager.SetUniform("interpolatedColor", "view", 4, 4, false, glm::value_ptr(camera->view));
         shaderManager.SetUniform("interpolatedColor", "projection", 4, 4, false, glm::value_ptr(camera->projection));
         
+
         for (Mesh* mesh : meshes)
         {
+            mesh->Update(elapsedSeconds);
             mesh->Draw();
         }
+
+        glDisable(GL_DEPTH_TEST);
+        dot->Update(elapsedSeconds);
+        dot->Draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
