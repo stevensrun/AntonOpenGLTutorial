@@ -1,5 +1,6 @@
 #include "Triangle.h"
 #include <glm/ext.hpp>
+#include <iostream>
 
 Triangle::Triangle()
     : m_t(0.0f)
@@ -50,8 +51,8 @@ void Triangle::AddAttribute(const glm::vec4& point, const glm::vec4& color, bool
 void Triangle::Update(float deltaTimeInSeconds)
 {
     m_t += 0.001f;
-    Quaternion q = Quaternion::AngleAxis(glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    Quaternion r = Quaternion::AngleAxis(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    Quaternion q = Quaternion::AngleAxis(glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    Quaternion r = Quaternion::AngleAxis(glm::radians(-70.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     m_rotation = Quaternion::Slerp(q, r, m_t);
     UpdateNormal();
 }

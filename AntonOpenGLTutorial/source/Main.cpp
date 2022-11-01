@@ -117,13 +117,6 @@ int main(int argc, char** argv)
     triangle0->m_position = glm::vec3(0.0f, 0.0f, 0.0f);
     meshes.push_back(triangle0);
 
-    Triangle* triangle1 = new Triangle();
-    triangle1->AddAttribute(glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
-    triangle1->AddAttribute(glm::vec4(0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-    triangle1->AddAttribute(glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true);
-    triangle1->m_position = glm::vec3(1.0f, 0.0f, 3.0f);
-    meshes.push_back(triangle1);
-
     dot = new Dot();
     dot->AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
 
@@ -144,7 +137,6 @@ int main(int argc, char** argv)
         shaderManager.SetUniform("interpolatedColor", "view", 4, 4, false, glm::value_ptr(camera->view));
         shaderManager.SetUniform("interpolatedColor", "projection", 4, 4, false, glm::value_ptr(camera->projection));
         
-
         for (Mesh* mesh : meshes)
         {
             mesh->Update(elapsedSeconds);

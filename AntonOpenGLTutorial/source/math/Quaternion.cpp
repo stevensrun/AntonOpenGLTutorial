@@ -19,22 +19,30 @@ Quaternion Quaternion::AngleAxis(float radians, const glm::vec3& axis)
     return q;
 }
 
-Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t)
+Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t, bool shortestPath)
 {
     t = std::clamp(t, 0.0f, 1.0f);
 
     float dotProduct = q.DotProduct(r);
+    Quaternion s = r;
+
+    if (shortestPath && dotProduct < 0.0f)
+    {
+        s.Negate();
+        dotProduct = q.DotProduct(s);
+    }
+
     float omega = acos(dotProduct);
     float sineOfOmega = sin(omega);
 
     if (sineOfOmega == 0.0f)
     {
-        return (1.0f - t) * q + t * r;
+        return (1.0f - t) * q + t * s;
     }
 
     float a = sin((1.0f - t) * omega) / sineOfOmega;
     float b = sin(t * omega) / sineOfOmega;
-    Quaternion result = a * q + b * r;
+    Quaternion result = a * q + b * s;
     return result;
 }
 
@@ -94,19 +102,28 @@ Quaternion Quaternion::operator/(float scalar) const
     return Quaternion(w / scalar, x / scalar, y / scalar, z / scalar);
 }
 
+void Quaternion::GetAngleAxis(float& angle, glm::vec3& axis) const
+{
+    angle = 2 * acos(w);
+    axis.x = x;
+    axis.y = y;
+    axis.z = z;
+    axis = glm::normalize(axis);
+}
+
 Quaternion Quaternion::GetConjugate() const
 {
     return Quaternion(w, -x, -y, -z);
 }
 
-float Quaternion::GetNorm() const
+float Quaternion::GetLengthSquared() const
 {
     return (w * w + x * x + y * y + z * z);
 }
 
 float Quaternion::GetLength() const
 {
-    return sqrt(GetNorm());
+    return sqrt(GetLengthSquared());
 }
 
 void Quaternion::Normalize()
@@ -132,7 +149,7 @@ void Quaternion::Negate()
     z = -z;
 }
 
-Quaternion Quaternion::Negation()
+Quaternion Quaternion::GetNegation() const
 {
     return Quaternion(-w, -x, -y, -z);
 }
@@ -144,9 +161,9 @@ void Quaternion::Invert()
     z = -z;
 }
 
-Quaternion Quaternion::Inverse()
+Quaternion Quaternion::GetInverse() const
 {
-    return GetConjugate() / GetNorm();
+    return GetConjugate() / GetLengthSquared();
 }
 
 float Quaternion::DotProduct(const Quaternion& rhs) const
