@@ -12,6 +12,14 @@
 #include "shaders/ShaderManager.h"
 #include <string>
 
+struct Light
+{
+    glm::vec3 position;
+    glm::vec3 ambientColor;
+    glm::vec3 diffuseColor;
+    glm::vec3 specularColor;
+};
+
 struct Camera
 {
     glm::vec3 position;
@@ -68,7 +76,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         }
 
         dot->ClearAttributes();
-        dot->AddAttribute(glm::vec4(hitPoint.x, hitPoint.y, hitPoint.z, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
+        dot->AddAttribute(glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
         dot->SetEnabled(true);
     }
 }
@@ -91,6 +99,8 @@ int main(int argc, char** argv)
     }
 
     Camera* camera = new Camera { glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, glm::mat4(1.0f), glm::mat4(1.0f) };
+    camera->view = glm::lookAt(camera->position, camera->rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+    camera->projection = glm::perspective(glm::radians(67.0f), 1280.0f / 760.0f, 0.1f, 100.0f);
 
     glfwSetWindowUserPointer(window, camera);
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
@@ -104,21 +114,21 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    camera->view = glm::lookAt(camera->position, camera->rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-    camera->projection = glm::perspective(glm::radians(67.0f), 1280.0f / 760.0f, 0.1f, 100.0f);
-
-    ShaderManager shaderManager;
-    shaderManager.LoadShader("interpolatedColor", "shaders/interpolatedColor.glsl");
+    Light light(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
     Triangle* triangle0 = new Triangle();
-    triangle0->AddAttribute(glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-    triangle0->AddAttribute(glm::vec4(0.5f, -0.5f, 0.0f, 1.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-    triangle0->AddAttribute(glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true);
-    triangle0->m_position = glm::vec3(0.0f, 0.0f, 0.0f);
+    triangle0->AddAttribute(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    triangle0->AddAttribute(glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    triangle0->AddAttribute(glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
+    triangle0->m_position = glm::vec3(2.5f, 0.0f, 0.0f);
+    triangle0->m_rotation = Quaternion::AngleAxis(glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     meshes.push_back(triangle0);
 
     dot = new Dot();
-    dot->AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
+    dot->AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
+
+    ShaderManager shaderManager;
+    shaderManager.LoadShader("phongShading", "shaders/phongShading.glsl");
 
     glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
 
@@ -131,15 +141,20 @@ int main(int argc, char** argv)
 
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glm::mat4 model(1.0f);
-        shaderManager.UseShader("interpolatedColor");
-        shaderManager.SetUniform("interpolatedColor", "model", 4, 4, false, glm::value_ptr(model));
-        shaderManager.SetUniform("interpolatedColor", "view", 4, 4, false, glm::value_ptr(camera->view));
-        shaderManager.SetUniform("interpolatedColor", "projection", 4, 4, false, glm::value_ptr(camera->projection));
-        
+        shaderManager.UseShader("phongShading");
+        shaderManager.SetUniform("phongShading", "view", 4, 4, false, glm::value_ptr(camera->view));
+        shaderManager.SetUniform("phongShading", "projection", 4, 4, false, glm::value_ptr(camera->projection));
+        shaderManager.SetUniform("phongShading", "lightPosition", 3, glm::value_ptr(light.position));
+        shaderManager.SetUniform("phongShading", "ambientLightColor", 3, glm::value_ptr(light.ambientColor));
+
         for (Mesh* mesh : meshes)
         {
             mesh->Update(elapsedSeconds);
+
+            glm::mat4 translation = glm::translate(glm::mat4(1.0f), mesh->m_position);
+            glm::mat4 model = translation * mesh->m_rotation.ToMatrix();
+            shaderManager.SetUniform("phongShading", "model", 4, 4, false, glm::value_ptr(model));
+
             mesh->Draw();
         }
 

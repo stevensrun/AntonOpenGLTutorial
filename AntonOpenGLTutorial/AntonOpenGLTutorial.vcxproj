@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\interpolatedColor.glsl" />
+    <None Include="shaders\phongShading.glsl" />
     <None Include="shaders\red.glsl" />
     <None Include="shaders\vertexColor.glsl" />
   </ItemGroup>
