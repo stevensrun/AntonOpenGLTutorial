@@ -1,24 +1,8 @@
 #include "Triangle.h"
-#include <glm/ext.hpp>
 
 Triangle::Triangle()
-    : m_t(0.0f)
 {
-
-}
-
-bool Triangle::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
-{
-    return false;
-}
-
-void Triangle::Draw()
-{
-    if (!m_enabled)
-    {
-        return;
-    }
-
-    glBindVertexArray(m_vertexArray);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    AddAttribute(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
+    AddAttribute(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
+    AddAttribute(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f), true);
 }

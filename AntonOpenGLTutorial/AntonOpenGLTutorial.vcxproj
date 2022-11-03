@@ -82,8 +82,11 @@
   <ItemGroup>
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\math\Quaternion.cpp" />
+    <ClCompile Include="source\meshes\Cone.cpp" />
+    <ClCompile Include="source\meshes\Cylinder.cpp" />
     <ClCompile Include="source\meshes\Dot.cpp" />
     <ClCompile Include="source\meshes\Mesh.cpp" />
+    <ClCompile Include="source\meshes\Plane.cpp" />
     <ClCompile Include="source\meshes\Triangle.cpp" />
     <ClCompile Include="source\shaders\Shader.cpp" />
     <ClCompile Include="source\shaders\ShaderManager.cpp" />
@@ -95,8 +98,11 @@
     <ClInclude Include="dependencies\glew\include\GL\glxew.h" />
     <ClInclude Include="dependencies\glew\include\GL\wglew.h" />
     <ClInclude Include="source\math\Quaternion.h" />
+    <ClInclude Include="source\meshes\Cone.h" />
+    <ClInclude Include="source\meshes\Cylinder.h" />
     <ClInclude Include="source\meshes\Dot.h" />
     <ClInclude Include="source\meshes\Mesh.h" />
+    <ClInclude Include="source\meshes\Plane.h" />
     <ClInclude Include="source\meshes\Triangle.h" />
     <ClInclude Include="source\shaders\Shader.h" />
     <ClInclude Include="source\shaders\ShaderManager.h" />

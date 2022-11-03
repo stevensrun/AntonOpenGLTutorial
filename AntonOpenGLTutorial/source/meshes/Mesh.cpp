@@ -109,3 +109,19 @@ void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const g
 void Mesh::Update(float deltaTimeInSeconds)
 {
 }
+
+void Mesh::Draw()
+{
+    if (!m_enabled)
+    {
+        return;
+    }
+
+    glBindVertexArray(m_vertexArray);
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m_points.size()));
+}
+
+bool Mesh::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
+{
+    return false;
+}

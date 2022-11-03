@@ -6,8 +6,11 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <iostream>
 #include "math/Quaternion.h"
+#include "meshes/Cone.h"
+#include "meshes/Cylinder.h"
 #include "meshes/Dot.h"
 #include "meshes/Mesh.h"
+#include "meshes/Plane.h"
 #include "meshes/Triangle.h"
 #include "shaders/ShaderManager.h"
 #include <string>
@@ -75,8 +78,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
             continue;
         }
 
-        dot->ClearAttributes();
-        dot->AddAttribute(glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
+        dot->m_position = hitPoint;
         dot->SetEnabled(true);
     }
 }
@@ -116,20 +118,30 @@ int main(int argc, char** argv)
 
     Light light(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-    Triangle* triangle0 = new Triangle();
-    triangle0->AddAttribute(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    triangle0->AddAttribute(glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    triangle0->AddAttribute(glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
-    triangle0->m_position = glm::vec3(2.5f, 0.0f, 0.0f);
-    triangle0->m_rotation = Quaternion::AngleAxis(glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    meshes.push_back(triangle0);
+    Cone* cone = new Cone(1.0f, 1.0f, 1, 24);
+    cone->m_position = glm::vec3(-2.5f, 0.0f, 0.0f);
+    meshes.push_back(cone);
+
+    Cylinder* cylinder = new Cylinder(1.0f, 1.0f, 1, 24);
+    meshes.push_back(cylinder);
+
+    Plane* plane = new Plane();
+    plane->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
+    meshes.push_back(plane);
+
+    Triangle* triangle = new Triangle();
+    triangle->m_position = glm::vec3(3.5f, 0.0f, 0.0f);
+    meshes.push_back(triangle);
 
     dot = new Dot();
-    dot->AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), true);
 
     ShaderManager shaderManager;
     shaderManager.LoadShader("phongShading", "shaders/phongShading.glsl");
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
 
     while (!glfwWindowShouldClose(window))

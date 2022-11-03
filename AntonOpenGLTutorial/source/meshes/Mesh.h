@@ -11,12 +11,14 @@ public:
     Mesh();
     virtual ~Mesh();
 
-    virtual bool HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal) = 0;
     void SetEnabled(bool enabled);
+    virtual void Update(float deltaTimeInSeconds);
+    virtual void Draw();
+    virtual bool HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal);
+
+protected:
     virtual void ClearAttributes();
     virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec4& color, const glm::vec3& ambientReflectivity, const glm::vec3& diffuseReflectivity, const glm::vec4& specularReflectivity, bool lastAttribute = false);
-    virtual void Update(float deltaTimeInSeconds);
-    virtual void Draw() = 0;
 
 public:
     glm::vec3 m_position;
