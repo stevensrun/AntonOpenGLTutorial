@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "components/Component.h"
 #include <iostream>
 
 Mesh::Mesh()
@@ -108,6 +109,10 @@ void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const g
 
 void Mesh::Update(float deltaTimeInSeconds)
 {
+    for (Component* component : m_components)
+    {
+        component->Update(deltaTimeInSeconds);
+    }
 }
 
 void Mesh::Draw()
@@ -124,4 +129,10 @@ void Mesh::Draw()
 bool Mesh::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
 {
     return false;
+}
+
+void Mesh::AddComponent(Component* component)
+{
+    component->OnAdded(this);
+    m_components.push_back(component);
 }

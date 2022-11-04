@@ -22,10 +22,10 @@ uniform mat4 projection;
 void main()
 {
     
-    vec4 tempPosition = view * model * vec4(vertex_position, 1.0);
-    gl_Position = projection * tempPosition;
+    vec4 tempPosition = model * vec4(vertex_position, 1.0);
+    gl_Position = projection * view * tempPosition;
     position = tempPosition.xyz;
-    normal = vec3(view * model * vec4(vertex_normal, 0.0));
+    normal = vec3(model * vec4(vertex_normal, 0.0));
     color = vertex_color;
     ambientReflectivity = vertex_ambientReflectivity;
     diffuseReflectivity = vertex_diffuseReflectivity;
@@ -52,5 +52,7 @@ uniform vec3 specularLightColor;
 void main()
 {
     vec3 ambientColor = ambientLightColor * ambientReflectivity;
-    frag_color = vec4(ambientColor, 1.0);
+    vec3 lightRay = normalize(lightPosition - position);
+    vec3 diffuseColor = diffuseLightColor * diffuseReflectivity * max(dot(lightRay, normal), 0.0);
+    frag_color = vec4(diffuseColor, 1.0);
 }

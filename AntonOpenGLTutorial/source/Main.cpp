@@ -1,3 +1,4 @@
+#include "components/Rotator.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -100,7 +101,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Camera* camera = new Camera { glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, glm::mat4(1.0f), glm::mat4(1.0f) };
+    Camera* camera = new Camera { glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 45.0f, glm::mat4(1.0f), glm::mat4(1.0f) };
     camera->view = glm::lookAt(camera->position, camera->rotation, glm::vec3(0.0f, 1.0f, 0.0f));
     camera->projection = glm::perspective(glm::radians(67.0f), 1280.0f / 760.0f, 0.1f, 100.0f);
 
@@ -116,13 +117,14 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Light light(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    Light light(glm::vec3(2.0f, 2.0f, 1.0f), glm::vec3(0.0f, 0.2f, 0.2f), glm::vec3(0.75f, 0.5f, 0.3f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-    Cone* cone = new Cone(1.0f, 1.0f, 1, 24);
-    cone->m_position = glm::vec3(-2.5f, 0.0f, 0.0f);
+    Cone* cone = new Cone(1.0f, 0.5f, 1, 24);
+    cone->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
     meshes.push_back(cone);
 
-    Cylinder* cylinder = new Cylinder(1.0f, 1.0f, 1, 24);
+    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 1, 24);
+    cylinder->AddComponent(new Rotator(135.0f, glm::vec3(1.0, 1.0f, 0.0f)));
     meshes.push_back(cylinder);
 
     Plane* plane = new Plane();
@@ -130,7 +132,7 @@ int main(int argc, char** argv)
     meshes.push_back(plane);
 
     Triangle* triangle = new Triangle();
-    triangle->m_position = glm::vec3(3.5f, 0.0f, 0.0f);
+    triangle->m_position = glm::vec3(4.0f, 0.0f, 0.0f);
     meshes.push_back(triangle);
 
     dot = new Dot();
@@ -138,10 +140,6 @@ int main(int argc, char** argv)
     ShaderManager shaderManager;
     shaderManager.LoadShader("phongShading", "shaders/phongShading.glsl");
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
 
     while (!glfwWindowShouldClose(window))
@@ -158,6 +156,7 @@ int main(int argc, char** argv)
         shaderManager.SetUniform("phongShading", "projection", 4, 4, false, glm::value_ptr(camera->projection));
         shaderManager.SetUniform("phongShading", "lightPosition", 3, glm::value_ptr(light.position));
         shaderManager.SetUniform("phongShading", "ambientLightColor", 3, glm::value_ptr(light.ambientColor));
+        shaderManager.SetUniform("phongShading", "diffuseLightColor", 3, glm::value_ptr(light.diffuseColor));
 
         for (Mesh* mesh : meshes)
         {

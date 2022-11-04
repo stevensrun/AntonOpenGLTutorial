@@ -80,6 +80,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\components\Component.cpp" />
+    <ClCompile Include="source\components\Rotator.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\math\Quaternion.cpp" />
     <ClCompile Include="source\meshes\Cone.cpp" />
@@ -97,6 +99,8 @@
     <ClInclude Include="dependencies\glew\include\GL\glew.h" />
     <ClInclude Include="dependencies\glew\include\GL\glxew.h" />
     <ClInclude Include="dependencies\glew\include\GL\wglew.h" />
+    <ClInclude Include="source\components\Component.h" />
+    <ClInclude Include="source\components\Rotator.h" />
     <ClInclude Include="source\math\Quaternion.h" />
     <ClInclude Include="source\meshes\Cone.h" />
     <ClInclude Include="source\meshes\Cylinder.h" />

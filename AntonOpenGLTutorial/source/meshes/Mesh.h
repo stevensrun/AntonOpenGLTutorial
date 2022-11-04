@@ -5,6 +5,8 @@
 #include "math/Quaternion.h"
 #include <vector>
 
+class Component;
+
 class Mesh
 {
 public:
@@ -15,6 +17,7 @@ public:
     virtual void Update(float deltaTimeInSeconds);
     virtual void Draw();
     virtual bool HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal);
+    virtual void AddComponent(Component* component);
 
 protected:
     virtual void ClearAttributes();
@@ -41,4 +44,5 @@ protected:
     std::vector<glm::vec4> m_specularReflectivity;
 
     bool m_enabled;
+    std::vector<Component*> m_components;
 };
