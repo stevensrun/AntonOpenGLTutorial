@@ -107,13 +107,14 @@ int main(int argc, char** argv)
 
     Cone* cone = new Cone(1.0f, 0.5f, 1, 24);
     cone->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
+    cone->AddComponent(new Rotator(-90.0f, glm::vec3(1.0f, 1.0f, 1.0f)));
     meshes.push_back(cone);
 
     Cube* cube = new Cube();
-    cube->AddComponent(new Rotator(135.0f, glm::vec3(0.0f, 1.0f, 1.0f)));
+    cube->AddComponent(new Rotator(45.0f, glm::vec3(1.0f, 1.0f, 1.0f)));
     meshes.push_back(cube);
 
-    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 1, 24);
+    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 1, 12);
     cylinder->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
     cylinder->AddComponent(new Rotator(135.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
     meshes.push_back(cylinder);

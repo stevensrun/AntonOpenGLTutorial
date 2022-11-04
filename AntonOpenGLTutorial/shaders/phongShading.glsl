@@ -51,8 +51,8 @@ uniform vec3 specularLightColor;
 
 void main()
 {
-    vec3 ambientColor = ambientLightColor * ambientReflectivity;
+    vec3 ambientIntensity = ambientLightColor * ambientReflectivity;
     vec3 lightRay = normalize(lightPosition - position);
-    vec3 diffuseColor = diffuseLightColor * diffuseReflectivity * max(dot(lightRay, normal), 0.0);
-    frag_color = vec4(diffuseColor, 1.0);
+    vec3 diffuseIntensity = diffuseLightColor * diffuseReflectivity * max(dot(lightRay, normal), 0.0);
+    frag_color = vec4(ambientIntensity + diffuseIntensity, 1.0);
 }
