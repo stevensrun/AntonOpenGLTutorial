@@ -80,11 +80,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\camera\Camera.cpp" />
     <ClCompile Include="source\components\Component.cpp" />
     <ClCompile Include="source\components\Rotator.cpp" />
+    <ClCompile Include="source\lights\Light.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\math\Quaternion.cpp" />
     <ClCompile Include="source\meshes\Cone.cpp" />
+    <ClCompile Include="source\meshes\Cube.cpp" />
     <ClCompile Include="source\meshes\Cylinder.cpp" />
     <ClCompile Include="source\meshes\Dot.cpp" />
     <ClCompile Include="source\meshes\Mesh.cpp" />
@@ -99,10 +102,13 @@
     <ClInclude Include="dependencies\glew\include\GL\glew.h" />
     <ClInclude Include="dependencies\glew\include\GL\glxew.h" />
     <ClInclude Include="dependencies\glew\include\GL\wglew.h" />
+    <ClInclude Include="source\camera\Camera.h" />
     <ClInclude Include="source\components\Component.h" />
     <ClInclude Include="source\components\Rotator.h" />
+    <ClInclude Include="source\lights\Light.h" />
     <ClInclude Include="source\math\Quaternion.h" />
     <ClInclude Include="source\meshes\Cone.h" />
+    <ClInclude Include="source\meshes\Cube.h" />
     <ClInclude Include="source\meshes\Cylinder.h" />
     <ClInclude Include="source\meshes\Dot.h" />
     <ClInclude Include="source\meshes\Mesh.h" />
