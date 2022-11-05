@@ -25,7 +25,7 @@ void main()
     vec4 tempPosition = model * vec4(vertex_position, 1.0);
     gl_Position = projection * view * tempPosition;
     position = tempPosition.xyz;
-    normal = vec3(model * vec4(vertex_normal, 0.0));
+    normal = vec3(inverse(transpose(model)) * vec4(vertex_normal, 0.0));
     color = vertex_color;
     ambientReflectivity = vertex_ambientReflectivity;
     diffuseReflectivity = vertex_diffuseReflectivity;
