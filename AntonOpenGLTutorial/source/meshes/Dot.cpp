@@ -3,7 +3,7 @@
 Dot::Dot()
 {
     m_enabled = false;
-    AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec3(0.0, 0.0, 1.0f), glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f), true);
+    AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec3(0.0, 0.0, 1.0f), true);
 }
 
 bool Dot::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
@@ -11,14 +11,17 @@ bool Dot::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm
     return false;
 }
 
-void Dot::Draw()
+void Dot::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
 {
     if (!m_enabled)
     {
         return;
     }
 
-    glBindVertexArray(m_vertexArray);
+
+    PrepareShader(m_material, shaderManager, camera, light);
+    glBindVertexArray(m_attributeVertexArray);
+    glDisable(GL_DEPTH_TEST);
     glPointSize(2.0f);
     glDrawArrays(GL_POINTS, 0, 1);
 }

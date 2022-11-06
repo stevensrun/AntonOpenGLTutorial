@@ -5,7 +5,11 @@
 #include "math/Quaternion.h"
 #include <vector>
 
+class Camera;
 class Component;
+class Light;
+class Material;
+class ShaderManager;
 
 class Mesh
 {
@@ -15,34 +19,31 @@ public:
 
     void SetEnabled(bool enabled);
     virtual void Update(float deltaTimeInSeconds);
-    virtual void Draw();
+    virtual void Draw(ShaderManager* shaderManager, Camera* camera, Light* light);
+    virtual void DrawNormals(ShaderManager* shaderManager, Camera* camera);
     virtual bool HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal);
     virtual void AddComponent(Component* component);
 
 protected:
-    virtual void ClearAttributes();
-    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec4& color, const glm::vec3& ambientReflectivity, const glm::vec3& diffuseReflectivity, const glm::vec4& specularReflectivity, bool lastAttribute = false);
+    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal, bool lastAttribute = false);
+    virtual void PrepareShader(Material* material, ShaderManager* shaderManager, Camera* camera, Light* light);
 
 public:
     glm::vec3 m_position;
     Quaternion m_rotation;
+    Material* m_material;
+    Material* m_normalMaterial;
 
 protected:
-    unsigned int m_vertexArray;
-    unsigned int m_pointBuffer;
+    unsigned int m_attributeVertexArray;
+    unsigned int m_normalVertexArray;
+    unsigned int m_attributeBuffer;
     unsigned int m_normalBuffer;
-    unsigned int m_colorBuffer;
-    unsigned int m_ambientReflectivityBuffer;
-    unsigned int m_diffuseReflectivityBuffer;
-    unsigned int m_specularReflectivityBuffer;
 
     std::vector<glm::vec3> m_points;
     std::vector<glm::vec3> m_normals;
-    std::vector<glm::vec4> m_colors;
-    std::vector<glm::vec3> m_ambientReflectivity;
-    std::vector<glm::vec3> m_diffuseReflectivity;
-    std::vector<glm::vec4> m_specularReflectivity;
 
     bool m_enabled;
     std::vector<Component*> m_components;
+
 };

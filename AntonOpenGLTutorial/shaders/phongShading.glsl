@@ -3,17 +3,9 @@
 
 layout(location = 0) in vec3 vertex_position;
 layout(location = 1) in vec3 vertex_normal;
-layout(location = 2) in vec4 vertex_color;
-layout(location = 3) in vec3 vertex_ambientReflectivity;
-layout(location = 4) in vec3 vertex_diffuseReflectivity;
-layout(location = 5) in vec4 vertex_specularReflectivity;
 
 out vec3 position;
 out vec3 normal;
-out vec4 color;
-out vec3 ambientReflectivity;
-out vec3 diffuseReflectivity;
-out vec4 specularReflectivity;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -26,10 +18,6 @@ void main()
     gl_Position = projection * view * tempPosition;
     position = tempPosition.xyz;
     normal = vec3(inverse(transpose(model)) * vec4(vertex_normal, 0.0));
-    color = vertex_color;
-    ambientReflectivity = vertex_ambientReflectivity;
-    diffuseReflectivity = vertex_diffuseReflectivity;
-    specularReflectivity = vertex_specularReflectivity;
 }
 
 #SHADER FRAGMENT
@@ -37,10 +25,6 @@ void main()
 
 in vec3 position;
 in vec3 normal;
-in vec4 color;
-in vec3 ambientReflectivity;
-in vec3 diffuseReflectivity;
-in vec4 specularReflectivity;
 
 layout(location = 0) out vec4 frag_color;
 
@@ -48,11 +32,25 @@ uniform vec3 lightPosition;
 uniform vec3 ambientLightColor;
 uniform vec3 diffuseLightColor;
 uniform vec3 specularLightColor;
+uniform vec3 cameraPosition;
+uniform vec3 ambientReflectivity;
+uniform vec3 diffuseReflectivity;
+uniform vec4 specularReflectivity;
 
 void main()
 {
     vec3 ambientIntensity = ambientLightColor * ambientReflectivity;
-    vec3 lightRay = normalize(lightPosition - position);
-    vec3 diffuseIntensity = diffuseLightColor * diffuseReflectivity * max(dot(lightRay, normal), 0.0);
-    frag_color = vec4(ambientIntensity + diffuseIntensity, 1.0);
+    vec3 incidentRay = normalize(position - lightPosition);
+    float dotProduct = dot(-incidentRay, normal);
+    vec3 diffuseIntensity = diffuseLightColor * diffuseReflectivity * max(dotProduct, 0.0);
+    vec3 specularIntensity = vec3(0.0, 0.0, 0.0);
+
+    if (dotProduct >= 0.0)
+    {
+        vec3 reflectionRay = reflect(incidentRay, normal);
+        vec3 cameraRay = normalize(cameraPosition - position);
+        specularIntensity = specularLightColor * specularReflectivity.rgb * pow(max(dot(reflectionRay, cameraRay), 0.0), specularReflectivity.a);
+    }
+
+    frag_color = vec4(ambientIntensity + diffuseIntensity + specularIntensity, 1.0);
 }

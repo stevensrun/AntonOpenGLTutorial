@@ -5,13 +5,13 @@
 
 Cube::Cube()
 {
-    AddAttribute(glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
-    AddAttribute(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
-    AddAttribute(glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
+    AddAttribute(glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+    AddAttribute(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+    AddAttribute(glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    AddAttribute(glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
-    AddAttribute(glm::vec3(0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
-    AddAttribute(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
+    AddAttribute(glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+    AddAttribute(glm::vec3(0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+    AddAttribute(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
 
     for (int i = 1; i <= 3; i++)
     {
@@ -23,7 +23,7 @@ Cube::Cube()
             glm::vec3 rotatedPoint = rotation * glm::vec4(point, 1.0f);
             const glm::vec3& normal = m_normals[j];
             glm::vec3 roatatedNormal = rotation * glm::vec4(normal, 0.0f);
-            AddAttribute(rotatedPoint, roatatedNormal, glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f));
+            AddAttribute(rotatedPoint, roatatedNormal);
         }
     }
 
@@ -43,7 +43,7 @@ Cube::Cube()
             glm::vec3 rotatedPoint = rotation * glm::vec4(point, 1.0f);
             const glm::vec3& normal = m_normals[j];
             glm::vec3 roatatedNormal = rotation * glm::vec4(normal, 0.0f);
-            AddAttribute(rotatedPoint, roatatedNormal, glm::vec4(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec4(1.0f), lastAttribute);
+            AddAttribute(rotatedPoint, roatatedNormal, lastAttribute);
         }
     }
 

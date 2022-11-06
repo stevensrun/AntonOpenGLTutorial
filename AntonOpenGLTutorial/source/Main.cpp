@@ -4,11 +4,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/rotate_vector.hpp>
 #include <iostream>
 #include "lights/Light.h"
-#include "math/Quaternion.h"
+#include "materials/Material.h"
 #include "meshes/Cone.h"
 #include "meshes/Cube.h"
 #include "meshes/Cylinder.h"
@@ -19,55 +17,10 @@
 #include "shaders/ShaderManager.h"
 #include <string>
 
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
 std::vector<Mesh*> meshes;
 Dot* dot = nullptr;
-
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-    if (action != GLFW_PRESS)
-    {
-        return;
-    }
-
-    if (button != GLFW_MOUSE_BUTTON_LEFT)
-    {
-        return;
-    }
-
-    double x;
-    double y;
-    glfwGetCursorPos(window, &x, &y);
-    int width;
-    int height;
-    glfwGetWindowSize(window, &width, &height);
-    float tempX = 2.0f * static_cast<float>(x) / width - 1.0f;
-    float tempY = 1.0f - 2.0f * static_cast<float>(y) / height;
-    glm::vec3 ray_nds(tempX, tempY, 0.0f);
-    glm::vec4 ray_clip(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
-    Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
-    glm::vec4 ray_eye = glm::inverse(camera->m_projection) * ray_clip;
-    ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
-    glm::vec4 tempRay = glm::inverse(camera->m_view) * ray_eye;
-    glm::vec3 ray_world(tempRay.x, tempRay.y, tempRay.z);
-    ray_world = glm::normalize(ray_world);
-
-    dot->SetEnabled(false);
-
-    for (Mesh* mesh : meshes)
-    {
-        glm::vec3 hitPoint;
-        glm::vec3 hitNormal;
-        bool hit = mesh->HitTest(camera->m_position, ray_world, hitPoint, hitNormal);
-
-        if (!hit)
-        {
-            continue;
-        }
-
-        dot->m_position = hitPoint;
-        dot->SetEnabled(true);
-    }
-}
 
 int main(int argc, char** argv)
 {
@@ -100,32 +53,67 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Light light(glm::vec3(0.0f, 3.0f, 2.0f));
-    light.m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
-    light.m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
-    light.m_specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    Light* light = new Light(glm::vec3(0.0f, 0.0f, 3.0f));
+    light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
+    light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
+    light->m_specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    ShaderManager* shaderManager = new ShaderManager;
+    shaderManager->LoadShader("phongShading", "shaders/phongShading.glsl");
+    shaderManager->LoadShader("vertexNormals", "shaders/vertexNormals.glsl");
+
+    Material* normalMaterial = new Material("vertexNormals");
+    normalMaterial->m_ambientReflectivity = glm::vec3(1.0f, 0.0f, 0.0f);
+
+    Material* material = new Material("phongShading");
+    material->m_ambientReflectivity = glm::vec3(1.0f, 1.0f, 1.0f);
+    material->m_diffuseReflectivity = glm::vec3(1.0f, 0.5f, 0.0f);
+    material->m_specularReflectivity = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
 
     Cone* cone = new Cone(1.0f, 0.5f, 1, 24);
+    cone->m_material = material;
+    cone->m_normalMaterial = normalMaterial;
     cone->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
     cone->AddComponent(new Rotator(-90.0f, glm::vec3(1.0f, 1.0f, 1.0f)));
     meshes.push_back(cone);
 
     Cube* cube = new Cube();
+    cube->m_material = material;
+    cube->m_normalMaterial = normalMaterial;
     cube->AddComponent(new Rotator(45.0f, glm::vec3(1.0f, 1.0f, 1.0f)));
     meshes.push_back(cube);
 
-    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 1, 12);
+    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 1, 36);
+    cylinder->m_material = material;
+    cylinder->m_normalMaterial = normalMaterial;
     cylinder->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
-    cylinder->AddComponent(new Rotator(135.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
+    cylinder->AddComponent(new Rotator(60.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
     meshes.push_back(cylinder);
 
+    Triangle* triangle = new Triangle();
+    triangle->m_material = material;
+    triangle->m_normalMaterial = normalMaterial;
+    triangle->m_position = glm::vec3(4.0f, 0.0f, 0.0f);
+    triangle->AddComponent(new Rotator(35.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
+    meshes.push_back(triangle);
+
+    Plane* plane = new Plane();
+    plane->m_material = material;
+    plane->m_normalMaterial = normalMaterial;
+    plane->m_position = glm::vec3(-4.0f, 0.0f, 0.0f);
+    plane->m_rotation = Quaternion::AngleAxis(glm::radians(60.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    plane->AddComponent(new Rotator(90.0, glm::vec3(1.0f, 1.0f, 0.0f)));
+    meshes.push_back(plane);
+
+    Material* dotMaterial = new Material("phongShading");
 
     dot = new Dot();
+    dot->m_material = dotMaterial;
+    dotMaterial->m_ambientReflectivity = glm::vec3(1.0f, 0.0f, 0.0f);
+    dotMaterial->m_diffuseReflectivity = glm::vec3(0.0f);
+    dotMaterial->m_specularReflectivity = glm::vec4(0.0f);
 
-    ShaderManager shaderManager;
-    shaderManager.LoadShader("phongShading", "shaders/phongShading.glsl");
-
-    glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -136,27 +124,17 @@ int main(int argc, char** argv)
 
         camera->Update();
 
-        glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shaderManager.UseShader("phongShading");
-        shaderManager.SetUniform("phongShading", "view", 4, 4, false, glm::value_ptr(camera->m_view));
-        shaderManager.SetUniform("phongShading", "projection", 4, 4, false, glm::value_ptr(camera->m_projection));
-        shaderManager.SetUniform("phongShading", "lightPosition", 3, glm::value_ptr(light.m_position));
-        shaderManager.SetUniform("phongShading", "ambientLightColor", 3, glm::value_ptr(light.m_ambientColor));
-        shaderManager.SetUniform("phongShading", "diffuseLightColor", 3, glm::value_ptr(light.m_diffuseColor));
 
         for (Mesh* mesh : meshes)
         {
             mesh->Update(elapsedSeconds);
-            glm::mat4 translation = glm::translate(glm::mat4(1.0f), mesh->m_position);
-            glm::mat4 model = translation* mesh->m_rotation.ToMatrix();
-            shaderManager.SetUniform("phongShading", "model", 4, 4, false, glm::value_ptr(model));
-            mesh->Draw();
+            mesh->Draw(shaderManager, camera, light);
+            mesh->DrawNormals(shaderManager, camera);
         }
 
-        glDisable(GL_DEPTH_TEST);
         dot->Update(elapsedSeconds);
-        dot->Draw();
+        dot->Draw(shaderManager, camera, light);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -210,4 +188,51 @@ int main(int argc, char** argv)
     glfwTerminate();
 
     return 0;
+}
+
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (action != GLFW_PRESS)
+    {
+        return;
+    }
+
+    if (button != GLFW_MOUSE_BUTTON_LEFT)
+    {
+        return;
+    }
+
+    double x;
+    double y;
+    glfwGetCursorPos(window, &x, &y);
+    int width;
+    int height;
+    glfwGetWindowSize(window, &width, &height);
+    float tempX = 2.0f * static_cast<float>(x) / width - 1.0f;
+    float tempY = 1.0f - 2.0f * static_cast<float>(y) / height;
+    glm::vec3 ray_nds(tempX, tempY, 0.0f);
+    glm::vec4 ray_clip(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
+    Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+    glm::vec4 ray_eye = glm::inverse(camera->m_projection) * ray_clip;
+    ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+    glm::vec4 tempRay = glm::inverse(camera->m_view) * ray_eye;
+    glm::vec3 ray_world(tempRay.x, tempRay.y, tempRay.z);
+    ray_world = glm::normalize(ray_world);
+
+    dot->SetEnabled(false);
+
+    for (Mesh* mesh : meshes)
+    {
+        glm::vec3 hitPoint;
+        glm::vec3 hitNormal;
+        bool hit = mesh->HitTest(camera->m_position, ray_world, hitPoint, hitNormal);
+
+        if (!hit)
+        {
+            continue;
+        }
+
+        dot->m_position = hitPoint;
+        dot->SetEnabled(true);
+    }
 }
