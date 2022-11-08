@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     Triangle* triangle = new Triangle();
     triangle->m_material = material;
     triangle->m_normalMaterial = normalMaterial;
-    triangle->m_rotation = Quaternion::AngleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    triangle->m_rotation = Quaternion::FromEulerAngles(0.0f, 60.0f, 0.0f);
     meshes.push_back(triangle);
 
     Material* dotMaterial = new Material("phongShading");
@@ -120,12 +120,12 @@ int main(int argc, char** argv)
             camera->m_position.x += camera->m_moveSpeedInSeconds * elapsedSeconds;
         }
 
-        if (glfwGetKey(window, GLFW_KEY_PAGE_UP))
+        if (glfwGetKey(window, GLFW_KEY_Q))
         {
             camera->m_position.y += camera->m_moveSpeedInSeconds * elapsedSeconds;
         }
 
-        if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN))
+        if (glfwGetKey(window, GLFW_KEY_E))
         {
             camera->m_position.y -= camera->m_moveSpeedInSeconds * elapsedSeconds;
         }

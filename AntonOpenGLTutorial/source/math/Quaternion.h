@@ -13,11 +13,11 @@ public:
     friend Quaternion operator*(float scalar, const Quaternion& q);
 
     static Quaternion Identity();
-    static Quaternion AngleAxis(float radians, const glm::vec3& axis);
+    static Quaternion AngleAxis(float angleInDegrees, const glm::vec3& axis);
     static Quaternion Slerp(const Quaternion& q, const Quaternion& r, float t, bool shortestPath = true);
-    static float GetRotationAngle(const glm::mat4& matrix);
-    static glm::vec3 GetRotationAxis(const glm::mat4& matrix, float angleInRadians);
-    static Quaternion FromEulerAngles(float roll, float pitch, float yaw);
+    static float GetRotationAngleInDegrees(const glm::mat4& matrix);
+    static glm::vec3 GetRotationAxis(const glm::mat4& matrix, float angleInDegrees);
+    static Quaternion FromEulerAngles(float rollInDegrees, float pitchInDegrees, float yawInDegrees);
 
     Quaternion();
     Quaternion(float w, float x, float y, float z);
