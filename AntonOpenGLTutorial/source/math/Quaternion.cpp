@@ -62,6 +62,23 @@ glm::vec3 Quaternion::GetRotationAxis(const glm::mat4& matrix, float angleInRadi
     return glm::vec3(x, y, z);
 }
 
+Quaternion Quaternion::FromEulerAngles(float roll, float pitch, float yaw)
+{
+    float cr = cos(roll / 2.0f);
+    float sr = sin(roll / 2.0f);
+    float cp = cos(pitch / 2.0f);
+    float sp = sin(pitch / 2.0f);
+    float cy = cos(yaw / 2.0f);
+    float sy = sin(yaw / 2.0f);
+
+    Quaternion q;
+    q.w = cr * cp * cy + sr * sp * sy;
+    q.x = sr * cp * cy - cr * sp * sy;
+    q.y = cr * sp * cy + sr * cp * sy;
+    q.z = cr * cp * sy - sr * sp * cy;
+    return q;
+}
+
 Quaternion::Quaternion()
     : w(1.0f)
     , x(0.0f)
@@ -169,6 +186,32 @@ Quaternion Quaternion::GetInverse() const
 float Quaternion::DotProduct(const Quaternion& rhs) const
 {
     return w * rhs.w + x * rhs.x + y * rhs.y + z * rhs.z;
+}
+
+glm::vec3 Quaternion::ToEulerAngles() const
+{
+    glm::vec3 angles;
+
+    float a = 2 * (w * x + y * z);
+    float b = 1 - 2 * (x * x + y * y);
+    angles.x = atan2(a, b);
+
+    float c = 2 * (w * y - z * x);
+
+    if (fabs(c) >= 1.0f)
+    {
+        angles.y = std::copysign(glm::radians(90.0f), c);
+    }
+    else
+    {
+        angles.y = asin(c);
+    }
+
+    float d = 2 * (w * z + x * y);
+    float e = 1 - 2 * (y * y + z * z);
+    angles.z = atan2(d, e);
+
+    return angles;
 }
 
 glm::mat4 Quaternion::ToMatrix() const

@@ -70,40 +70,11 @@ int main(int argc, char** argv)
     material->m_diffuseReflectivity = glm::vec3(1.0f, 0.5f, 0.0f);
     material->m_specularReflectivity = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
 
-    Cone* cone = new Cone(1.0f, 0.5f, 1, 24);
-    cone->m_material = material;
-    cone->m_normalMaterial = normalMaterial;
-    cone->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
-    cone->AddComponent(new Rotator(-90.0f, glm::vec3(1.0f, 1.0f, 1.0f)));
-    meshes.push_back(cone);
-
-    Cube* cube = new Cube();
-    cube->m_material = material;
-    cube->m_normalMaterial = normalMaterial;
-    cube->AddComponent(new Rotator(45.0f, glm::vec3(1.0f, 1.0f, 1.0f)));
-    meshes.push_back(cube);
-
-    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 1, 36);
-    cylinder->m_material = material;
-    cylinder->m_normalMaterial = normalMaterial;
-    cylinder->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
-    cylinder->AddComponent(new Rotator(60.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
-    meshes.push_back(cylinder);
-
     Triangle* triangle = new Triangle();
     triangle->m_material = material;
     triangle->m_normalMaterial = normalMaterial;
-    triangle->m_position = glm::vec3(4.0f, 0.0f, 0.0f);
-    triangle->AddComponent(new Rotator(35.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
+    triangle->m_rotation = Quaternion::AngleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     meshes.push_back(triangle);
-
-    Plane* plane = new Plane();
-    plane->m_material = material;
-    plane->m_normalMaterial = normalMaterial;
-    plane->m_position = glm::vec3(-4.0f, 0.0f, 0.0f);
-    plane->m_rotation = Quaternion::AngleAxis(glm::radians(60.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    plane->AddComponent(new Rotator(90.0, glm::vec3(1.0f, 1.0f, 0.0f)));
-    meshes.push_back(plane);
 
     Material* dotMaterial = new Material("phongShading");
 

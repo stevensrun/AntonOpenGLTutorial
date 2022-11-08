@@ -17,6 +17,7 @@ public:
     static Quaternion Slerp(const Quaternion& q, const Quaternion& r, float t, bool shortestPath = true);
     static float GetRotationAngle(const glm::mat4& matrix);
     static glm::vec3 GetRotationAxis(const glm::mat4& matrix, float angleInRadians);
+    static Quaternion FromEulerAngles(float roll, float pitch, float yaw);
 
     Quaternion();
     Quaternion(float w, float x, float y, float z);
@@ -37,6 +38,7 @@ public:
     void Invert();
     Quaternion GetInverse() const;
     float DotProduct(const Quaternion& rhs) const;
+    glm::vec3 ToEulerAngles() const;
     glm::mat4 ToMatrix() const;
 
 public:
