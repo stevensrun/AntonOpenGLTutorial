@@ -13,6 +13,7 @@
 #include "meshes/Dot.h"
 #include "meshes/Mesh.h"
 #include "meshes/Plane.h"
+#include "meshes/Sphere.h"
 #include "meshes/Triangle.h"
 #include "shaders/ShaderManager.h"
 #include <string>
@@ -30,6 +31,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    glfwWindowHint(GLFW_SAMPLES, 16);
     GLFWwindow* window = glfwCreateWindow(1280, 760, "OpenGL", nullptr, nullptr);
 
     if (!window)
@@ -70,11 +72,25 @@ int main(int argc, char** argv)
     material->m_diffuseReflectivity = glm::vec3(1.0f, 0.5f, 0.0f);
     material->m_specularReflectivity = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
 
-    Triangle* triangle = new Triangle();
-    triangle->m_material = material;
-    triangle->m_normalMaterial = normalMaterial;
-    triangle->m_rotation = Quaternion::FromEulerAngles(0.0f, 60.0f, 0.0f);
-    meshes.push_back(triangle);
+    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 2, 24);
+    cylinder->m_material = material;
+    cylinder->m_normalMaterial = normalMaterial;
+    cylinder->m_position = glm::vec3(-3.0f, 0.0f, 0.0f);
+    cylinder->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 1.0f)));
+    meshes.push_back(cylinder);
+
+    Sphere* sphere = new Sphere(1.0f, 16, 24);
+    sphere->m_material = material;
+    sphere->m_normalMaterial = normalMaterial;
+    sphere->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    meshes.push_back(sphere);
+
+    Cube* cube = new Cube();
+    cube->m_material = material;
+    cube->m_normalMaterial = normalMaterial;
+    cube->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
+    cube->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    meshes.push_back(cube);
 
     Material* dotMaterial = new Material("phongShading");
 

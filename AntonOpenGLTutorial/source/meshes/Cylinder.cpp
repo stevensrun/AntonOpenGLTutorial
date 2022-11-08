@@ -1,31 +1,75 @@
 #include "Cylinder.h"
 
 #include <glm/ext.hpp>
+#include <glm/gtc/constants.hpp>
 
 Cylinder::Cylinder(float height, float radius, int stackCount, int segmentCount)
 {
-    float angleInDegrees = 360.0f / segmentCount;
-    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(angleInDegrees), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::vec3 a(0.0f, height / 2.0f, radius);
-    glm::vec3 b(0.0f, -height / 2.0f, radius);
+    float heightStep = height / stackCount;
+    float segmentStep = 2.0f * glm::pi<float>() / segmentCount;
 
     for (int i = 0; i < stackCount; i++)
     {
+        float top = height / 2.0f - i * heightStep;
+
         for (int j = 0; j < segmentCount; j++)
         {
-            bool lastAttribute = (i == stackCount - 1 && j == segmentCount - 1);
-            glm::vec3 c = glm::vec3(rotation * glm::vec4(a, 1.0f));
-            glm::vec3 d = glm::vec3(rotation * glm::vec4(b, 1.0f));
+            float segmentAngle = j * segmentStep;
+            float x = radius * sin(segmentAngle);
+            float y = top;
+            float z = radius * cos(segmentAngle);
+            glm::vec3 a(x, y, z);
+
+            x = radius * sin(segmentAngle);
+            y = top - heightStep;
+            z = radius * cos(segmentAngle);
+            glm::vec3 b(x, y, z);
+
+            segmentAngle = (j + 1) * segmentStep;
+            x = radius * sin(segmentAngle);
+            y = top - heightStep;
+            z = radius * cos(segmentAngle);
+            glm::vec3 c(x, y, z);
+
+            x = radius * sin(segmentAngle);
+            y = top;
+            z = radius * cos(segmentAngle);
+            glm::vec3 d(x, y, z);
+
             AddAttribute(a, glm::vec3(a.x, 0.0f, a.z));
             AddAttribute(b, glm::vec3(b.x, 0.0f, b.z));
             AddAttribute(c, glm::vec3(c.x, 0.0f, c.z));
 
             AddAttribute(c, glm::vec3(c.x, 0.0f, c.z));
-            AddAttribute(b, glm::vec3(b.x, 0.0f, b.z));
-            AddAttribute(d, glm::vec3(d.x, 0.0f, d.z), lastAttribute);
-
-            a = c;
-            b = d;
+            AddAttribute(d, glm::vec3(d.x, 0.0f, d.z));
+            AddAttribute(a, glm::vec3(a.x, 0.0f, a.z));
         }
     }
+
+    for (int i = 0; i < 2; i++)
+    {
+        float y = height / 2.0f - i * height;
+        float x = 0.0f;
+        float z = 0.0f;
+        glm::vec3 a(x, y, z);
+
+        for (int j = 0; j < segmentCount; j++)
+        {
+            float segmentAngle = j * segmentStep;
+            x = radius * sin(segmentAngle);
+            z = radius * cos(segmentAngle);
+            glm::vec3 b(x, y, z);
+
+            segmentAngle = (j + 1) * segmentStep;
+            x = radius * sin(segmentAngle);
+            z = radius * cos(segmentAngle);
+            glm::vec3 c(x, y, z);
+
+            AddAttribute(a, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+            AddAttribute(b, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+            AddAttribute(c, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+        }
+    }
+
+    FinalizeGeometry();
 }

@@ -39,16 +39,14 @@ void Mesh::SetEnabled(bool enabled)
     m_enabled = enabled;
 }
 
-void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal, bool lastAttribute)
+void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal)
 {
     m_points.push_back(point);
     m_normals.push_back(normal);
+}
 
-    if (!lastAttribute)
-    {
-        return;
-    }
-
+void Mesh::FinalizeGeometry()
+{
     std::vector<glm::vec3> attributes;
     std::vector<glm::vec3> normals;
 

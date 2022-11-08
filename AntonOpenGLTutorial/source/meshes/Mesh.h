@@ -25,7 +25,8 @@ public:
     virtual void AddComponent(Component* component);
 
 protected:
-    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal, bool lastAttribute = false);
+    void FinalizeGeometry();
+    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal);
     virtual void PrepareShader(Material* material, ShaderManager* shaderManager, Camera* camera, Light* light);
 
 public:

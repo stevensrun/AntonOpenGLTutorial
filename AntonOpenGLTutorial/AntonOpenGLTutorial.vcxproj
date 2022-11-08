@@ -93,6 +93,7 @@
     <ClCompile Include="source\meshes\Dot.cpp" />
     <ClCompile Include="source\meshes\Mesh.cpp" />
     <ClCompile Include="source\meshes\Plane.cpp" />
+    <ClCompile Include="source\meshes\Sphere.cpp" />
     <ClCompile Include="source\meshes\Triangle.cpp" />
     <ClCompile Include="source\shaders\Shader.cpp" />
     <ClCompile Include="source\shaders\ShaderManager.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="source\meshes\Dot.h" />
     <ClInclude Include="source\meshes\Mesh.h" />
     <ClInclude Include="source\meshes\Plane.h" />
+    <ClInclude Include="source\meshes\Sphere.h" />
     <ClInclude Include="source\meshes\Triangle.h" />
     <ClInclude Include="source\shaders\Shader.h" />
     <ClInclude Include="source\shaders\ShaderManager.h" />
