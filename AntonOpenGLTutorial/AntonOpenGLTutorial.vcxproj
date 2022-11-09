@@ -123,6 +123,7 @@
     <ClInclude Include="source\shaders\ShaderProgram.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\blinnPhongShading.glsl" />
     <None Include="shaders\phongShading.glsl" />
     <None Include="shaders\vertexNormals.glsl" />
   </ItemGroup>

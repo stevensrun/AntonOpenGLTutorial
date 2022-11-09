@@ -65,9 +65,18 @@ Cylinder::Cylinder(float height, float radius, int stackCount, int segmentCount)
             z = radius * cos(segmentAngle);
             glm::vec3 c(x, y, z);
 
-            AddAttribute(a, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
-            AddAttribute(b, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
-            AddAttribute(c, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+            if (i == 0)
+            {
+                AddAttribute(a, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+                AddAttribute(b, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+                AddAttribute(c, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+            }
+            else
+            {
+                AddAttribute(c, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+                AddAttribute(b, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+                AddAttribute(a, glm::vec3(0.0f, std::copysign(1.0f, y), 0.0f));
+            }
         }
     }
 

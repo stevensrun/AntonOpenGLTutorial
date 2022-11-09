@@ -12,39 +12,39 @@ Sphere::Sphere(float radius, int stackCount, int segmentCount)
         for (int j = 0; j < segmentCount; j++)
         {
             float stackAngle = glm::half_pi<float>() - i * stackStep;
-            float longitudeLength = radius * cos(stackAngle);
+            float chordLength = radius * cos(stackAngle);
             float segmentAngle = j * segmentStep;
-            float x = longitudeLength * sin(segmentAngle);
+            float x = chordLength * sin(segmentAngle);
             float y = radius * sin(stackAngle);
-            float z = longitudeLength * cos(segmentAngle);
+            float z = chordLength * cos(segmentAngle);
             glm::vec3 a(x, y, z);
 
             stackAngle = glm::half_pi<float>() - (i + 1) * stackStep;
-            longitudeLength = radius * cos(stackAngle);
-            x = longitudeLength * sin(segmentAngle);
+            chordLength = radius * cos(stackAngle);
+            x = chordLength * sin(segmentAngle);
             y = radius * sin(stackAngle);
-            z = longitudeLength * cos(segmentAngle);
+            z = chordLength * cos(segmentAngle);
             glm::vec3 b(x, y, z);
 
             segmentAngle = (j + 1) * segmentStep;
-            x = longitudeLength * sin(segmentAngle);
+            x = chordLength * sin(segmentAngle);
             y = radius * sin(stackAngle);
-            z = longitudeLength * cos(segmentAngle);
+            z = chordLength * cos(segmentAngle);
             glm::vec3 c(x, y, z);
 
-            AddAttribute(a, glm::normalize(a));
-            AddAttribute(b, glm::normalize(b));
-            AddAttribute(c, glm::normalize(c));
-
             stackAngle = glm::half_pi<float>() - i * stackStep;
-            longitudeLength = radius * cos(stackAngle);
-            x = longitudeLength * sin(segmentAngle);
+            chordLength = radius * cos(stackAngle);
+            x = chordLength * sin(segmentAngle);
             y = radius * sin(stackAngle);
-            z = longitudeLength * cos(segmentAngle);
+            z = chordLength * cos(segmentAngle);
             glm::vec3 d(x, y, z);
-            AddAttribute(c, glm::normalize(c));
-            AddAttribute(d, glm::normalize(d));
-            AddAttribute(a, glm::normalize(a));
+
+            AddAttribute(a, a);
+            AddAttribute(b, b);
+            AddAttribute(c, c);           
+            AddAttribute(c, c);
+            AddAttribute(d, d);
+            AddAttribute(a, a);
         }
     }
 
