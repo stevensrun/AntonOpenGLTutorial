@@ -91,6 +91,7 @@
     <ClCompile Include="source\meshes\Cube.cpp" />
     <ClCompile Include="source\meshes\Cylinder.cpp" />
     <ClCompile Include="source\meshes\Dot.cpp" />
+    <ClCompile Include="source\meshes\Line.cpp" />
     <ClCompile Include="source\meshes\Mesh.cpp" />
     <ClCompile Include="source\meshes\Plane.cpp" />
     <ClCompile Include="source\meshes\Sphere.cpp" />
@@ -114,6 +115,7 @@
     <ClInclude Include="source\meshes\Cube.h" />
     <ClInclude Include="source\meshes\Cylinder.h" />
     <ClInclude Include="source\meshes\Dot.h" />
+    <ClInclude Include="source\meshes\Line.h" />
     <ClInclude Include="source\meshes\Mesh.h" />
     <ClInclude Include="source\meshes\Plane.h" />
     <ClInclude Include="source\meshes\Sphere.h" />

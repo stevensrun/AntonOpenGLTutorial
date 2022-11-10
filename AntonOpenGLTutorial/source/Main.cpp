@@ -11,6 +11,7 @@
 #include "meshes/Cube.h"
 #include "meshes/Cylinder.h"
 #include "meshes/Dot.h"
+#include "meshes/Line.h"
 #include "meshes/Mesh.h"
 #include "meshes/Plane.h"
 #include "meshes/Sphere.h"
@@ -42,7 +43,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f));
+    Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     
     glfwSetWindowUserPointer(window, camera);
     glfwSetKeyCallback(window, KeyCallback);
@@ -57,7 +58,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Light* light = new Light(glm::vec3(0.0f, 0.5f, 3.0f));
+    Light* light = new Light(glm::vec3(0.0f, 0.0f, 3.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -73,27 +74,12 @@ int main(int argc, char** argv)
     Material* material = new Material("phongShading");
     material->m_ambientReflectivity = glm::vec3(1.0f, 1.0f, 1.0f);
     material->m_diffuseReflectivity = glm::vec3(1.0f, 0.5f, 0.0f);
-    material->m_specularReflectivity = glm::vec4(1.0f, 1.0f, 1.0f, 50.0f);
+    material->m_specularReflectivity = glm::vec4(1.0f, 1.0f, 1.0f, 400.0f);
 
-    Cylinder* cylinder = new Cylinder(1.0f, 0.5f, 2, 24);
-    cylinder->m_material = material;
-    cylinder->m_normalMaterial = normalMaterial;
-    cylinder->m_position = glm::vec3(-3.0f, 0.0f, 0.0f);
-    cylinder->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 1.0f)));
-    meshes.push_back(cylinder);
-
-    Sphere* sphere = new Sphere(1.0f, 16, 32);
-    sphere->m_material = material;
-    sphere->m_normalMaterial = normalMaterial;
-    sphere->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    meshes.push_back(sphere);
-
-    Cube* cube = new Cube();
-    cube->m_material = material;
-    cube->m_normalMaterial = normalMaterial;
-    cube->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
-    cube->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    meshes.push_back(cube);
+    Triangle* triangle = new Triangle();
+    triangle->m_material = material;
+    triangle->m_normalMaterial = normalMaterial;
+    meshes.push_back(triangle);
 
     Material* dotMaterial = new Material("phongShading");
 

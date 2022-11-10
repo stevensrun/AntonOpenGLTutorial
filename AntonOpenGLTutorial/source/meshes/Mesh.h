@@ -32,6 +32,7 @@ protected:
 public:
     glm::vec3 m_position;
     Quaternion m_rotation;
+    glm::vec3 m_scale;
     Material* m_material;
     Material* m_normalMaterial;
 

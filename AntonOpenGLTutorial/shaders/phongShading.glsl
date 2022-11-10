@@ -52,6 +52,6 @@ void main()
         float specularFactor = max(dot(reflectionRay, cameraRay), 0.0);
         specularIntensity = specularLightColor * specularReflectivity.rgb * pow(specularFactor, specularReflectivity.a);
     }
-
+        
     frag_color = vec4(ambientIntensity + diffuseIntensity + specularIntensity, 1.0);
 }

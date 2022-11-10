@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "lights/Light.h"
 #include "materials/Material.h"
+#include "math/Quaternion.h"
 #include "shaders/ShaderManager.h"
 
 Mesh::Mesh()
@@ -15,10 +16,11 @@ Mesh::Mesh()
     , m_attributeBuffer(0)
     , m_normalBuffer(0)
     , m_position(0.0f, 0.0f, 0.0f)
+    , m_scale(1.0f, 1.0f, 1.0f)
 {
+    m_rotation = Quaternion::AngleAxis(0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     glGenVertexArrays(1, &m_attributeVertexArray);
     glBindVertexArray(m_attributeVertexArray);
-
     glGenVertexArrays(1, &m_normalVertexArray);
     glBindVertexArray(m_normalVertexArray);
 }
@@ -102,7 +104,7 @@ void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager, Camer
     shaderManager->SetUniform(shaderName, "diffuseReflectivity", 3, glm::value_ptr(material->m_diffuseReflectivity));
     shaderManager->SetUniform(shaderName, "specularReflectivity", 4, glm::value_ptr(material->m_specularReflectivity));
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix();
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
     shaderManager->SetUniform(shaderName, "model", 4, 4, false, glm::value_ptr(model));
 }
 
@@ -116,7 +118,7 @@ void Mesh::Update(float deltaTimeInSeconds)
 
 void Mesh::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
 {
-    if (!m_enabled)
+    if (!m_enabled || !m_material)
     {
         return;
     }
@@ -129,7 +131,7 @@ void Mesh::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
 
 void Mesh::DrawNormals(ShaderManager* shaderManager, Camera* camera)
 {
-    if (!m_enabled)
+    if (!m_enabled || !m_normalMaterial)
     {
         return;
     }
@@ -137,6 +139,7 @@ void Mesh::DrawNormals(ShaderManager* shaderManager, Camera* camera)
     PrepareShader(m_normalMaterial, shaderManager, camera, nullptr);
     glBindVertexArray(m_normalVertexArray);
     glEnable(GL_DEPTH_TEST);
+    glLineWidth(1.0f);
     glDrawArrays(GL_LINES, 0, static_cast<int>(m_normals.size() * 2));
 }
 
