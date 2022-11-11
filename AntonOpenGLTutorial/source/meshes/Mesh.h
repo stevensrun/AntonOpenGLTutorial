@@ -40,8 +40,8 @@ public:
 protected:
     unsigned int m_attributeVertexArray;
     unsigned int m_normalVertexArray;
-    unsigned int m_attributeBuffer;
-    unsigned int m_normalBuffer;
+    unsigned int m_attributesBuffer;
+    unsigned int m_normalsBuffer;
     unsigned int m_textureId;
 
     std::vector<glm::vec3> m_points;

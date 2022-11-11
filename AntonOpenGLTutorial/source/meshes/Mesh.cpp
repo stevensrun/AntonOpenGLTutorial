@@ -13,8 +13,8 @@ Mesh::Mesh()
     : m_enabled(true)
     , m_material(nullptr)
     , m_normalMaterial(nullptr)
-    , m_attributeBuffer(0)
-    , m_normalBuffer(0)
+    , m_attributesBuffer(0)
+    , m_normalsBuffer(0)
     , m_textureId(-1)
     , m_position(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
@@ -29,11 +29,12 @@ Mesh::Mesh()
 Mesh::~Mesh()
 {
     glBindVertexArray(m_attributeVertexArray);
-    glDeleteBuffers(1, &m_attributeBuffer);
+    glDeleteBuffers(1, &m_attributesBuffer);
     glDeleteVertexArrays(1, &m_attributeVertexArray);
+    glDeleteTextures(1, &m_textureId);
 
     glBindVertexArray(m_normalVertexArray);
-    glDeleteBuffers(1, &m_normalBuffer);
+    glDeleteBuffers(1, &m_normalsBuffer);
     glDeleteVertexArrays(1, &m_normalVertexArray);
 }
 
@@ -50,8 +51,7 @@ void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal)
 
 void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec2& textureCoordinate)
 {
-    m_points.push_back(point);
-    m_normals.push_back(normal);
+    AddAttribute(point, normal);
     m_textureCoordinates.push_back(textureCoordinate);
 }
 
@@ -85,10 +85,10 @@ void Mesh::FinalizeGeometry()
         normals.push_back(endPoint.z);
     }
 
-    int stride = (m_textureCoordinates.size() > 0) ? 8 * sizeof(float) : 6 * sizeof(float);
+    int stride = (m_textureCoordinates.size() == 0) ? 6 * sizeof(float) : 8 * sizeof(float);
     glBindVertexArray(m_attributeVertexArray);
-    glGenBuffers(1, &m_attributeBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_attributeBuffer);
+    glGenBuffers(1, &m_attributesBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_attributesBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * attributes.size(), attributes.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0);
     glEnableVertexAttribArray(0);
@@ -102,8 +102,8 @@ void Mesh::FinalizeGeometry()
     }
 
     glBindVertexArray(m_normalVertexArray);
-    glGenBuffers(1, &m_normalBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
+    glGenBuffers(1, &m_normalsBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_normalsBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * normals.size(), normals.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(0);
@@ -120,16 +120,8 @@ void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager, Camer
     {
         glGenTextures(1, &m_textureId);
         glBindTexture(GL_TEXTURE_2D, m_textureId);
-
-        if (material->GetTextureChannelCount() == 4)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, material->GetTextureWidth(), material->GetTextureHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, material->GetBaseTextureData());
-        }
-        else
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, material->GetTextureWidth(), material->GetTextureHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, material->GetBaseTextureData());
-        }
-
+        int format = (material->GetTextureChannelCount() == 4) ? GL_RGBA : GL_RGB;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, material->GetTextureWidth(), material->GetTextureHeight(), 0, format, GL_UNSIGNED_BYTE, material->GetBaseTextureData());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -138,9 +130,13 @@ void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager, Camer
 
     const std::string& shaderName = material->GetShaderName();
     shaderManager->UseShader(shaderName);
-    shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(camera->m_position));
-    shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(camera->m_view));
-    shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(camera->m_projection));
+
+    if (camera)
+    {
+        shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(camera->m_position));
+        shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(camera->m_view));
+        shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(camera->m_projection));
+    }
 
     if (light)
     {
@@ -176,8 +172,8 @@ void Mesh::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
         return;
     }
 
-    PrepareShader(m_material, shaderManager, camera, light);
     glBindVertexArray(m_attributeVertexArray);
+    PrepareShader(m_material, shaderManager, camera, light);
 
     if (m_material->GetTextureSlot() != -1)
     {
