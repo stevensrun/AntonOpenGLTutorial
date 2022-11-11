@@ -2,8 +2,19 @@
 
 #include <glm/glm.hpp>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 class ShaderManager;
+
+struct Texture
+{
+    unsigned char* m_data;
+    int m_width;
+    int m_height;
+    int m_channelCount;
+    int m_slot;
+};
 
 class Material
 {
@@ -12,23 +23,16 @@ public:
     virtual ~Material() = default;
 
     const std::string& GetShaderName() const;
-    void SetBaseTexture(unsigned char* textureData, int width, int height, int channelCount, int textureSlot);
-    const unsigned char* GetBaseTextureData() const;
-    int GetTextureWidth() const;
-    int GetTextureHeight() const;
-    int GetTextureChannelCount() const;
-    int GetTextureSlot() const;
-
-public:
-    glm::vec3 m_ambientReflectivity;
-    glm::vec3 m_diffuseReflectivity;
-    glm::vec4 m_specularReflectivity;
+    void AddUniform(const std::string& uniformName, const glm::vec3& value);
+    void AddUniform(const std::string& uniformName, const glm::vec4& value);
+    const std::unordered_map<std::string, glm::vec3>& GetVec3Uniforms();
+    const std::unordered_map<std::string, glm::vec4>& GetVec4Uniforms();
+    void AddTextureUniform(const std::string& uniformName, unsigned char* textureData, int width, int height, int channelCount, int textureSlot);
+    const std::unordered_map<std::string, Texture>& GetTextureUniforms();
 
 protected:
     std::string m_shaderName;
-    unsigned char* m_baseTextureData;
-    int m_textureWidth;
-    int m_textureHeight;
-    int m_textureChannelCount;
-    int m_baseTextureSlot;
+    std::unordered_map<std::string, glm::vec3> m_vec3Uniforms;
+    std::unordered_map<std::string, glm::vec4> m_vec4Uniforms;
+    std::unordered_map<std::string, Texture> m_textureUniforms;
 };

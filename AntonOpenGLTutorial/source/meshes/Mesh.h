@@ -42,7 +42,7 @@ protected:
     unsigned int m_normalVertexArray;
     unsigned int m_attributesBuffer;
     unsigned int m_normalsBuffer;
-    unsigned int m_textureId;
+    std::vector<unsigned int> m_textureIds;
 
     std::vector<glm::vec3> m_points;
     std::vector<glm::vec3> m_normals;

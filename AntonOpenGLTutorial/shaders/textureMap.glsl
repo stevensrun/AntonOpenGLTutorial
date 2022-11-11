@@ -33,8 +33,11 @@ in vec2 textureCoordinate;
 layout(location = 0) out vec4 frag_color;
 
 uniform sampler2D baseTexture;
+uniform sampler2D secondaryTexture;
 
 void main()
-{        
-    frag_color = texture(baseTexture, textureCoordinate);
+{
+    vec4 baseColor = texture(baseTexture, textureCoordinate);
+    vec4 secondaryColor = texture(secondaryTexture, textureCoordinate);
+    frag_color = mix(baseColor, secondaryColor, 0.85);
 }

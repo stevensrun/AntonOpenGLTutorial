@@ -131,6 +131,7 @@
     <None Include="shaders\ambientReflectivity.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="textures\sandstone.png" />
     <Image Include="textures\skulluvmap.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

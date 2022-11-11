@@ -59,58 +59,52 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    int width;
-    int height;
-    int channelCount;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* imageData = stbi_load("textures/skulluvmap.png", &width, &height, &channelCount, 0);
-
-    if (!imageData)
-    {
-        std::cerr << __FUNCTION__ << " texture not loaded\n";
-    }
-
     Light* light = new Light(glm::vec3(0.0f, 0.0f, 3.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    ShaderManager* shaderManager = new ShaderManager;
+    ShaderManager* shaderManager = new ShaderManager();
     shaderManager->LoadShader("phongShading", "shaders/phongShading.glsl");
     shaderManager->LoadShader("textureMap", "shaders/textureMap.glsl");
     shaderManager->LoadShader("ambientReflectivity", "shaders/ambientReflectivity.glsl");
 
     Material* normalMaterial = new Material("ambientReflectivity");
-    normalMaterial->m_ambientReflectivity = glm::vec3(1.0f, 0.0f, 0.0f);
+    normalMaterial->AddUniform("ambientReflectivity", glm::vec3(1.0f, 0.0f, 0.0f));
 
     Material* material = new Material("phongShading");
-    material->m_ambientReflectivity = glm::vec3(1.0f, 1.0f, 1.0f);
-    material->m_diffuseReflectivity = glm::vec3(1.0f, 0.5f, 0.0f);
-    material->m_specularReflectivity = glm::vec4(1.0f, 1.0f, 1.0f, 400.0f);
+    material->AddUniform("ambientReflectivity", glm::vec3(1.0f, 1.0f, 1.0f));
+    material->AddUniform("diffuseReflectivity", glm::vec3(1.0f, 0.5f, 0.0f));
+    material->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 300.0f));
 
-    Material* skullTextureMaterial = new Material("textureMap");
-    skullTextureMaterial->SetBaseTexture(imageData, width, height, channelCount, 1);
+    Material* textureMaterial = new Material("textureMap");
+
+    stbi_set_flip_vertically_on_load(true);
+    int width;
+    int height;
+    int channelCount;
+    unsigned char* skullData = stbi_load("textures/skulluvmap.png", &width, &height, &channelCount, 0);
+    textureMaterial->AddTextureUniform("baseTexture", skullData, width, height, channelCount, 1);
+    unsigned char* sandstoneData = stbi_load("textures/sandstone.png", &width, &height, &channelCount, 0);
+    textureMaterial->AddTextureUniform("secondaryTexture", sandstoneData, width, height, channelCount, 0);
 
     Plane* skullPlane = new Plane();
-    skullPlane->m_material = skullTextureMaterial;
+    skullPlane->m_material = textureMaterial;
     skullPlane->m_normalMaterial = normalMaterial;
     skullPlane->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     meshes.push_back(skullPlane);
 
-    Plane* plane = new Plane();
-    plane->m_material = material;
-    plane->m_normalMaterial = normalMaterial;
-    plane->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
-    plane->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    meshes.push_back(plane);
+    Sphere* sphere = new Sphere(1.0f, 16, 32);
+    sphere->m_material = material;
+    sphere->m_normalMaterial = normalMaterial;
+    sphere->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
+    meshes.push_back(sphere);
 
     Material* dotMaterial = new Material("ambientReflectivity");
+    dotMaterial->AddUniform("ambientReflectivity", glm::vec3(0.0f, 1.0f, 0.0f));
 
     dot = new Dot();
     dot->m_material = dotMaterial;
-    dotMaterial->m_ambientReflectivity = glm::vec3(1.0f, 0.0f, 0.0f);
-    dotMaterial->m_diffuseReflectivity = glm::vec3(0.0f);
-    dotMaterial->m_specularReflectivity = glm::vec4(0.0f);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -131,10 +125,9 @@ int main(int argc, char** argv)
             mesh->Draw(shaderManager, camera, light);
             mesh->DrawNormals(shaderManager, camera);
         }
-
-        dot->Update(elapsedSeconds);
+        
         dot->Draw(shaderManager, camera, light);
-
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
 

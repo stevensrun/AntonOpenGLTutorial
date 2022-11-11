@@ -2,15 +2,7 @@
 
 Material::Material(const std::string& shaderName)
     : m_shaderName(shaderName)
-    , m_baseTextureData(nullptr)
-    , m_textureWidth(0)
-    , m_textureHeight(0)
-    , m_textureChannelCount(0)
-    , m_baseTextureSlot(-1)
 {
-    m_ambientReflectivity = glm::vec3(1.0f);
-    m_diffuseReflectivity = glm::vec3(1.0f);
-    m_specularReflectivity = glm::vec4(1.0f);
 }
 
 const std::string& Material::GetShaderName() const
@@ -18,36 +10,33 @@ const std::string& Material::GetShaderName() const
     return m_shaderName;
 }
 
-void Material::SetBaseTexture(unsigned char* textureData, int width, int height, int channelCount, int textureSlot)
+void Material::AddUniform(const std::string& uniformName, const glm::vec3& value)
 {
-    m_baseTextureData = textureData;
-    m_textureWidth = width;
-    m_textureHeight = height;
-    m_textureChannelCount = channelCount;
-    m_baseTextureSlot = textureSlot;
+    m_vec3Uniforms[uniformName] = value;
 }
 
-const unsigned char* Material::GetBaseTextureData() const
+void Material::AddUniform(const std::string& uniformName, const glm::vec4& value)
 {
-    return m_baseTextureData;
+    m_vec4Uniforms[uniformName] = value;
 }
 
-int Material::GetTextureWidth() const
+const std::unordered_map<std::string, glm::vec3>& Material::GetVec3Uniforms()
 {
-    return m_textureWidth;
+    return m_vec3Uniforms;
 }
 
-int Material::GetTextureHeight() const
+const std::unordered_map<std::string, glm::vec4>& Material::GetVec4Uniforms()
 {
-    return m_textureHeight;
+    return m_vec4Uniforms;
 }
 
-int Material::GetTextureChannelCount() const
+void Material::AddTextureUniform(const std::string& uniformName, unsigned char* textureData, int width, int height, int channelCount, int textureSlot)
 {
-    return m_textureChannelCount;
+    Texture texture{ textureData, width, height, channelCount, textureSlot };
+    m_textureUniforms[uniformName] = texture;
 }
 
-int Material::GetTextureSlot() const
+const std::unordered_map<std::string, Texture>& Material::GetTextureUniforms()
 {
-    return m_baseTextureSlot;
+    return m_textureUniforms;
 }
