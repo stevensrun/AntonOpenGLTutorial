@@ -27,6 +27,7 @@ public:
 protected:
     void FinalizeGeometry();
     virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal);
+    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec2& textureCoordinate);
     virtual void PrepareShader(Material* material, ShaderManager* shaderManager, Camera* camera, Light* light);
 
 public:
@@ -41,9 +42,11 @@ protected:
     unsigned int m_normalVertexArray;
     unsigned int m_attributeBuffer;
     unsigned int m_normalBuffer;
+    unsigned int m_textureId;
 
     std::vector<glm::vec3> m_points;
     std::vector<glm::vec3> m_normals;
+    std::vector<glm::vec2> m_textureCoordinates;
 
     bool m_enabled;
     std::vector<Component*> m_components;

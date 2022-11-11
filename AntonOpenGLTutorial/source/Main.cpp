@@ -17,6 +17,7 @@
 #include "meshes/Sphere.h"
 #include "meshes/Triangle.h"
 #include "shaders/ShaderManager.h"
+#include <stb_image.h>
 #include <string>
 
 void KeyCallback(GLFWwindow* window, int keyCode, int scanCode, int action, int mods);
@@ -58,6 +59,17 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    int width;
+    int height;
+    int channelCount;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* imageData = stbi_load("textures/skulluvmap.png", &width, &height, &channelCount, 0);
+
+    if (!imageData)
+    {
+        std::cerr << __FUNCTION__ << " texture not loaded\n";
+    }
+
     Light* light = new Light(glm::vec3(0.0f, 0.0f, 3.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
@@ -65,10 +77,10 @@ int main(int argc, char** argv)
 
     ShaderManager* shaderManager = new ShaderManager;
     shaderManager->LoadShader("phongShading", "shaders/phongShading.glsl");
-    shaderManager->LoadShader("blinnPhongShading", "shaders/blinnPhongShading.glsl");
-    shaderManager->LoadShader("vertexNormals", "shaders/vertexNormals.glsl");
+    shaderManager->LoadShader("textureMap", "shaders/textureMap.glsl");
+    shaderManager->LoadShader("ambientReflectivity", "shaders/ambientReflectivity.glsl");
 
-    Material* normalMaterial = new Material("vertexNormals");
+    Material* normalMaterial = new Material("ambientReflectivity");
     normalMaterial->m_ambientReflectivity = glm::vec3(1.0f, 0.0f, 0.0f);
 
     Material* material = new Material("phongShading");
@@ -76,12 +88,23 @@ int main(int argc, char** argv)
     material->m_diffuseReflectivity = glm::vec3(1.0f, 0.5f, 0.0f);
     material->m_specularReflectivity = glm::vec4(1.0f, 1.0f, 1.0f, 400.0f);
 
-    Triangle* triangle = new Triangle();
-    triangle->m_material = material;
-    triangle->m_normalMaterial = normalMaterial;
-    meshes.push_back(triangle);
+    Material* skullTextureMaterial = new Material("textureMap");
+    skullTextureMaterial->SetBaseTexture(imageData, width, height, channelCount, 1);
 
-    Material* dotMaterial = new Material("phongShading");
+    Plane* skullPlane = new Plane();
+    skullPlane->m_material = skullTextureMaterial;
+    skullPlane->m_normalMaterial = normalMaterial;
+    skullPlane->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    meshes.push_back(skullPlane);
+
+    Plane* plane = new Plane();
+    plane->m_material = material;
+    plane->m_normalMaterial = normalMaterial;
+    plane->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
+    plane->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    meshes.push_back(plane);
+
+    Material* dotMaterial = new Material("ambientReflectivity");
 
     dot = new Dot();
     dot->m_material = dotMaterial;
