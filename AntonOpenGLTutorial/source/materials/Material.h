@@ -14,6 +14,7 @@ struct Texture
     int m_height;
     int m_channelCount;
     int m_slot;
+    unsigned int m_textureId;
 };
 
 class Material

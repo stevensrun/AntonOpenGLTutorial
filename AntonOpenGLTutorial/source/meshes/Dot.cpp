@@ -12,7 +12,7 @@ bool Dot::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm
     return false;
 }
 
-void Dot::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
+void Dot::Draw(ShaderManager* shaderManager) const
 {
     if (!m_enabled)
     {
@@ -20,7 +20,7 @@ void Dot::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
     }
 
 
-    PrepareShader(m_material, shaderManager, camera, light);
+    PrepareShader(m_material, shaderManager);
     glBindVertexArray(m_attributeVertexArray);
     glDisable(GL_DEPTH_TEST);
     glPointSize(2.0f);

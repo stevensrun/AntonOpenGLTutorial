@@ -39,5 +39,5 @@ void main()
 {
     vec4 baseColor = texture(baseTexture, textureCoordinate);
     vec4 secondaryColor = texture(secondaryTexture, textureCoordinate);
-    frag_color = mix(baseColor, secondaryColor, 0.85);
+    frag_color = mix(baseColor, secondaryColor, 0.7);
 }

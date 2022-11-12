@@ -7,9 +7,9 @@ Line::Line(const glm::vec3& p0, const glm::vec3 p1)
     FinalizeGeometry();
 }
 
-void Line::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
+void Line::Draw(ShaderManager* shaderManager) const
 {
-    PrepareShader(m_material, shaderManager, camera, light);
+    PrepareShader(m_material, shaderManager);
     glBindVertexArray(m_attributeVertexArray);
     glEnable(GL_DEPTH_TEST);
     glLineWidth(2.0f);

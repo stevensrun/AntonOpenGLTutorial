@@ -9,7 +9,7 @@ public:
     explicit Camera(const glm::vec3 position);
     virtual ~Camera() = default;
 
-    void Update();
+    void Update(float deltaTimeInSeconds);
 
 public:
     glm::vec3 m_position;

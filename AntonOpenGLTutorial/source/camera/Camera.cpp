@@ -12,7 +12,7 @@ Camera::Camera(const glm::vec3 position)
     m_projection = glm::perspective(glm::radians(67.0f), 1280.0f / 760.0f, 0.1f, 100.0f);
 }
 
-void Camera::Update()
+void Camera::Update(float deltaTimeInSeconds)
 {
     m_view = glm::lookAt(m_position, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }

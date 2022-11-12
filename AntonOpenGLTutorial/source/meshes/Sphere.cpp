@@ -39,12 +39,12 @@ Sphere::Sphere(float radius, int stackCount, int segmentCount)
             z = chordLength * cos(segmentAngle);
             glm::vec3 d(x, y, z);
 
-            AddAttribute(a, a);
-            AddAttribute(b, b);
-            AddAttribute(c, c);           
-            AddAttribute(c, c);
-            AddAttribute(d, d);
-            AddAttribute(a, a);
+            AddAttribute(a, glm::normalize(a));
+            AddAttribute(b, glm::normalize(b));
+            AddAttribute(c, glm::normalize(c));
+            AddAttribute(c, glm::normalize(c));
+            AddAttribute(d, glm::normalize(d));
+            AddAttribute(a, glm::normalize(a));
         }
     }
 

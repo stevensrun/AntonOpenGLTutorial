@@ -47,10 +47,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;__STDC_LIB_EXT1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm\include;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -65,10 +66,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;__STDC_LIB_EXT1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm\include;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -96,6 +98,8 @@
     <ClCompile Include="source\meshes\Plane.cpp" />
     <ClCompile Include="source\meshes\Sphere.cpp" />
     <ClCompile Include="source\meshes\Triangle.cpp" />
+    <ClCompile Include="source\renderer\Renderer.cpp" />
+    <ClCompile Include="source\scene\Scene.cpp" />
     <ClCompile Include="source\shaders\Shader.cpp" />
     <ClCompile Include="source\shaders\ShaderManager.cpp" />
     <ClCompile Include="source\shaders\ShaderProgram.cpp" />
@@ -120,6 +124,8 @@
     <ClInclude Include="source\meshes\Plane.h" />
     <ClInclude Include="source\meshes\Sphere.h" />
     <ClInclude Include="source\meshes\Triangle.h" />
+    <ClInclude Include="source\renderer\Renderer.h" />
+    <ClInclude Include="source\scene\Scene.h" />
     <ClInclude Include="source\shaders\Shader.h" />
     <ClInclude Include="source\shaders\ShaderManager.h" />
     <ClInclude Include="source\shaders\ShaderProgram.h" />

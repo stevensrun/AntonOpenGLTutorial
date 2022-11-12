@@ -1,12 +1,8 @@
 #include "Mesh.h"
-#include "camera/Camera.h"
 #include "components/Component.h"
-#include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "lights/Light.h"
 #include "materials/Material.h"
-#include "math/Quaternion.h"
 #include "shaders/ShaderManager.h"
 
 Mesh::Mesh()
@@ -34,6 +30,11 @@ Mesh::~Mesh()
     glBindVertexArray(m_normalVertexArray);
     glDeleteBuffers(1, &m_normalsBuffer);
     glDeleteVertexArrays(1, &m_normalVertexArray);
+}
+
+bool Mesh::IsEnabled() const
+{
+    return m_enabled;
 }
 
 void Mesh::SetEnabled(bool enabled)
@@ -107,48 +108,15 @@ void Mesh::FinalizeGeometry()
     glEnableVertexAttribArray(0);
 }
 
-void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager, Camera* camera, Light* light)
+void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager) const
 {
     if (!material)
     {
         return;
     }
 
-    if (m_textureIds.empty())
-    {
-        for (const std::pair<std::string, Texture>& pair : material->GetTextureUniforms())
-        {
-            unsigned int textureId;
-            glGenTextures(1, &textureId);
-            glBindTexture(GL_TEXTURE_2D, textureId);
-            const Texture& texture = pair.second;
-            int format = (texture.m_channelCount == 4) ? GL_RGBA : GL_RGB;
-            glTexImage2D(GL_TEXTURE_2D, 0, format, texture.m_width, texture.m_height, 0, format, GL_UNSIGNED_BYTE, texture.m_data);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            m_textureIds.push_back(textureId);
-        }
-    }
-
     const std::string& shaderName = material->GetShaderName();
     shaderManager->UseShader(shaderName);
-
-    if (camera)
-    {
-        shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(camera->m_position));
-        shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(camera->m_view));
-        shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(camera->m_projection));
-    }
-
-    if (light)
-    {
-        shaderManager->SetUniform(shaderName, "lightPosition", 3, glm::value_ptr(light->m_position));
-        shaderManager->SetUniform(shaderName, "ambientLightColor", 3, glm::value_ptr(light->m_ambientColor));
-        shaderManager->SetUniform(shaderName, "diffuseLightColor", 3, glm::value_ptr(light->m_diffuseColor));
-        shaderManager->SetUniform(shaderName, "specularLightColor", 3, glm::value_ptr(light->m_specularColor));
-    }
 
     for (const std::pair<std::string, glm::vec3>& pair : material->GetVec3Uniforms())
     {
@@ -167,51 +135,43 @@ void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager, Camer
         const Texture& texture = pair.second;
         int textureSlot = texture.m_slot;
         shaderManager->SetUniform(shaderName, pair.first, 1, &textureSlot);
+        glActiveTexture(GL_TEXTURE0 + texture.m_slot);
+        glBindTexture(GL_TEXTURE_2D, texture.m_textureId);
     }
 
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
     shaderManager->SetUniform(shaderName, "model", 4, 4, false, glm::value_ptr(model));
 }
 
-void Mesh::Update(float deltaTimeInSeconds)
+void Mesh::Update(float deltaSeconds)
 {
     for (Component* component : m_components)
     {
-        component->Update(deltaTimeInSeconds);
+        component->Update(deltaSeconds);
     }
 }
 
-void Mesh::Draw(ShaderManager* shaderManager, Camera* camera, Light* light)
+void Mesh::Draw(ShaderManager* shaderManager) const
 {
-    if (!m_enabled || !m_material)
+    if (!m_material)
     {
         return;
     }
 
     glBindVertexArray(m_attributeVertexArray);
-    PrepareShader(m_material, shaderManager, camera, light);
-    int i = 0;
-
-    for (const std::pair<std::string, Texture>& pair : m_material->GetTextureUniforms())
-    {
-        const Texture& texture = pair.second;
-        glActiveTexture(GL_TEXTURE0 + texture.m_slot);
-        glBindTexture(GL_TEXTURE_2D, m_textureIds[i]);
-        i++;
-    }
-
+    PrepareShader(m_material, shaderManager);
     glEnable(GL_DEPTH_TEST);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m_points.size()));
 }
 
-void Mesh::DrawNormals(ShaderManager* shaderManager, Camera* camera)
+void Mesh::DrawNormals(ShaderManager* shaderManager) const
 {
-    if (!m_enabled || !m_normalMaterial)
+    if (!m_normalMaterial)
     {
         return;
     }
 
-    PrepareShader(m_normalMaterial, shaderManager, camera, nullptr);
+    PrepareShader(m_normalMaterial, shaderManager);
     glBindVertexArray(m_normalVertexArray);
     glEnable(GL_DEPTH_TEST);
     glLineWidth(1.0f);
