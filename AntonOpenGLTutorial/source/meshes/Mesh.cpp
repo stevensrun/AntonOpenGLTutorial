@@ -130,13 +130,15 @@ void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager) const
         shaderManager->SetUniform(shaderName, pair.first, 4, glm::value_ptr(value));
     }
 
-    for (const std::pair<std::string, Texture>& pair : material->GetTextureUniforms())
+    int textureSlot = 0;
+
+    for (const std::pair<std::string, std::pair<Texture*, unsigned int>>& pair : material->GetTextureUniforms())
     {
-        const Texture& texture = pair.second;
-        int textureSlot = texture.m_slot;
+        const Texture* texture = pair.second.first;
         shaderManager->SetUniform(shaderName, pair.first, 1, &textureSlot);
-        glActiveTexture(GL_TEXTURE0 + texture.m_slot);
-        glBindTexture(GL_TEXTURE_2D, texture.m_textureId);
+        glActiveTexture(GL_TEXTURE0 + textureSlot);
+        glBindTexture(GL_TEXTURE_2D, pair.second.second);
+        textureSlot++;
     }
 
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);

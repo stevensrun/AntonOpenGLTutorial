@@ -19,6 +19,7 @@ Renderer::Renderer()
 {
     m_shaderManager = new ShaderManager();
     m_shaderManager->LoadShader("phongShading", "shaders/phongShading.glsl");
+    m_shaderManager->LoadShader("blinnPhongShading", "shaders/blinnPhongShading.glsl");
     m_shaderManager->LoadShader("textureMap", "shaders/textureMap.glsl");
     m_shaderManager->LoadShader("ambientReflectivity", "shaders/ambientReflectivity.glsl");
 
@@ -105,7 +106,7 @@ bool Renderer::TakeScreenshot(const std::string& filepath, int width, int height
     int bitsPerPixel = 3;
     unsigned char* buffer = new unsigned char[width * height * bitsPerPixel];
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+    stbi_flip_vertically_on_write(true);
     int success = stbi_write_png(filepath.c_str(), width, height, bitsPerPixel, buffer, width * bitsPerPixel);
-
     return (success == 1);
 }

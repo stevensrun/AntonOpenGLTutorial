@@ -12,7 +12,6 @@
 #include "meshes/Plane.h"
 #include "meshes/Sphere.h"
 #include "meshes/Triangle.h"
-#include <stb_image.h>
 
 Scene::Scene()
     : m_camera(nullptr)
@@ -49,15 +48,8 @@ void Scene::SetupMeshes()
     normalMaterial->AddUniform("ambientReflectivity", glm::vec3(1.0f, 0.0f, 0.0f));
 
     Material* textureMaterial = new Material("textureMap");
-
-    stbi_set_flip_vertically_on_load(true);
-    int width;
-    int height;
-    int channelCount;
-    unsigned char* skullData = stbi_load("textures/skulluvmap.png", &width, &height, &channelCount, 0);
-    textureMaterial->AddTextureUniform("baseTexture", skullData, width, height, channelCount, 0);
-    unsigned char* sandstoneData = stbi_load("textures/sandstone.png", &width, &height, &channelCount, 0);
-    textureMaterial->AddTextureUniform("secondaryTexture", sandstoneData, width, height, channelCount, 1);
+    textureMaterial->AddTextureUniform("baseTexture", "textures/skulluvmap.png");
+    textureMaterial->AddTextureUniform("secondaryTexture", "textures/sandstone.png");
 
     Plane* skullPlane = new Plane();
     skullPlane->m_material = textureMaterial;
@@ -67,7 +59,7 @@ void Scene::SetupMeshes()
     skullPlane->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     m_meshes.push_back(skullPlane);
 
-    Material* material = new Material("phongShading");
+    Material* material = new Material("blinnPhongShading");
     material->AddUniform("ambientReflectivity", glm::vec3(1.0f, 1.0f, 1.0f));
     material->AddUniform("diffuseReflectivity", glm::vec3(1.0f, 0.5f, 0.0f));
     material->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 150.0f));
@@ -76,8 +68,14 @@ void Scene::SetupMeshes()
     sphere->m_material = material;
     sphere->m_normalMaterial = normalMaterial;
     sphere->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    sphere->AddComponent(new Rotator(15.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    sphere->AddComponent(new Rotator(15.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
     m_meshes.push_back(sphere);
+
+    Cone* cone = new Cone(1.0f, 0.5f, 16, 32);
+    cone->m_material = material;
+    cone->m_normalMaterial = normalMaterial;
+    cone->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
+    m_meshes.push_back(cone);
 }
 
 Camera* Scene::GetCamera()

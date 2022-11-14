@@ -39,9 +39,10 @@ uniform vec4 specularReflectivity;
 
 void main()
 {
+    vec3 unitLengthNormal = normalize(normal);
     vec3 ambientIntensity = ambientLightColor * ambientReflectivity;
     vec3 lightDirection = normalize(lightPosition - position);
-    float diffuseFactor = max(dot(lightDirection, normal), 0.0);
+    float diffuseFactor = max(dot(lightDirection, unitLengthNormal), 0.0);
     vec3 diffuseIntensity = diffuseLightColor * diffuseReflectivity * diffuseFactor;
     vec3 specularIntensity = vec3(0.0, 0.0, 0.0);
 
@@ -49,7 +50,7 @@ void main()
     {
         vec3 cameraDirection = normalize(cameraPosition - position);
         vec3 halfWay = normalize(lightDirection + cameraDirection);
-        float specularFactor = max(dot(halfWay, normal), 0.0);
+        float specularFactor = max(dot(halfWay, unitLengthNormal), 0.0);
         specularIntensity = specularLightColor * specularReflectivity.rgb * pow(specularFactor, specularReflectivity.a);
     }
 

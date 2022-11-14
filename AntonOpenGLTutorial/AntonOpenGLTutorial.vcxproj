@@ -103,6 +103,8 @@
     <ClCompile Include="source\shaders\Shader.cpp" />
     <ClCompile Include="source\shaders\ShaderManager.cpp" />
     <ClCompile Include="source\shaders\ShaderProgram.cpp" />
+    <ClCompile Include="source\textures\Texture.cpp" />
+    <ClCompile Include="source\textures\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\glew\include\GL\eglew.h" />
@@ -129,6 +131,8 @@
     <ClInclude Include="source\shaders\Shader.h" />
     <ClInclude Include="source\shaders\ShaderManager.h" />
     <ClInclude Include="source\shaders\ShaderProgram.h" />
+    <ClInclude Include="source\textures\Texture.h" />
+    <ClInclude Include="source\textures\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\blinnPhongShading.glsl" />
