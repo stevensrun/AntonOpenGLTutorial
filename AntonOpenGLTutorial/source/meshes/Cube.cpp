@@ -22,8 +22,8 @@ Cube::Cube()
             const glm::vec3& point = m_points[j];
             glm::vec3 rotatedPoint = rotation * glm::vec4(point, 1.0f);
             const glm::vec3& normal = m_normals[j];
-            glm::vec3 roatatedNormal = rotation * glm::vec4(normal, 0.0f);
-            AddAttribute(rotatedPoint, roatatedNormal);
+            glm::vec3 roatatedNormal = glm::inverse(glm::transpose(rotation)) * glm::vec4(normal, 0.0f);
+            AddAttribute(rotatedPoint, glm::normalize(roatatedNormal));
         }
     }
 
@@ -41,8 +41,8 @@ Cube::Cube()
             const glm::vec3& point = m_points[j];
             glm::vec3 rotatedPoint = rotation * glm::vec4(point, 1.0f);
             const glm::vec3& normal = m_normals[j];
-            glm::vec3 roatatedNormal = rotation * glm::vec4(normal, 0.0f);
-            AddAttribute(rotatedPoint, roatatedNormal);
+            glm::vec3 roatatedNormal = glm::inverse(glm::transpose(rotation)) * glm::vec4(normal, 0.0f);
+            AddAttribute(rotatedPoint, glm::normalize(roatatedNormal));
         }
     }
 

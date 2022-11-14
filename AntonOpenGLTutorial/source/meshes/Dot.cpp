@@ -3,7 +3,7 @@
 Dot::Dot()
 {
     m_enabled = false;
-    AddAttribute(glm::vec4(0.0f, 0.0f, 0.1f, 1.0f), glm::vec3(0.0, 0.0, 1.0f));
+    AddAttribute(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 0.0, 1.0f));
     FinalizeGeometry();
 }
 

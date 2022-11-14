@@ -62,9 +62,16 @@ void Scene::SetupMeshes()
     Triangle* triangle = new Triangle();
     triangle->m_material = material;
     triangle->m_normalMaterial = normalMaterial;
-    triangle->m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
-    triangle->m_rotation = Quaternion::AngleAxis(0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    triangle->m_position = glm::vec3(0.0f, 0.0f, 2.0f);
+    triangle->m_rotation = Quaternion::AngleAxis(0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     m_meshes.push_back(triangle);
+
+    Cube* cube = new Cube();
+    cube->m_material = material;
+    cube->m_normalMaterial = normalMaterial;
+    cube->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
+    cube->m_rotation = Quaternion::AngleAxis(45.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+    m_meshes.push_back(cube);
 
     Material* dotMaterial = new Material("ambientReflectivity");
     dotMaterial->AddUniform("ambientReflectivity", glm::vec3(0.0f, 1.0f, 0.0f));
@@ -88,7 +95,7 @@ std::vector<Mesh*> Scene::GetMeshes() const
 {
     std::vector<Mesh*> meshes = m_meshes;
 
-    if (m_dot)
+    if (m_dot && m_dot->IsEnabled())
     {
         meshes.push_back(m_dot);
     }
@@ -111,10 +118,10 @@ void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
     float x = (2.0f * mouseX) / width - 1.0f;
     float y = 1.0f - (2.0f * mouseY) / height;
     //No need to convert viewport coordinates -> NDC because NDC -> clip is technically a multiplication by w however we have no depth to the ray so we can go from viewport coordinates -> clipCoordinates directly.
-    glm::vec4 ray_clipCoordinates = glm::vec4(x, y, 1.0f, 1.0f);
+    glm::vec4 ray_clipCoordinates = glm::vec4(x, y, -1.0f, 1.0f);
     glm::vec4 ray_eyeCoordinates = glm::inverse(m_camera->m_projection) * ray_clipCoordinates;
     glm::vec4 ray_worldCoordinates = glm::inverse(m_camera->m_view) * glm::vec4(ray_eyeCoordinates.x, ray_eyeCoordinates.y, -1.0f, 0.0f);
-    glm::vec3 ray = glm::normalize(glm::vec3(ray_worldCoordinates.x, ray_worldCoordinates.y, ray_worldCoordinates.z));
+    glm::vec3 rayDirection = glm::normalize(glm::vec3(ray_worldCoordinates.x, ray_worldCoordinates.y, ray_worldCoordinates.z));
 
     m_dot->SetEnabled(false);
 
@@ -122,7 +129,7 @@ void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
     {
         glm::vec3 hitPosition;
         glm::vec3 hitNormal;
-        bool hit = mesh->HitTest(m_camera->m_position, ray, hitPosition, hitNormal);
+        bool hit = mesh->HitTest(m_camera->m_position, rayDirection, hitPosition, hitNormal);
 
         if (!hit)
         {
