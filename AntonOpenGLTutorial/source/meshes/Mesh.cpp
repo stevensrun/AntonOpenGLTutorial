@@ -181,7 +181,7 @@ void Mesh::DrawNormals(ShaderManager* shaderManager) const
     glDrawArrays(GL_LINES, 0, static_cast<int>(m_normals.size() * 2));
 }
 
-bool Mesh::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
+bool Mesh::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal) const
 {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
 

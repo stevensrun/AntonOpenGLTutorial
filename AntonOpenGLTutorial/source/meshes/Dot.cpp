@@ -7,7 +7,7 @@ Dot::Dot()
     FinalizeGeometry();
 }
 
-bool Dot::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
+bool Dot::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal) const
 {
     return false;
 }

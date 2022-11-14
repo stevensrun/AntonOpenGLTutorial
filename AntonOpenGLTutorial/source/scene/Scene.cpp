@@ -118,7 +118,7 @@ void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
 
     m_dot->SetEnabled(false);
 
-    for (Mesh* mesh : m_meshes)
+    for (const Mesh* mesh : m_meshes)
     {
         glm::vec3 hitPosition;
         glm::vec3 hitNormal;
