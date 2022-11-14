@@ -37,8 +37,9 @@ Renderer::~Renderer()
 
 void Renderer::Draw(Scene* scene)
 {
-    const std::vector<Mesh*> meshes = scene->GetMeshes();
-    std::unordered_map<std::string, std::vector<const Mesh*>> shaderBatch;
+    std::vector<Mesh*> meshes = scene->GetMeshes();
+    std::unordered_map<std::string, std::vector<const Mesh*>> meshShaderBatch;
+    std::unordered_map<std::string, std::vector<const Mesh*>> normalsShaderBatch;
 
     for (const Mesh* mesh : meshes)
     {
@@ -47,15 +48,30 @@ void Renderer::Draw(Scene* scene)
             continue;
         }
 
-        std::string shaderName = mesh->m_material->GetShaderName();
+        std::string meshShaderName = mesh->m_material->GetShaderName();
 
-        if (shaderBatch.find(shaderName) == shaderBatch.end())
+        if (meshShaderBatch.find(meshShaderName) == meshShaderBatch.end())
         {
-            shaderBatch[shaderName] = std::vector<const Mesh*>();
+            meshShaderBatch[meshShaderName] = std::vector<const Mesh*>();
         }
 
-        std::vector<const Mesh*>& list = shaderBatch[shaderName];
-        list.push_back(mesh);
+        std::vector<const Mesh*>& meshDrawList = meshShaderBatch[meshShaderName];
+        meshDrawList.push_back(mesh);
+
+        if (!mesh->m_normalMaterial)
+        {
+            continue;
+        }
+
+        std::string normalsShaderName = mesh->m_normalMaterial->GetShaderName();
+
+        if (normalsShaderBatch.find(normalsShaderName) == normalsShaderBatch.end())
+        {
+            normalsShaderBatch[normalsShaderName] = std::vector<const Mesh*>();
+        }
+
+        std::vector<const Mesh*>& normalsDrawList = normalsShaderBatch[normalsShaderName];
+        normalsDrawList.push_back(mesh);
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -74,7 +90,7 @@ void Renderer::Draw(Scene* scene)
     Camera* camera = scene->GetCamera();
     const std::vector<Light*>& lights = scene->GetLights();
 
-    for (const std::pair<std::string, std::vector<const Mesh*>>& batch : shaderBatch)
+    for (const std::pair<std::string, std::vector<const Mesh*>>& batch : meshShaderBatch)
     {
         std::string shaderName = batch.first;
         m_shaderManager->UseShader(shaderName);
@@ -97,6 +113,32 @@ void Renderer::Draw(Scene* scene)
         for (const Mesh* mesh : batch.second)
         {
             mesh->Draw(m_shaderManager);
+        }
+    }
+
+    for (const std::pair<std::string, std::vector<const Mesh*>>& batch : normalsShaderBatch)
+    {
+        std::string shaderName = batch.first;
+        m_shaderManager->UseShader(shaderName);
+
+        if (camera)
+        {
+            m_shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(camera->m_position));
+            m_shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(camera->m_view));
+            m_shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(camera->m_projection));
+        }
+
+        for (Light* light : lights)
+        {
+            m_shaderManager->SetUniform(shaderName, "lightPosition", 3, glm::value_ptr(light->m_position));
+            m_shaderManager->SetUniform(shaderName, "ambientLightColor", 3, glm::value_ptr(light->m_ambientColor));
+            m_shaderManager->SetUniform(shaderName, "diffuseLightColor", 3, glm::value_ptr(light->m_diffuseColor));
+            m_shaderManager->SetUniform(shaderName, "specularLightColor", 3, glm::value_ptr(light->m_specularColor));
+        }
+
+        for (const Mesh* mesh : batch.second)
+        {
+            mesh->DrawNormals(m_shaderManager);
         }
     }
 }

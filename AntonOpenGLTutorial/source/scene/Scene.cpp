@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "camera/Camera.h"
 #include "components/Rotator.h"
+#include <glm/glm.hpp>
 #include "lights/Light.h"
 #include "materials/Material.h"
 #include "meshes/Cone.h"
@@ -15,6 +16,7 @@
 
 Scene::Scene()
     : m_camera(nullptr)
+    , m_dot(nullptr)
 {
 }
 
@@ -23,6 +25,11 @@ Scene::~Scene()
     if (m_camera)
     {
         delete m_camera;
+    }
+
+    if (m_dot)
+    {
+        delete m_dot;
     }
 }
 
@@ -38,7 +45,7 @@ void Scene::SetupLights()
     Light* light = new Light(glm::vec3(0.0f, 0.0f, 3.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
-    light->m_specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    light->m_specularColor = glm::vec3(0.4f, 0.2f, 0.7f);
     m_lights.push_back(light);
 }
 
@@ -47,35 +54,24 @@ void Scene::SetupMeshes()
     Material* normalMaterial = new Material("ambientReflectivity");
     normalMaterial->AddUniform("ambientReflectivity", glm::vec3(1.0f, 0.0f, 0.0f));
 
-    Material* textureMaterial = new Material("textureMap");
-    textureMaterial->AddTextureUniform("baseTexture", "textures/skulluvmap.png");
-    textureMaterial->AddTextureUniform("secondaryTexture", "textures/sandstone.png");
+    Material* material = new Material("phongShading");
+    material->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
+    material->AddUniform("diffuseReflectivity", glm::vec3(1.0f, 0.7f, 0.7f));
+    material->AddUniform("specularReflectivity", glm::vec4(0.7f, 0.7f, 0.7f, 200.0f));
 
-    Plane* skullPlane = new Plane();
-    skullPlane->m_material = textureMaterial;
-    skullPlane->m_normalMaterial = normalMaterial;
-    skullPlane->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
-    skullPlane->m_scale = glm::vec3(0.5f, 1.0f, 0.5f);
-    skullPlane->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    m_meshes.push_back(skullPlane);
+    Triangle* triangle = new Triangle();
+    triangle->m_material = material;
+    triangle->m_normalMaterial = normalMaterial;
+    triangle->m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    triangle->m_rotation = Quaternion::AngleAxis(0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    m_meshes.push_back(triangle);
 
-    Material* material = new Material("blinnPhongShading");
-    material->AddUniform("ambientReflectivity", glm::vec3(1.0f, 1.0f, 1.0f));
-    material->AddUniform("diffuseReflectivity", glm::vec3(1.0f, 0.5f, 0.0f));
-    material->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 150.0f));
+    Material* dotMaterial = new Material("ambientReflectivity");
+    dotMaterial->AddUniform("ambientReflectivity", glm::vec3(0.0f, 1.0f, 0.0f));
 
-    Sphere* sphere = new Sphere(1.0f, 16, 32);
-    sphere->m_material = material;
-    sphere->m_normalMaterial = normalMaterial;
-    sphere->m_rotation = Quaternion::AngleAxis(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    sphere->AddComponent(new Rotator(15.0f, glm::vec3(1.0f, 1.0f, 0.0f)));
-    m_meshes.push_back(sphere);
-
-    Cone* cone = new Cone(1.0f, 0.5f, 16, 32);
-    cone->m_material = material;
-    cone->m_normalMaterial = normalMaterial;
-    cone->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
-    m_meshes.push_back(cone);
+    m_dot = new Dot();
+    m_dot->m_material = dotMaterial;
+    m_dot->SetEnabled(false);
 }
 
 Camera* Scene::GetCamera()
@@ -88,9 +84,16 @@ const std::vector<Light*>& Scene::GetLights() const
     return m_lights;
 }
 
-const std::vector<Mesh*>& Scene::GetMeshes() const
+std::vector<Mesh*> Scene::GetMeshes() const
 {
-    return m_meshes;
+    std::vector<Mesh*> meshes = m_meshes;
+
+    if (m_dot)
+    {
+        meshes.push_back(m_dot);
+    }
+
+    return meshes;
 }
 
 void Scene::Update(float deltaSeconds)
@@ -105,5 +108,31 @@ void Scene::Update(float deltaSeconds)
 
 void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
 {
+    float x = (2.0f * mouseX) / width - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / height;
+    //No need to convert viewport coordinates -> NDC because NDC -> clip is technically a multiplication by w however we have no depth to the ray so we can go from viewport coordinates -> clipCoordinates directly.
+    glm::vec4 ray_clipCoordinates = glm::vec4(x, y, 1.0f, 1.0f);
+    glm::vec4 ray_eyeCoordinates = glm::inverse(m_camera->m_projection) * ray_clipCoordinates;
+    glm::vec4 ray_worldCoordinates = glm::inverse(m_camera->m_view) * glm::vec4(ray_eyeCoordinates.x, ray_eyeCoordinates.y, -1.0f, 0.0f);
+    glm::vec3 ray = glm::normalize(glm::vec3(ray_worldCoordinates.x, ray_worldCoordinates.y, ray_worldCoordinates.z));
 
+    m_dot->SetEnabled(false);
+
+    for (Mesh* mesh : m_meshes)
+    {
+        glm::vec3 hitPosition;
+        glm::vec3 hitNormal;
+        bool hit = mesh->HitTest(m_camera->m_position, ray, hitPosition, hitNormal);
+
+        if (!hit)
+        {
+            continue;
+        }
+
+        if (m_dot)
+        {
+            m_dot->m_position = hitPosition;
+            m_dot->SetEnabled(true);
+        }
+    }
 }

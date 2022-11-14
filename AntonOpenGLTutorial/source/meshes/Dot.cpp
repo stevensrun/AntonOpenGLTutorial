@@ -19,10 +19,9 @@ void Dot::Draw(ShaderManager* shaderManager) const
         return;
     }
 
-
     PrepareShader(m_material, shaderManager);
     glBindVertexArray(m_attributeVertexArray);
     glDisable(GL_DEPTH_TEST);
-    glPointSize(2.0f);
+    glPointSize(1.0f);
     glDrawArrays(GL_POINTS, 0, 1);
 }

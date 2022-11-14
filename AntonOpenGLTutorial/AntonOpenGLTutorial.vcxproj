@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\camera\Camera.cpp" />
+    <ClCompile Include="source\collisionShapes\TriangleShape.cpp" />
     <ClCompile Include="source\components\Component.cpp" />
     <ClCompile Include="source\components\Rotator.cpp" />
     <ClCompile Include="source\lights\Light.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="dependencies\glew\include\GL\glxew.h" />
     <ClInclude Include="dependencies\glew\include\GL\wglew.h" />
     <ClInclude Include="source\camera\Camera.h" />
+    <ClInclude Include="source\collisionShapes\TriangleShape.h" />
     <ClInclude Include="source\components\Component.h" />
     <ClInclude Include="source\components\Rotator.h" />
     <ClInclude Include="source\lights\Light.h" />

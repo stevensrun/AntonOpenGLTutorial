@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "collisionShapes/TriangleShape.h"
 #include "components/Component.h"
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -182,6 +183,22 @@ void Mesh::DrawNormals(ShaderManager* shaderManager) const
 
 bool Mesh::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal)
 {
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
+
+    for (int i = 0; i < m_points.size(); i += 3)
+    {
+        const glm::vec3& a = model * glm::vec4(m_points[i], 1.0f);
+        const glm::vec3& b = model * glm::vec4(m_points[i + 1], 1.0f);
+        const glm::vec3& c = model * glm::vec4(m_points[i + 2], 1.0f);
+        TriangleShape shape(a, b, c);
+        bool hit = shape.HitTest(rayOrigin, rayDirection, hitPoint, hitNormal);
+
+        if (hit)
+        {
+            return true;
+        }
+    }
+
     return false;
 }
 

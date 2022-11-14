@@ -16,6 +16,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    glfwWindowHint(GLFW_SAMPLES, 8);
     GLFWwindow* window = glfwCreateWindow(1280, 760, "OpenGL", nullptr, nullptr);
 
     if (!window)
@@ -106,7 +107,7 @@ void KeyCallback(GLFWwindow* window, int keyCode, int scanCode, int action, int 
         int width;
         int height;
         glfwGetWindowSize(window, &width, &height);
-        unsigned long seconds = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        unsigned long long seconds = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         std::stringstream ss;
         ss << "screenshots/screenshot_" << seconds << ".png";
         bool success = renderer->TakeScreenshot(ss.str(), width, height);

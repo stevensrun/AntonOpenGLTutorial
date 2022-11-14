@@ -3,6 +3,7 @@
 #include <vector>
 
 class Camera;
+class Dot;
 class Light;
 class Mesh;
 
@@ -14,7 +15,7 @@ public:
 
     Camera* GetCamera();
     const std::vector<Light*>& GetLights() const;
-    const std::vector<Mesh*>& GetMeshes() const;
+    std::vector<Mesh*> GetMeshes() const;
     void Setup();
     void Update(float deltaSeconds);
     void OnMouseClick(float mouseX, float mouseY, int width, int height);
@@ -27,4 +28,5 @@ protected:
     Camera* m_camera;
     std::vector<Light*> m_lights;
     std::vector<Mesh*> m_meshes;
+    Dot* m_dot;
 };
