@@ -15,6 +15,7 @@ Renderer::Renderer()
     : m_polygonMode(GL_FILL)
     , m_culledFace(GL_BACK)
     , m_isCullingFace(false)
+    , m_drawNormals(false)
     , m_shaderManager(nullptr)
 {
     m_shaderManager = new ShaderManager();

@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "materials/Material.h"
 #include "shaders/ShaderManager.h"
+#include <iostream>
 
 Mesh::Mesh()
     : m_enabled(true)
@@ -15,7 +16,6 @@ Mesh::Mesh()
     , m_position(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
 {
-    m_rotation = Quaternion::AngleAxis(0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     glGenVertexArrays(1, &m_attributeVertexArray);
     glBindVertexArray(m_attributeVertexArray);
     glGenVertexArrays(1, &m_normalVertexArray);
@@ -53,6 +53,36 @@ void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const g
 {
     AddAttribute(point, normal);
     m_textureCoordinates.push_back(textureCoordinate);
+}
+
+void Mesh::AddComponent(Component* component)
+{
+    component->OnAdded(this);
+    m_components.push_back(component);
+}
+
+bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
+{
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
+
+    for (int i = 0; i < m_points.size(); i += 3)
+    {
+        glm::vec4 a = model * glm::vec4(m_points[i], 1.0f);
+        glm::vec4 b = model * glm::vec4(m_points[i + 1], 1.0f);
+        glm::vec4 c = model * glm::vec4(m_points[i + 2], 1.0f);
+        shape = new TriangleShape(a, b, c);
+        bool hit = shape->HitTest(rayOrigin, rayDirection, hitPoint, hitNormal, allowBackface);
+
+        if (hit)
+        {
+            return true;
+        }
+
+        delete shape;
+        shape = nullptr;
+    }
+
+    return false;
 }
 
 void Mesh::FinalizeGeometry()
@@ -179,31 +209,4 @@ void Mesh::DrawNormals(ShaderManager* shaderManager) const
     glEnable(GL_DEPTH_TEST);
     glLineWidth(1.0f);
     glDrawArrays(GL_LINES, 0, static_cast<int>(m_normals.size() * 2));
-}
-
-bool Mesh::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal) const
-{
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
-
-    for (int i = 0; i < m_points.size(); i += 3)
-    {
-        const glm::vec3& a = model * glm::vec4(m_points[i], 1.0f);
-        const glm::vec3& b = model * glm::vec4(m_points[i + 1], 1.0f);
-        const glm::vec3& c = model * glm::vec4(m_points[i + 2], 1.0f);
-        TriangleShape shape(a, b, c);
-        bool hit = shape.HitTest(rayOrigin, rayDirection, hitPoint, hitNormal);
-
-        if (hit)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void Mesh::AddComponent(Component* component)
-{
-    component->OnAdded(this);
-    m_components.push_back(component);
 }

@@ -10,6 +10,7 @@ class Component;
 class Light;
 class Material;
 class ShaderManager;
+class TriangleShape;
 
 class Mesh
 {
@@ -19,16 +20,16 @@ public:
 
     bool IsEnabled() const;
     void SetEnabled(bool enabled);
+    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal);
+    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec2& textureCoordinate);
+    virtual void AddComponent(Component* component);
+    virtual bool HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface = false) const;
     virtual void Update(float deltaSeconds);
     virtual void Draw(ShaderManager* shaderManager) const;
     virtual void DrawNormals(ShaderManager* shaderManager) const;
-    virtual bool HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal) const;
-    virtual void AddComponent(Component* component);
 
 protected:
     void FinalizeGeometry();
-    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal);
-    virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec2& textureCoordinate);
     virtual void PrepareShader(Material* material, ShaderManager* shaderManager) const;
 
 public:
@@ -50,5 +51,4 @@ protected:
 
     bool m_enabled;
     std::vector<Component*> m_components;
-
 };

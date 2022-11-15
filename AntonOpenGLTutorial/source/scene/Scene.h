@@ -6,6 +6,7 @@ class Camera;
 class Dot;
 class Light;
 class Mesh;
+class TriangleShape;
 
 class Scene
 {

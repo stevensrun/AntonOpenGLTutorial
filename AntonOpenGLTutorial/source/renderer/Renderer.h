@@ -26,6 +26,7 @@ public:
     GLenum m_polygonMode;
     GLenum m_culledFace;
     bool m_isCullingFace;
+    bool m_drawNormals;
 
 private:
     ShaderManager* m_shaderManager;
