@@ -66,7 +66,7 @@ void TriangleShape::Draw(ShaderManager* shaderManager) const
 
     PrepareShader(m_material, shaderManager);
     glBindVertexArray(m_attributeVertexArray);
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glLineWidth(1.0f);
     glDrawArrays(GL_LINE_LOOP, 0, 3);
 }
