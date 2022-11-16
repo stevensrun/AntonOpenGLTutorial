@@ -15,7 +15,7 @@ TriangleShape::TriangleShape(const glm::vec3& a, const glm::vec3& b, const glm::
 bool TriangleShape::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface)
 {
     glm::vec3 normal = m_normals[0];
-    float denominator = glm::dot(rayDirection, normal);;
+    float denominator = std::clamp(glm::dot(rayDirection, normal), -1.0f, 1.0f);
 
     if (!allowBackface && denominator >= 0.0f || allowBackface && abs(denominator) <= 0.0001f)
     {
@@ -66,7 +66,7 @@ void TriangleShape::Draw(ShaderManager* shaderManager) const
 
     PrepareShader(m_material, shaderManager);
     glBindVertexArray(m_attributeVertexArray);
-    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
     glLineWidth(1.0f);
     glDrawArrays(GL_LINE_LOOP, 0, 3);
 }
