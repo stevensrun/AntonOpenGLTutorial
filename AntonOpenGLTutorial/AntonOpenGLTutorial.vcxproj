@@ -104,7 +104,9 @@
     <ClCompile Include="source\meshes\Line.cpp" />
     <ClCompile Include="source\meshes\Mesh.cpp" />
     <ClCompile Include="source\meshes\Plane.cpp" />
+    <ClCompile Include="source\meshes\SierpinskiGasket.cpp" />
     <ClCompile Include="source\meshes\Sphere.cpp" />
+    <ClCompile Include="source\meshes\Tetrahedron.cpp" />
     <ClCompile Include="source\meshes\Triangle.cpp" />
     <ClCompile Include="source\renderer\Renderer.cpp" />
     <ClCompile Include="source\scene\Scene.cpp" />
@@ -145,7 +147,9 @@
     <ClInclude Include="source\meshes\Line.h" />
     <ClInclude Include="source\meshes\Mesh.h" />
     <ClInclude Include="source\meshes\Plane.h" />
+    <ClInclude Include="source\meshes\SierpinskiGasket.h" />
     <ClInclude Include="source\meshes\Sphere.h" />
+    <ClInclude Include="source\meshes\Tetrahedron.h" />
     <ClInclude Include="source\meshes\Triangle.h" />
     <ClInclude Include="source\renderer\Renderer.h" />
     <ClInclude Include="source\scene\Scene.h" />

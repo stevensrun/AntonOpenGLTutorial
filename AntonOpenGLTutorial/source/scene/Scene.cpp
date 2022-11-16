@@ -12,7 +12,9 @@
 #include "meshes/Line.h"
 #include "meshes/Mesh.h"
 #include "meshes/Plane.h"
+#include "meshes/SierpinskiGasket.h"
 #include "meshes/Sphere.h"
+#include "meshes/Tetrahedron.h"
 #include "meshes/Triangle.h"
 
 Scene::Scene()
@@ -43,7 +45,7 @@ void Scene::Setup()
 
 void Scene::SetupLights()
 {
-    Light* light = new Light(glm::vec3(1.0f, 2.0f, 2.0f));
+    Light* light = new Light(glm::vec3(0.0f, 0.0f, 2.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(0.4f, 0.2f, 0.7f);
@@ -52,8 +54,8 @@ void Scene::SetupLights()
 
 void Scene::SetupMeshes()
 {
-    Material* normalMaterial = new Material("ambientReflectivity");
-    normalMaterial->AddUniform("ambientReflectivity", glm::vec3(1.0f, 0.0f, 0.0f));
+    Material* redColor = new Material("ambientReflectivity");
+    redColor->AddUniform("ambientReflectivity", glm::vec3(1.0f, 0.0f, 0.0f));
 
     Material* pinkPlastic = new Material("phongShading");
     pinkPlastic->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -70,7 +72,12 @@ void Scene::SetupMeshes()
     darkPlastic->AddUniform("diffuseReflectivity", glm::vec3(0.3f, 0.3f, 0.3f));
     darkPlastic->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 400.0f));
 
-    Cone* cone = new Cone(1.0f, 0.5f, 16, 32);
+    Tetrahedron* tetrahedron = new Tetrahedron(6);
+    tetrahedron->m_material = pinkPlastic;
+    tetrahedron->AddComponent(new Rotator(15.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    m_meshes.push_back(tetrahedron);
+
+    /*Cone* cone = new Cone(1.0f, 0.5f, 16, 32);
     cone->m_material = pinkPlastic;
     cone->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
     cone->m_rotation = Quaternion::AngleAxis(-90.0f, glm::vec3(1.0f, 1.0f, 0.0f));
@@ -90,14 +97,14 @@ void Scene::SetupMeshes()
     plane->m_material = darkPlastic;
     plane->m_position = glm::vec3(0.0f, -1.0f, 0.0f);
     plane->m_scale = glm::vec3(8.0f, 1.0f, 4.0f);
-    m_meshes.push_back(plane);
+    m_meshes.push_back(plane);*/
 
-    Material* colorMaterial = new Material("ambientReflectivity");
-    colorMaterial->AddUniform("ambientReflectivity", glm::vec3(0.0f, 1.0f, 0.0f));
+    Material* greenColor = new Material("ambientReflectivity");
+    greenColor->AddUniform("ambientReflectivity", glm::vec3(0.0f, 1.0f, 0.0f));
 
     m_dot = new Dot();
-    m_dot->m_material = colorMaterial;
-    m_dot->m_normalMaterial = normalMaterial;
+    m_dot->m_material = greenColor;
+    m_dot->m_normalMaterial = redColor;
 }
 
 Camera* Scene::GetCamera()
