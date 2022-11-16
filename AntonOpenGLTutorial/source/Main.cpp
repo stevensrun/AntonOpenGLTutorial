@@ -38,7 +38,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Renderer* renderer = new Renderer();
+    Renderer* renderer = new Renderer(window);
     Scene* scene = new Scene();
     std::pair<Renderer*, Scene*> pair = std::make_pair(renderer, scene);
     glfwSetWindowUserPointer(window, &pair);

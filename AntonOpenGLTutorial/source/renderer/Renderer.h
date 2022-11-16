@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
+struct GLFWwindow;
 class Mesh;
 class Scene;
 class ShaderManager;
@@ -12,13 +13,14 @@ class ShaderManager;
 class Renderer
 {
 public:
-    Renderer();
+    explicit Renderer(GLFWwindow* window);
     virtual ~Renderer();
 
     virtual void Draw(Scene* scene);
     bool TakeScreenshot(const std::string& filepath, int width, int height) const;
 
 private:
+    void DrawImGui();
     std::unordered_map<std::string, std::vector<const Mesh*>> CreateMeshShaderBatch(const std::vector<Mesh*>& meshes);
     std::unordered_map<std::string, std::vector<const Mesh*>> CreateNormalsShaderBatch(const std::vector<Mesh*>& meshes);
 

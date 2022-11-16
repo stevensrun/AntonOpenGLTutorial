@@ -1,9 +1,13 @@
 #include "Renderer.h"
+#include "camera/Camera.h"
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "camera/Camera.h"
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include "lights/Light.h"
 #include "materials/Material.h"
 #include "meshes/Mesh.h"
@@ -11,7 +15,7 @@
 #include "shaders/ShaderManager.h"
 #include <stb_image_write.h>
 
-Renderer::Renderer()
+Renderer::Renderer(GLFWwindow* window)
     : m_polygonMode(GL_FILL)
     , m_culledFace(GL_BACK)
     , m_isCullingFace(false)
@@ -25,10 +29,21 @@ Renderer::Renderer()
     m_shaderManager->LoadShader("ambientReflectivity", "shaders/ambientReflectivity.glsl");
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 460");
 }
 
 Renderer::~Renderer()
 {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     if (m_shaderManager)
     {
         delete m_shaderManager;
@@ -151,6 +166,47 @@ void Renderer::Draw(Scene* scene)
             mesh->DrawNormals(m_shaderManager);
         }
     }
+
+    DrawImGui();
+}
+
+void Renderer::DrawImGui()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    int windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
+    ImGui::Begin("Dashboard", nullptr, windowFlags);
+    
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Edit"))
+        {
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("View"))
+        {
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Project"))
+        {
+            ImGui::EndMenu();
+        }
+    }
+
+    ImGui::EndMenuBar();
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 bool Renderer::TakeScreenshot(const std::string& filepath, int width, int height) const
