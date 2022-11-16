@@ -72,10 +72,15 @@ void Scene::SetupMeshes()
     darkPlastic->AddUniform("diffuseReflectivity", glm::vec3(0.3f, 0.3f, 0.3f));
     darkPlastic->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 400.0f));
 
-    Tetrahedron* tetrahedron = new Tetrahedron(6);
+    Tetrahedron* tetrahedron = new Tetrahedron(5, true);
     tetrahedron->m_material = pinkPlastic;
-    tetrahedron->AddComponent(new Rotator(15.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    tetrahedron->m_position = glm::vec3(-1.5f, 0.0f, 0.0f);
     m_meshes.push_back(tetrahedron);
+
+    Sphere* sphere = new Sphere(1.0f, 16, 32);
+    sphere->m_material = pinkPlastic;
+    sphere->m_position = glm::vec3(1.5f, 0.0f, 0.0f);
+    m_meshes.push_back(sphere);
 
     /*Cone* cone = new Cone(1.0f, 0.5f, 16, 32);
     cone->m_material = pinkPlastic;
@@ -88,10 +93,6 @@ void Scene::SetupMeshes()
     cube->m_rotation = Quaternion::AngleAxis(50.0f, glm::vec3(1.0f, 1.0f, 1.0f));
     m_meshes.push_back(cube);
 
-    Sphere* sphere = new Sphere(0.5f, 16, 32);
-    sphere->m_material = pinkPlastic;
-    sphere->m_position = glm::vec3(2.0f, 0.0f, 0.0f);
-    m_meshes.push_back(sphere);
 
     Plane* plane = new Plane();
     plane->m_material = darkPlastic;

@@ -1,6 +1,7 @@
 #include "Tetrahedron.h"
 
-Tetrahedron::Tetrahedron(int subdivisionCount)
+Tetrahedron::Tetrahedron(int subdivisionCount, bool useVertexNormals)
+    : m_useVertexNormals(useVertexNormals)
 {
     glm::vec3 a(0.0f, 0.9f, -0.333f);
     glm::vec3 b(0.0f, 0.0f, 1.0f);
@@ -18,10 +19,19 @@ void Tetrahedron::divideTriangle(const glm::vec3& a, const glm::vec3& b, const g
 {
     if (recursiveCount == 0)
     {
-        glm::vec3 normal = glm::normalize(glm::cross(b - a, c - a));
-        AddAttribute(a, normal);
-        AddAttribute(b, normal);
-        AddAttribute(c, normal);
+        if (m_useVertexNormals)
+        {
+            AddAttribute(a, a);
+            AddAttribute(b, b);
+            AddAttribute(c, c);
+        }
+        else
+        {
+            glm::vec3 normal = glm::normalize(glm::cross(b - a, c - a));
+            AddAttribute(a, normal);
+            AddAttribute(b, normal);
+            AddAttribute(c, normal);
+        }
     }
     else
     {
