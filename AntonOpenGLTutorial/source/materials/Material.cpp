@@ -18,7 +18,7 @@ void Material::AddTextureUniform(const std::string& uniformName, const std::stri
 {
     Texture* texture = Material::s_textureManager.GetTexture(textureFilepath);
 
-    if (texture == nullptr)
+    if (!texture)
     {
         return;
     }
