@@ -47,7 +47,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;__STDC_LIB_EXT1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;__STDC_LIB_EXT1__;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm\include;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -66,7 +66,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;__STDC_LIB_EXT1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;__STDC_LIB_EXT1__;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\glew\include;$(ProjectDir)dependencies\GLFW\include;$(ProjectDir)dependencies\glm\include;$(ProjectDir)dependencies\imgui;$(ProjectDir)dependencies\stb;$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -82,6 +82,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dependencies\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_demo.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="source\camera\Camera.cpp" />
     <ClCompile Include="source\collisionShapes\TriangleShape.cpp" />
     <ClCompile Include="source\components\Component.cpp" />
@@ -112,6 +119,18 @@
     <ClInclude Include="dependencies\glew\include\GL\glew.h" />
     <ClInclude Include="dependencies\glew\include\GL\glxew.h" />
     <ClInclude Include="dependencies\glew\include\GL\wglew.h" />
+    <ClInclude Include="dependencies\GLFW\include\GLFW\glfw3.h" />
+    <ClInclude Include="dependencies\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="dependencies\imgui\imconfig.h" />
+    <ClInclude Include="dependencies\imgui\imgui.h" />
+    <ClInclude Include="dependencies\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="dependencies\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="dependencies\stb\stb_image.h" />
+    <ClInclude Include="dependencies\stb\stb_image_write.h" />
     <ClInclude Include="source\camera\Camera.h" />
     <ClInclude Include="source\collisionShapes\TriangleShape.h" />
     <ClInclude Include="source\components\Component.h" />
