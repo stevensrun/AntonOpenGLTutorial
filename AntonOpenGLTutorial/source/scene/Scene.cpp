@@ -43,7 +43,7 @@ void Scene::Setup()
 
 void Scene::SetupLights()
 {
-    Light* light = new Light(glm::vec3(0.0f, 0.0f, 3.0f));
+    Light* light = new Light(glm::vec3(1.0f, 2.0f, 2.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(0.4f, 0.2f, 0.7f);
@@ -63,7 +63,7 @@ void Scene::SetupMeshes()
     Material* purplePlastic = new Material("phongShading");
     purplePlastic->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
     purplePlastic->AddUniform("diffuseReflectivity", glm::vec3(1.0f, 0.0f, 1.0f));
-    purplePlastic->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 100.0f));
+    purplePlastic->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 200.0f));
 
     Material* darkPlastic = new Material("blinnPhongShading");
     darkPlastic->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -72,8 +72,8 @@ void Scene::SetupMeshes()
 
     Cone* cone = new Cone(1.0f, 0.5f, 16, 32);
     cone->m_material = pinkPlastic;
-    cone->m_rotation = Quaternion::AngleAxis(-25.0f, glm::vec3(1.0f, 0.0f, 1.0f));
     cone->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
+    cone->m_rotation = Quaternion::AngleAxis(-90.0f, glm::vec3(1.0f, 1.0f, 0.0f));
     m_meshes.push_back(cone);
 
     Cube* cube = new Cube();
