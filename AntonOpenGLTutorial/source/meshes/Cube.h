@@ -5,6 +5,6 @@
 class Cube : public Mesh
 {
 public:
-    Cube();
+    Cube(int rows, int columns);
     virtual ~Cube()= default;
 };

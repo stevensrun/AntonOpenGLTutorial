@@ -39,14 +39,14 @@ Scene::~Scene()
 
 void Scene::Setup()
 {
-    m_camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f));
+    m_camera = new Camera(glm::vec3(0.0f, 1.5f, 6.0f));
     SetupLights();
     SetupMeshes();
 }
 
 void Scene::SetupLights()
 {
-    Light* light = new Light(glm::vec3(0.0f, 0.0f, 2.0f));
+    Light* light = new Light(glm::vec3(0.0f, 2.0f, 2.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(0.4f, 0.2f, 0.7f);
@@ -81,17 +81,19 @@ void Scene::SetupMeshes()
     Torus* torus = new Torus(1.0f, 0.5f, 24, 32);
     torus->m_material = purplePlastic;
     torus->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
+    torus->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 1.0f)));
     m_meshes.push_back(torus);
 
-    Cube* cube = new Cube();
+    Cube* cube = new Cube(3, 3);
     cube->m_material = purplePlastic;
     cube->m_position = glm::vec3(-3.0f, 0.0f, 0.0f);
+    cube->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     m_meshes.push_back(cube);
 
     Plane* plane = new Plane(4, 4);
     plane->m_material = darkPlastic;
-    plane->m_position = glm::vec3(0.0f, -1.0f, 0.0f);
-    plane->m_scale = glm::vec3(10.0f, 1.0f, 10.0f);
+    plane->m_position = glm::vec3(0.0f, -2.0f, 0.0f);
+    plane->m_scale = glm::vec3(15.0f, 1.0f, 10.0f);
     m_meshes.push_back(plane);
 
     Material* greenColor = new Material("ambientReflectivity");

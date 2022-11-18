@@ -2,8 +2,8 @@
 
 Plane::Plane(int rows, int columns)
 {
-    float columnStep = 1.0f / columns;
     float rowStep = 1.0f / rows;
+    float columnStep = 1.0f / columns;
     glm::vec3 normal(0.0f, 1.0f, 0.0f);
 
     for (int i = 0; i < rows; i++)
