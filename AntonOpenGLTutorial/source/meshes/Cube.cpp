@@ -2,33 +2,33 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-Cube::Cube(int rows, int columns)
+Cube::Cube(int stackCount, int segmentCount)
 {
-    float rowStep = 1.0f / rows;
-    float columnStep = 1.0f / columns;
+    float stackStep = 1.0f / stackCount;
+    float segmentStep = 1.0f / segmentCount;
     glm::vec3 normal(0.0f, 0.0f, 1.0f);
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < stackCount; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < segmentCount; j++)
         {
-            float x = -0.5f + j * columnStep;
-            float y = 0.5f - i * rowStep;
+            float x = -0.5f + j * segmentStep;
+            float y = 0.5f - i * stackStep;
             float z = 0.5f;
             glm::vec3 a(x, y, z);
 
-            x = -0.5f + j * columnStep;
-            y = 0.5f - (i + 1) * rowStep;
+            x = -0.5f + j * segmentStep;
+            y = 0.5f - (i + 1) * stackStep;
             z = 0.5f;
             glm::vec3 b(x, y, z);
 
-            x = -0.5f + (j + 1) * columnStep;
-            y = 0.5f - i * rowStep;
+            x = -0.5f + (j + 1) * segmentStep;
+            y = 0.5f - i * stackStep;
             z = 0.5f;
             glm::vec3 c(x, y, z);
 
-            x = -0.5f + (j + 1) * columnStep;
-            y = 0.5f - (i + 1) * rowStep;
+            x = -0.5f + (j + 1) * segmentStep;
+            y = 0.5f - (i + 1) * stackStep;
             z = 0.5f;
             glm::vec3 d(x, y, z);
 
@@ -43,28 +43,28 @@ Cube::Cube(int rows, int columns)
 
     normal = glm::vec3(1.0f, 0.0f, 0.0f);
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < stackCount; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < segmentCount; j++)
         {
             float x = 0.5f;
-            float y = 0.5f - i * rowStep;
-            float z = 0.5f - j * columnStep;
+            float y = 0.5f - i * stackStep;
+            float z = 0.5f - j * segmentStep;
             glm::vec3 a(x, y, z);
 
             x = 0.5f;
-            y = 0.5f - (i + 1) * rowStep;
-            z = 0.5f - j * columnStep;
+            y = 0.5f - (i + 1) * stackStep;
+            z = 0.5f - j * segmentStep;
             glm::vec3 b(x, y, z);
 
             x = 0.5f;
-            y = 0.5f - i * rowStep;
-            z = 0.5f - (j + 1) * columnStep;
+            y = 0.5f - i * stackStep;
+            z = 0.5f - (j + 1) * segmentStep;
             glm::vec3 c(x, y, z);
 
             x = 0.5f;
-            y = 0.5f - (i + 1) * rowStep;
-            z = 0.5f - (j + 1) * columnStep;
+            y = 0.5f - (i + 1) * stackStep;
+            z = 0.5f - (j + 1) * segmentStep;
             glm::vec3 d(x, y, z);
 
             AddAttribute(a, normal);
@@ -78,27 +78,27 @@ Cube::Cube(int rows, int columns)
 
     normal = glm::vec3(0.0f, 0.0f, -1.0f);
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < stackCount; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < segmentCount; j++)
         {
-            float x = 0.5f - j * columnStep;
-            float y = 0.5f - i * rowStep;
+            float x = 0.5f - j * segmentStep;
+            float y = 0.5f - i * stackStep;
             float z = -0.5f;
             glm::vec3 a(x, y, z);
 
-            x = 0.5f - j * columnStep;
-            y = 0.5f - (i + 1) * rowStep;
+            x = 0.5f - j * segmentStep;
+            y = 0.5f - (i + 1) * stackStep;
             z = -0.5f;
             glm::vec3 b(x, y, z);
 
-            x = 0.5f - (j + 1) * columnStep;
-            y = 0.5f - i * rowStep;
+            x = 0.5f - (j + 1) * segmentStep;
+            y = 0.5f - i * stackStep;
             z = -0.5f;
             glm::vec3 c(x, y, z);
 
-            x = 0.5f - (j + 1) * columnStep;
-            y = 0.5f - (i + 1) * rowStep;
+            x = 0.5f - (j + 1) * segmentStep;
+            y = 0.5f - (i + 1) * stackStep;
             z = -0.5f;
             glm::vec3 d(x, y, z);
 
@@ -113,28 +113,28 @@ Cube::Cube(int rows, int columns)
 
     normal = glm::vec3(-1.0f, 0.0f, 0.0f);
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < stackCount; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < segmentCount; j++)
         {
             float x = -0.5f;
-            float y = 0.5f - i * rowStep;
-            float z = -0.5f + j * columnStep;
+            float y = 0.5f - i * stackStep;
+            float z = -0.5f + j * segmentStep;
             glm::vec3 a(x, y, z);
 
             x = -0.5f;
-            y = 0.5f - (i + 1) * rowStep;
-            z = -0.5f + j * columnStep;
+            y = 0.5f - (i + 1) * stackStep;
+            z = -0.5f + j * segmentStep;
             glm::vec3 b(x, y, z);
 
             x = -0.5f;
-            y = 0.5f - i * rowStep;
-            z = -0.5f + (j + 1) * columnStep;
+            y = 0.5f - i * stackStep;
+            z = -0.5f + (j + 1) * segmentStep;
             glm::vec3 c(x, y, z);
 
             x = -0.5f;
-            y = 0.5f - (i + 1) * rowStep;
-            z = -0.5f + (j + 1) * columnStep;
+            y = 0.5f - (i + 1) * stackStep;
+            z = -0.5f + (j + 1) * segmentStep;
             glm::vec3 d(x, y, z);
 
             AddAttribute(a, normal);
@@ -148,28 +148,28 @@ Cube::Cube(int rows, int columns)
 
     normal = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < stackCount; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < segmentCount; j++)
         {
-            float x = -0.5f + j * columnStep;
+            float x = -0.5f + j * segmentStep;
             float y = 0.5f;
-            float z = -0.5f + i * rowStep;
+            float z = -0.5f + i * stackStep;
             glm::vec3 a(x, y, z);
 
-            x = -0.5f + j * columnStep;
+            x = -0.5f + j * segmentStep;
             y = 0.5f;
-            z = -0.5f + (i + 1) * rowStep;
+            z = -0.5f + (i + 1) * stackStep;
             glm::vec3 b(x, y, z);
 
-            x = -0.5f + (j + 1) * columnStep;
+            x = -0.5f + (j + 1) * segmentStep;
             y = 0.5f;
-            z = -0.5f + i * rowStep;
+            z = -0.5f + i * stackStep;
             glm::vec3 c(x, y, z);
 
-            x = -0.5f + (j + 1) * columnStep;
+            x = -0.5f + (j + 1) * segmentStep;
             y = 0.5f;
-            z = -0.5f + (i + 1) * rowStep;
+            z = -0.5f + (i + 1) * stackStep;
             glm::vec3 d(x, y, z);
 
             AddAttribute(a, normal);
@@ -183,28 +183,28 @@ Cube::Cube(int rows, int columns)
 
     normal = glm::vec3(0.0f, -1.0f, 0.0f);
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < stackCount; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < segmentCount; j++)
         {
-            float x = -0.5f + j * columnStep;
+            float x = -0.5f + j * segmentStep;
             float y = -0.5f;
-            float z = 0.5f - i * rowStep;
+            float z = 0.5f - i * stackStep;
             glm::vec3 a(x, y, z);
 
-            x = -0.5f + j * columnStep;
+            x = -0.5f + j * segmentStep;
             y = -0.5f;
-            z = 0.5f - (i + 1) * rowStep;
+            z = 0.5f - (i + 1) * stackStep;
             glm::vec3 b(x, y, z);
 
-            x = -0.5f + (j + 1) * columnStep;
+            x = -0.5f + (j + 1) * segmentStep;
             y = -0.5f;
-            z = 0.5f - i * rowStep;
+            z = 0.5f - i * stackStep;
             glm::vec3 c(x, y, z);
 
-            x = -0.5f + (j + 1) * columnStep;
+            x = -0.5f + (j + 1) * segmentStep;
             y = -0.5f;
-            z = 0.5f - (i + 1) * rowStep;
+            z = 0.5f - (i + 1) * stackStep;
             glm::vec3 d(x, y, z);
 
             AddAttribute(a, normal);
