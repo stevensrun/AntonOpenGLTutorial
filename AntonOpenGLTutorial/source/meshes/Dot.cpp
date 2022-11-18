@@ -18,6 +18,11 @@ void Dot::AddAttribute(const glm::vec3& point, const glm::vec3& normal)
     FinalizeGeometry();
 }
 
+void Dot::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec2& textureCoordinate)
+{
+    Mesh::AddAttribute(point, normal, textureCoordinate);
+}
+
 bool Dot::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
 {
     return false;
