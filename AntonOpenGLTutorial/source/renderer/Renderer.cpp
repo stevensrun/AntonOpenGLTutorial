@@ -176,28 +176,16 @@ void Renderer::DrawImGui()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-
-    int windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
-    ImGui::Begin("Dashboard", nullptr, windowFlags);
+    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse);
     
     if (ImGui::BeginMenuBar())
     {
-        if (ImGui::BeginMenu("File"))
+        if (ImGui::BeginMenu("Camera"))
         {
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Edit"))
-        {
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("View"))
-        {
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Project"))
+        if (ImGui::BeginMenu("Light"))
         {
             ImGui::EndMenu();
         }
