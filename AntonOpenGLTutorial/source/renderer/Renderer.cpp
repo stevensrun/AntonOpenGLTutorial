@@ -188,10 +188,10 @@ void Renderer::DrawImGui()
 
 bool Renderer::TakeScreenshot(const std::string& filepath, int width, int height) const
 {
-    int bitsPerPixel = 3;
-    unsigned char* buffer = new unsigned char[width * height * bitsPerPixel];
+    int bytesPerPixel = 3;
+    unsigned char* buffer = new unsigned char[width * height * bytesPerPixel];
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
     stbi_flip_vertically_on_write(true);
-    int success = stbi_write_png(filepath.c_str(), width, height, bitsPerPixel, buffer, width * bitsPerPixel);
+    int success = stbi_write_png(filepath.c_str(), width, height, bytesPerPixel, buffer, width * bytesPerPixel);
     return (success == 1);
 }
