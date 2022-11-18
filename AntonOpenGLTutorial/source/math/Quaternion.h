@@ -29,8 +29,6 @@ public:
     Quaternion operator/(float scalar) const;
 
     void GetAngleAxis(float& angle, glm::vec3& axis) const;
-    Quaternion GetConjugate() const;
-    float GetLengthSquared() const;
     float GetLength() const;
     void Normalize();
     void Negate();

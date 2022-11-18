@@ -133,19 +133,9 @@ void Quaternion::GetAngleAxis(float& angleInDegrees, glm::vec3& axis) const
     axis = glm::normalize(axis);
 }
 
-Quaternion Quaternion::GetConjugate() const
-{
-    return Quaternion(w, -x, -y, -z);
-}
-
-float Quaternion::GetLengthSquared() const
-{
-    return (w * w + x * x + y * y + z * z);
-}
-
 float Quaternion::GetLength() const
 {
-    return sqrt(GetLengthSquared());
+    return sqrt(w * w + x * x + y * y + z * z);
 }
 
 void Quaternion::Normalize()
@@ -185,7 +175,7 @@ void Quaternion::Invert()
 
 Quaternion Quaternion::GetInverse() const
 {
-    return GetConjugate() / GetLengthSquared();
+    return Quaternion(w, -x, -y, -z);
 }
 
 float Quaternion::DotProduct(const Quaternion& rhs) const
