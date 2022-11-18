@@ -77,9 +77,9 @@ Quaternion Quaternion::FromEulerAngles(float rollInDegrees, float pitchInDegrees
 
     Quaternion q;
     q.w = cr * cp * cy + sr * sp * sy;
-    q.x = sr * cp * cy - cr * sp * sy;
+    q.x = cr * sp * cy + sr * cp * sy;
     q.y = cr * cp * sy - sr * sp * cy;
-    q.z = cr * sp * cy + sr * cp * sy;
+    q.z = sr * cp * cy - cr * sp * sy;
     return q;
 }
 
