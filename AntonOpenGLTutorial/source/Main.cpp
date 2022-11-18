@@ -1,3 +1,4 @@
+#include "camera/Camera.h"
 #include <chrono>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -7,6 +8,7 @@
 
 void KeyCallback(GLFWwindow* window, int keyCode, int scanCode, int action, int mods);
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+void MousePositionCallback(GLFWwindow* window, double xPosition, double yPosition);
 
 int main(int argc, char** argv)
 {
@@ -26,8 +28,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetKeyCallback(window, KeyCallback);
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
+    glfwSetCursorPosCallback(window, MousePositionCallback);
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
@@ -44,10 +48,39 @@ int main(int argc, char** argv)
     glfwSetWindowUserPointer(window, &pair);
 
     scene->Setup();
+    Camera* camera = scene->GetCamera();
     double previousSeconds = glfwGetTime();
 
     while (!glfwWindowShouldClose(window))
     {
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            camera->MoveForward();
+        }
+        else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            camera->MoveBackward();
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            camera->MoveLeft();
+        }
+        else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            camera->MoveRight();
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        {
+            camera->MoveUp();
+        }
+        else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        {
+            camera->MoveDown();
+        }
+
         double currentSeconds = glfwGetTime();
         float deltaSeconds = static_cast<float>(currentSeconds - previousSeconds);
         previousSeconds = currentSeconds;
@@ -135,4 +168,20 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     std::pair<Renderer*, Scene*>* pair = static_cast<std::pair<Renderer*, Scene*>*>(glfwGetWindowUserPointer(window));
     Scene* scene = pair->second;
     scene->OnMouseClick(static_cast<float>(mouseX), static_cast<float>(mouseY), width, height);
+}
+
+void MousePositionCallback(GLFWwindow* window, double xPosition, double yPosition)
+{
+    static double previousXPosition = 0.0;
+    static double previousYPosition = 0.0;
+    double deltaX = xPosition - previousXPosition;
+    double deltaY = yPosition - previousYPosition;
+    previousXPosition = xPosition;
+    previousYPosition = yPosition;
+
+    std::pair<Renderer*, Scene*>* pair = static_cast<std::pair<Renderer*, Scene*>*>(glfwGetWindowUserPointer(window));
+    Scene* scene = pair->second;
+    Camera* camera = scene->GetCamera();
+    camera->Yaw(static_cast<float>(deltaX));
+    camera->Pitch(static_cast<float>(deltaY));
 }

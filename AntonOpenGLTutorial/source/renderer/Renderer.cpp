@@ -131,9 +131,12 @@ void Renderer::Draw(Scene* scene)
 
         if (camera)
         {
-            m_shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(camera->m_position));
-            m_shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(camera->m_view));
-            m_shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(camera->m_projection));
+            glm::vec3 position = camera->GetPosition();
+            glm::mat4 view = camera->GetView();
+            glm::mat4 projection = camera->GetProjection();
+            m_shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(position));
+            m_shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(view));
+            m_shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
         }
 
         for (Light* light : lights)
@@ -157,9 +160,12 @@ void Renderer::Draw(Scene* scene)
 
         if (camera)
         {
-            m_shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(camera->m_position));
-            m_shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(camera->m_view));
-            m_shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(camera->m_projection));
+            glm::vec3 position = camera->GetPosition();
+            glm::mat4 view = camera->GetView();
+            glm::mat4 projection = camera->GetProjection();
+            m_shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(position));
+            m_shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(view));
+            m_shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
         }
 
         for (const Mesh* mesh : batch.second)
@@ -176,24 +182,6 @@ void Renderer::DrawImGui()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse);
-    
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("Camera"))
-        {
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Light"))
-        {
-            ImGui::EndMenu();
-        }
-    }
-
-    ImGui::EndMenuBar();
-    ImGui::End();
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

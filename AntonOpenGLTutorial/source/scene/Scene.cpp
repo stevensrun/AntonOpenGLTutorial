@@ -39,7 +39,7 @@ Scene::~Scene()
 
 void Scene::Setup()
 {
-    m_camera = new Camera(glm::vec3(0.0f, 1.5f, 6.0f));
+    m_camera = new Camera(glm::vec3(0.0f, 1.5f, 4.5f));
     SetupLights();
     SetupMeshes();
 }
@@ -55,8 +55,8 @@ void Scene::SetupLights()
 
 void Scene::SetupMeshes()
 {
-    Material* redColor = new Material("ambientReflectivity");
-    redColor->AddUniform("ambientReflectivity", glm::vec3(1.0f, 0.0f, 0.0f));
+    Material* yellowColor = new Material("ambientReflectivity");
+    yellowColor->AddUniform("ambientReflectivity", glm::vec3(1.0f, 1.0f, 0.0f));
 
     Material* pinkPlastic = new Material("gouraudShading");
     pinkPlastic->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -78,20 +78,23 @@ void Scene::SetupMeshes()
     sphere->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     m_meshes.push_back(sphere);
 
-    Torus* torus = new Torus(1.0f, 0.5f, 24, 32);
+    Torus* torus = new Torus(0.65f, 0.35f, 24, 24);
     torus->m_material = purplePlastic;
+    torus->m_normalMaterial = yellowColor;
     torus->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
     torus->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 1.0f)));
     m_meshes.push_back(torus);
 
     Cube* cube = new Cube(3, 3);
     cube->m_material = purplePlastic;
+    cube->m_normalMaterial = yellowColor;
     cube->m_position = glm::vec3(-3.0f, 0.0f, 0.0f);
-    cube->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    cube->AddComponent(new Rotator(-30.0f, glm::vec3(1.0f, 0.0f, 1.0f)));
     m_meshes.push_back(cube);
 
-    Plane* plane = new Plane(4, 4);
+    Plane* plane = new Plane(1, 1);
     plane->m_material = darkPlastic;
+    plane->m_normalMaterial = yellowColor;
     plane->m_position = glm::vec3(0.0f, -2.0f, 0.0f);
     plane->m_scale = glm::vec3(15.0f, 1.0f, 10.0f);
     m_meshes.push_back(plane);
@@ -101,7 +104,7 @@ void Scene::SetupMeshes()
 
     m_dot = new Dot();
     m_dot->m_material = greenColor;
-    m_dot->m_normalMaterial = redColor;
+    m_dot->m_normalMaterial = yellowColor;
 }
 
 Camera* Scene::GetCamera()
@@ -142,8 +145,8 @@ void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
     float y = 1.0f - (2.0f * mouseY) / height;
     //No need to convert viewport coordinates -> NDC because NDC -> clip is technically a multiplication by w however we have no depth to the ray so we can go from viewport coordinates -> clipCoordinates directly.
     glm::vec4 ray_clipCoordinates = glm::vec4(x, y, -1.0f, 1.0f);
-    glm::vec4 ray_eyeCoordinates = glm::inverse(m_camera->m_projection) * ray_clipCoordinates;
-    glm::vec4 ray_worldCoordinates = glm::inverse(m_camera->m_view) * glm::vec4(ray_eyeCoordinates.x, ray_eyeCoordinates.y, -1.0f, 0.0f);
+    glm::vec4 ray_eyeCoordinates = glm::inverse(m_camera->GetProjection()) * ray_clipCoordinates;
+    glm::vec4 ray_worldCoordinates = glm::inverse(m_camera->GetView()) * glm::vec4(ray_eyeCoordinates.x, ray_eyeCoordinates.y, -1.0f, 0.0f);
     glm::vec3 rayDirection = glm::normalize(glm::vec3(ray_worldCoordinates.x, ray_worldCoordinates.y, ray_worldCoordinates.z));
 
     for (int i = static_cast<int>(m_meshes.size()) - 1; i >= 0; i--)
@@ -166,7 +169,7 @@ void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
         const Mesh* mesh = m_meshes[i];
         glm::vec3 hitPosition;
         glm::vec3 hitNormal;
-        bool hit = mesh->HitTest(shape, m_camera->m_position, rayDirection, hitPosition, hitNormal);
+        bool hit = mesh->HitTest(shape, m_camera->GetPosition(), rayDirection, hitPosition, hitNormal);
 
         if (!hit)
         {
@@ -189,5 +192,4 @@ void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
 
         break;
     }
-
 }
