@@ -28,11 +28,11 @@ in vec3 normal;
 
 layout(location = 0) out vec4 frag_color;
 
+uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 uniform vec3 ambientLightColor;
 uniform vec3 diffuseLightColor;
 uniform vec3 specularLightColor;
-uniform vec3 cameraPosition;
 uniform vec3 ambientReflectivity;
 uniform vec3 diffuseReflectivity;
 uniform vec4 specularReflectivity;
