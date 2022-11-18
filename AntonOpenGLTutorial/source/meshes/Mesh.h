@@ -18,6 +18,9 @@ public:
     Mesh();
     virtual ~Mesh();
 
+    void* operator new(size_t size);
+    void operator delete(void* ptr);
+
     bool IsEnabled() const;
     void SetEnabled(bool enabled);
     virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal);
@@ -51,4 +54,7 @@ protected:
 
     bool m_enabled;
     std::vector<Component*> m_components;
+
+public:
+    size_t m_sizeInBytes;
 };

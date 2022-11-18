@@ -4,6 +4,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "materials/Material.h"
+#include "memory/MemoryTracker.h"
 #include "shaders/ShaderManager.h"
 #include <iostream>
 
@@ -15,6 +16,7 @@ Mesh::Mesh()
     , m_normalsBuffer(0)
     , m_position(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
+    , m_sizeInBytes(0)
 {
     glGenVertexArrays(1, &m_attributeVertexArray);
     glBindVertexArray(m_attributeVertexArray);
@@ -31,6 +33,20 @@ Mesh::~Mesh()
     glBindVertexArray(m_normalVertexArray);
     glDeleteBuffers(1, &m_normalsBuffer);
     glDeleteVertexArrays(1, &m_normalVertexArray);
+}
+
+void* Mesh::operator new(size_t size)
+{
+    MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+    Mesh* mesh = ::new Mesh();
+    return mesh;
+}
+
+void Mesh::operator delete(void* ptr)
+{
+    Mesh* mesh = reinterpret_cast<Mesh*>(ptr);
+    MemoryTracker::RemoveMemoryUsage(mesh->m_sizeInBytes, MemoryCategory::Meshes);
+    ::operator delete(ptr);
 }
 
 bool Mesh::IsEnabled() const
