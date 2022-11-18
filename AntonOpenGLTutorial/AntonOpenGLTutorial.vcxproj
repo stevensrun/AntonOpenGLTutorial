@@ -165,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\blinnPhongShading.glsl" />
+    <None Include="shaders\gouraudShading.glsl" />
     <None Include="shaders\phongShading.glsl" />
     <None Include="shaders\textureMap.glsl" />
     <None Include="shaders\ambientReflectivity.glsl" />

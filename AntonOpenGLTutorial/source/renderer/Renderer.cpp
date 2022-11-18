@@ -23,6 +23,7 @@ Renderer::Renderer(GLFWwindow* window)
     , m_shaderManager(nullptr)
 {
     m_shaderManager = new ShaderManager();
+    m_shaderManager->LoadShader("gouraudShading", "shaders/gouraudShading.glsl");
     m_shaderManager->LoadShader("phongShading", "shaders/phongShading.glsl");
     m_shaderManager->LoadShader("blinnPhongShading", "shaders/blinnPhongShading.glsl");
     m_shaderManager->LoadShader("textureMap", "shaders/textureMap.glsl");

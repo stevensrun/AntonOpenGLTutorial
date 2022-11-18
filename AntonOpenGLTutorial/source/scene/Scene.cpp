@@ -39,14 +39,14 @@ Scene::~Scene()
 
 void Scene::Setup()
 {
-    m_camera = new Camera(glm::vec3(0.0f, 2.0f, 5.0f));
+    m_camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f));
     SetupLights();
     SetupMeshes();
 }
 
 void Scene::SetupLights()
 {
-    Light* light = new Light(glm::vec3(0.0f, 3.0f, 2.0f));
+    Light* light = new Light(glm::vec3(0.0f, 0.0f, 2.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(0.4f, 0.2f, 0.7f);
@@ -58,7 +58,7 @@ void Scene::SetupMeshes()
     Material* redColor = new Material("ambientReflectivity");
     redColor->AddUniform("ambientReflectivity", glm::vec3(1.0f, 0.0f, 0.0f));
 
-    Material* pinkPlastic = new Material("phongShading");
+    Material* pinkPlastic = new Material("gouraudShading");
     pinkPlastic->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
     pinkPlastic->AddUniform("diffuseReflectivity", glm::vec3(1.0f, 0.7f, 1.0f));
     pinkPlastic->AddUniform("specularReflectivity", glm::vec4(0.7f, 0.7f, 0.7f, 200.0f));
@@ -75,6 +75,7 @@ void Scene::SetupMeshes()
 
     Sphere* sphere = new Sphere(1.0f, 16, 32);
     sphere->m_material = pinkPlastic;
+    sphere->AddComponent(new Rotator(30.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     m_meshes.push_back(sphere);
 
     Torus* torus = new Torus(1.0f, 0.5f, 24, 32);
