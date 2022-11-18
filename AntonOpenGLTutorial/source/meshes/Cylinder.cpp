@@ -27,22 +27,23 @@ Cylinder::Cylinder(float height, float radius, int stackCount, int segmentCount)
 
             segmentAngle = (j + 1) * segmentStep;
             x = radius * sin(segmentAngle);
-            y = top - heightStep;
+            y = top;
             z = radius * cos(segmentAngle);
             glm::vec3 c(x, y, z);
 
+            segmentAngle = (j + 1) * segmentStep;
             x = radius * sin(segmentAngle);
-            y = top;
+            y = top - heightStep;
             z = radius * cos(segmentAngle);
             glm::vec3 d(x, y, z);
+
 
             AddAttribute(a, glm::vec3(a.x, 0.0f, a.z));
             AddAttribute(b, glm::vec3(b.x, 0.0f, b.z));
             AddAttribute(c, glm::vec3(c.x, 0.0f, c.z));
-
             AddAttribute(c, glm::vec3(c.x, 0.0f, c.z));
+            AddAttribute(b, glm::vec3(b.x, 0.0f, b.z));
             AddAttribute(d, glm::vec3(d.x, 0.0f, d.z));
-            AddAttribute(a, glm::vec3(a.x, 0.0f, a.z));
         }
     }
 

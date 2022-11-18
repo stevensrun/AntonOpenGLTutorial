@@ -5,6 +5,6 @@
 class Plane : public Mesh
 {
 public:
-    Plane();
+    Plane(int rows, int columns);
     virtual ~Plane() = default;
 };

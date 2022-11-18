@@ -15,6 +15,7 @@
 #include "meshes/SierpinskiGasket.h"
 #include "meshes/Sphere.h"
 #include "meshes/Tetrahedron.h"
+#include "meshes/Torus.h"
 #include "meshes/Triangle.h"
 
 Scene::Scene()
@@ -38,14 +39,14 @@ Scene::~Scene()
 
 void Scene::Setup()
 {
-    m_camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+    m_camera = new Camera(glm::vec3(0.0f, 2.0f, 5.0f));
     SetupLights();
     SetupMeshes();
 }
 
 void Scene::SetupLights()
 {
-    Light* light = new Light(glm::vec3(0.0f, 0.0f, 2.0f));
+    Light* light = new Light(glm::vec3(0.0f, 3.0f, 2.0f));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(0.4f, 0.2f, 0.7f);
@@ -72,33 +73,25 @@ void Scene::SetupMeshes()
     darkPlastic->AddUniform("diffuseReflectivity", glm::vec3(0.3f, 0.3f, 0.3f));
     darkPlastic->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 400.0f));
 
-    Tetrahedron* tetrahedron = new Tetrahedron(5, true);
-    tetrahedron->m_material = pinkPlastic;
-    tetrahedron->m_position = glm::vec3(-1.5f, 0.0f, 0.0f);
-    m_meshes.push_back(tetrahedron);
-
     Sphere* sphere = new Sphere(1.0f, 16, 32);
     sphere->m_material = pinkPlastic;
-    sphere->m_position = glm::vec3(1.5f, 0.0f, 0.0f);
     m_meshes.push_back(sphere);
 
-    /*Cone* cone = new Cone(1.0f, 0.5f, 16, 32);
-    cone->m_material = pinkPlastic;
-    cone->m_position = glm::vec3(-2.0f, 0.0f, 0.0f);
-    cone->m_rotation = Quaternion::AngleAxis(-90.0f, glm::vec3(1.0f, 1.0f, 0.0f));
-    m_meshes.push_back(cone);
+    Torus* torus = new Torus(1.0f, 0.5f, 24, 32);
+    torus->m_material = purplePlastic;
+    torus->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
+    m_meshes.push_back(torus);
 
     Cube* cube = new Cube();
     cube->m_material = purplePlastic;
-    cube->m_rotation = Quaternion::AngleAxis(50.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+    cube->m_position = glm::vec3(-3.0f, 0.0f, 0.0f);
     m_meshes.push_back(cube);
 
-
-    Plane* plane = new Plane();
+    Plane* plane = new Plane(4, 4);
     plane->m_material = darkPlastic;
     plane->m_position = glm::vec3(0.0f, -1.0f, 0.0f);
-    plane->m_scale = glm::vec3(8.0f, 1.0f, 4.0f);
-    m_meshes.push_back(plane);*/
+    plane->m_scale = glm::vec3(10.0f, 1.0f, 10.0f);
+    m_meshes.push_back(plane);
 
     Material* greenColor = new Material("ambientReflectivity");
     greenColor->AddUniform("ambientReflectivity", glm::vec3(0.0f, 1.0f, 0.0f));

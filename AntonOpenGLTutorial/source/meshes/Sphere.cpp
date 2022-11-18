@@ -1,5 +1,4 @@
 #include "Sphere.h"
-
 #include <glm/gtc/constants.hpp>
 
 Sphere::Sphere(float radius, int stackCount, int segmentCount)
@@ -21,19 +20,23 @@ Sphere::Sphere(float radius, int stackCount, int segmentCount)
 
             stackAngle = glm::half_pi<float>() - (i + 1) * stackStep;
             chordLength = radius * cos(stackAngle);
+            segmentAngle = j * segmentStep;
             x = chordLength * sin(segmentAngle);
             y = radius * sin(stackAngle);
             z = chordLength * cos(segmentAngle);
             glm::vec3 b(x, y, z);
 
+            stackAngle = glm::half_pi<float>() - i * stackStep;
+            chordLength = radius * cos(stackAngle);
             segmentAngle = (j + 1) * segmentStep;
             x = chordLength * sin(segmentAngle);
             y = radius * sin(stackAngle);
             z = chordLength * cos(segmentAngle);
             glm::vec3 c(x, y, z);
 
-            stackAngle = glm::half_pi<float>() - i * stackStep;
+            stackAngle = glm::half_pi<float>() - (i + 1) * stackStep;
             chordLength = radius * cos(stackAngle);
+            segmentAngle = (j + 1) * segmentStep;
             x = chordLength * sin(segmentAngle);
             y = radius * sin(stackAngle);
             z = chordLength * cos(segmentAngle);
@@ -43,8 +46,8 @@ Sphere::Sphere(float radius, int stackCount, int segmentCount)
             AddAttribute(b, b);
             AddAttribute(c, c);
             AddAttribute(c, c);
+            AddAttribute(b, b);
             AddAttribute(d, d);
-            AddAttribute(a, a);
         }
     }
 
