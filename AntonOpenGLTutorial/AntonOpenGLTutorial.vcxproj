@@ -95,6 +95,7 @@
     <ClCompile Include="source\collisionShapes\TriangleShape.cpp" />
     <ClCompile Include="source\components\Component.cpp" />
     <ClCompile Include="source\components\Rotator.cpp" />
+    <ClCompile Include="source\components\SlerpComponent.cpp" />
     <ClCompile Include="source\gizmos\AxisGizmo.cpp" />
     <ClCompile Include="source\gizmos\Gizmo.cpp" />
     <ClCompile Include="source\lights\Light.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="source\collisionShapes\TriangleShape.h" />
     <ClInclude Include="source\components\Component.h" />
     <ClInclude Include="source\components\Rotator.h" />
+    <ClInclude Include="source\components\SlerpComponent.h" />
     <ClInclude Include="source\gizmos\AxisGizmo.h" />
     <ClInclude Include="source\gizmos\Gizmo.h" />
     <ClInclude Include="source\lights\Light.h" />
