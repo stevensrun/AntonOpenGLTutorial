@@ -104,6 +104,7 @@
     <ClCompile Include="source\math\Quaternion.cpp" />
     <ClCompile Include="source\memory\MemoryTracker.cpp" />
     <ClCompile Include="source\meshes\BasicMesh.cpp" />
+    <ClCompile Include="source\meshes\Capsule.cpp" />
     <ClCompile Include="source\meshes\Cone.cpp" />
     <ClCompile Include="source\meshes\Cube.cpp" />
     <ClCompile Include="source\meshes\Cylinder.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="source\math\Quaternion.h" />
     <ClInclude Include="source\memory\MemoryTracker.h" />
     <ClInclude Include="source\meshes\BasicMesh.h" />
+    <ClInclude Include="source\meshes\Capsule.h" />
     <ClInclude Include="source\meshes\Cone.h" />
     <ClInclude Include="source\meshes\Cube.h" />
     <ClInclude Include="source\meshes\Cylinder.h" />
