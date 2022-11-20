@@ -5,6 +5,7 @@ Sphere::Sphere(float radius, int stackCount, int segmentCount)
 {
     float stackStep = glm::pi<float>() / stackCount;
     float segmentStep = 2.0f * glm::pi<float>() / segmentCount;
+    int firstElementIndex = 0;
 
     for (int i = 0; i < stackCount; i++)
     {
@@ -45,9 +46,14 @@ Sphere::Sphere(float radius, int stackCount, int segmentCount)
             AddAttribute(a, a);
             AddAttribute(b, b);
             AddAttribute(c, c);
-            AddAttribute(c, c);
-            AddAttribute(b, b);
             AddAttribute(d, d);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 3);
+            firstElementIndex += 4;
         }
     }
 

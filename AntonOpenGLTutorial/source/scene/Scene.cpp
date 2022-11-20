@@ -3,10 +3,12 @@
 #include "camera/UiCamera.h"
 #include "collisionShapes/TriangleShape.h"
 #include "components/Rotator.h"
+#include "components/SlerpComponent.h"
 #include <gizmos/AxisGizmo.h>
 #include <glm/glm.hpp>
 #include "lights/Light.h"
 #include "materials/Material.h"
+#include "meshes/Capsule.h"
 #include "meshes/Cone.h"
 #include "meshes/Cube.h"
 #include "meshes/Cylinder.h"
@@ -99,16 +101,36 @@ void Scene::SetupMeshes()
     blueCardboard->AddUniform("diffuseReflectivity", glm::vec3(0.0f, 0.0f, 1.0f));
     blueCardboard->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 250.0f));
 
-    Cone* cube = new Cone(1.0f, 0.5f, 1, 32);
+    Triangle* triangle = new Triangle();
+    triangle->m_material = blueCardboard;
+    m_meshes.push_back(triangle);
+
+    Cube* cube = new Cube(2, 2);
     cube->m_material = blueCardboard;
+    cube->m_position = glm::vec3(-3.0f, 0.0f, 0.0f);
     m_meshes.push_back(cube);
+
+    Torus* torus = new Torus(0.3f, 0.2f, 16, 32);
+    torus->m_material = blueCardboard;
+    torus->m_position = glm::vec3(-1.25f, 0.0f, 0.0f);
+    m_meshes.push_back(torus);
+
+    Sphere* sphere = new Sphere(0.5f, 16, 24);
+    sphere->m_material = blueCardboard;
+    sphere->m_position = glm::vec3(1.0f, 0.0f, 0.0f);
+    m_meshes.push_back(sphere);
+
+    Tetrahedron* tetraSphere = new Tetrahedron(4, true);
+    tetraSphere->m_material = blueCardboard;
+    tetraSphere->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
+    m_meshes.push_back(tetraSphere);
 
     Material* lightGray = new Material("blinnPhongShading");
     lightGray->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
     lightGray->AddUniform("diffuseReflectivity", glm::vec3(0.8f, 0.8f, 0.8f));
     lightGray->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 400.0f));
 
-    Plane* plane = new Plane(1, 1);
+    Plane* plane = new Plane(3, 3);
     plane->m_material = lightGray;
     plane->m_position = glm::vec3(0.0f, -2.0f, 0.0f);
     plane->m_scale = glm::vec3(15.0f, 1.0f, 10.0f);

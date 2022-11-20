@@ -5,6 +5,7 @@ Torus::Torus(float majorRadius, float minorRadius, int stackCount, int segmentCo
 {
     float stackStep = 2.0f * glm::pi<float>() / stackCount;
     float segmentStep = 2.0f * glm::pi<float>() / segmentCount;
+    int firstElementIndex = 0;
 
     for (int i = 0; i < segmentCount; i++)
     {
@@ -45,9 +46,14 @@ Torus::Torus(float majorRadius, float minorRadius, int stackCount, int segmentCo
             AddAttribute(a, normalA);
             AddAttribute(b, normalB);
             AddAttribute(c, normalC);
-            AddAttribute(a, normalA);
             AddAttribute(d, normalD);
-            AddAttribute(b, normalB);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 3);
+            AddElementIndex(firstElementIndex + 1);
+            firstElementIndex += 4;
         }
     }
 

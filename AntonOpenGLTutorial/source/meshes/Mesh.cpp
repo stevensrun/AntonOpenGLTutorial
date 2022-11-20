@@ -113,6 +113,9 @@ void Mesh::FinalizeGeometry()
     }
 
     glBindVertexArray(m_attributeVertexArray);
+    glGenBuffers(1, &m_elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), m_indices.data(), GL_STATIC_DRAW);
     glGenBuffers(1, &m_attributesBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_attributesBuffer);
     glBufferData(GL_ARRAY_BUFFER, attributes.size() * sizeof(float), attributes.data(), GL_STATIC_DRAW);
@@ -151,7 +154,15 @@ void Mesh::Draw(ShaderManager* shaderManager) const
     glBindVertexArray(m_attributeVertexArray);
     PrepareShader(m_material, shaderManager);
     glEnable(GL_DEPTH_TEST);
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m_points.size()));
+
+    if (m_indices.size() > 0)
+    {
+        glDrawElements(GL_TRIANGLES, static_cast<int>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+    else
+    {
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m_points.size()));
+    }
 }
 
 void Mesh::DrawNormals(ShaderManager* shaderManager) const
@@ -165,5 +176,5 @@ void Mesh::DrawNormals(ShaderManager* shaderManager) const
     glBindVertexArray(m_normalVertexArray);
     glEnable(GL_DEPTH_TEST);
     glLineWidth(1.0f);
-    glDrawArrays(GL_LINES, 0, static_cast<int>(m_normals.size() * 2));
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m_points.size()));
 }

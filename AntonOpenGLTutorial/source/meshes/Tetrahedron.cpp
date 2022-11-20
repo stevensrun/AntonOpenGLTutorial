@@ -2,6 +2,7 @@
 
 Tetrahedron::Tetrahedron(int subdivisionCount, bool useVertexNormals)
     : m_useVertexNormals(useVertexNormals)
+    , m_firstElementIndex(0)
 {
     glm::vec3 a(0.0f, 0.9f, -0.333f);
     glm::vec3 b(0.0f, 0.0f, 1.0f);
@@ -32,6 +33,11 @@ void Tetrahedron::divideTriangle(const glm::vec3& a, const glm::vec3& b, const g
             AddAttribute(b, normal);
             AddAttribute(c, normal);
         }
+
+        AddElementIndex(m_firstElementIndex);
+        AddElementIndex(m_firstElementIndex + 1);
+        AddElementIndex(m_firstElementIndex + 2);
+        m_firstElementIndex += 3;
     }
     else
     {

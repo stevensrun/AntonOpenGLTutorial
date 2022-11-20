@@ -21,6 +21,7 @@ public:
     void SetEnabled(bool enabled);
 
     virtual void AddAttribute(const glm::vec3& point);
+    virtual void AddElementIndex(unsigned int index);
     void AddComponent(Component* component);
     virtual void Update(float deltaSeconds);
     virtual void Draw(ShaderManager* shaderManager) const;
@@ -40,6 +41,8 @@ protected:
     std::vector<Component*> m_components;
     bool m_enabled;
     std::vector<glm::vec3> m_points;
+    std::vector<unsigned int> m_indices;
     unsigned int m_attributeVertexArray;
+    unsigned int m_elementBuffer;
     unsigned int m_attributesBuffer;
 };

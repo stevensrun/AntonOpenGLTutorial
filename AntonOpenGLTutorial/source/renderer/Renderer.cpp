@@ -13,6 +13,7 @@
 #include "lights/Light.h"
 #include "materials/Material.h"
 #include "meshes/BasicMesh.h"
+#include "meshes/Mesh.h"
 #include "scene/Scene.h"
 #include "shaders/ShaderManager.h"
 #include <stb_image_write.h>
@@ -65,13 +66,20 @@ std::unordered_map<std::string, std::vector<const BasicMesh*>> Renderer::CreateM
     return shadersBatch;
 }
 
-std::unordered_map<std::string, std::vector<const BasicMesh*>> Renderer::CreateNormalsShaderBatch(const std::vector<BasicMesh*>& meshes)
+std::unordered_map<std::string, std::vector<const Mesh*>> Renderer::CreateNormalsShaderBatch(const std::vector<BasicMesh*>& meshes)
 {
-    std::unordered_map<std::string, std::vector<const BasicMesh*>> shadersBatch;
-    
-    /*for (const BasicMesh* mesh : meshes)
+    std::unordered_map<std::string, std::vector<const Mesh*>> shadersBatch;
+
+    for (const BasicMesh* basicMesh : meshes)
     {
-        if (!mesh->IsEnabled() || !mesh->m_normalMaterial)
+        if (!basicMesh->IsEnabled())
+        {
+            continue;
+        }
+
+        const Mesh* mesh = dynamic_cast<const Mesh*>(basicMesh);
+
+        if (!mesh->m_normalMaterial)
         {
             continue;
         }
@@ -80,12 +88,12 @@ std::unordered_map<std::string, std::vector<const BasicMesh*>> Renderer::CreateN
 
         if (shadersBatch.find(normalsShaderName) == shadersBatch.end())
         {
-            shadersBatch[normalsShaderName] = std::vector<const BasicMesh*>();
+            shadersBatch[normalsShaderName] = std::vector<const Mesh*>();
         }
 
-        std::vector<const BasicMesh*>& normalsDrawList = shadersBatch[normalsShaderName];
+        std::vector<const Mesh*>& normalsDrawList = shadersBatch[normalsShaderName];
         normalsDrawList.push_back(mesh);
-    }*/
+    }
 
     return shadersBatch;
 }
@@ -94,7 +102,7 @@ void Renderer::Draw(Scene* scene)
 {
     std::vector<BasicMesh*> meshes = scene->GetMeshes();
     std::unordered_map<std::string, std::vector<const BasicMesh*>> meshShadersBatch = CreateMeshShaderBatch(meshes);
-    std::unordered_map<std::string, std::vector<const BasicMesh*>> normalsShadersBatch = CreateNormalsShaderBatch(meshes);
+    std::unordered_map<std::string, std::vector<const Mesh*>> normalsShadersBatch = CreateNormalsShaderBatch(meshes);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
@@ -142,7 +150,7 @@ void Renderer::Draw(Scene* scene)
         }
     }
 
-    for (const std::pair<std::string, std::vector<const BasicMesh*>>& batch : normalsShadersBatch)
+    for (const std::pair<std::string, std::vector<const Mesh*>>& batch : normalsShadersBatch)
     {
         std::string shaderName = batch.first;
         shaderManager->UseShader(shaderName);
@@ -157,9 +165,9 @@ void Renderer::Draw(Scene* scene)
             shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
         }
 
-        for (const BasicMesh* mesh : batch.second)
+        for (const Mesh* mesh : batch.second)
         {
-            //mesh->DrawNormals(shaderManager);
+            mesh->DrawNormals(shaderManager);
         }
     }
 

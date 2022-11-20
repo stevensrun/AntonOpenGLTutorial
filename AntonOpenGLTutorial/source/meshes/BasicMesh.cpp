@@ -13,6 +13,7 @@ BasicMesh::BasicMesh()
     , m_position(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_enabled(true)
+    , m_elementBuffer(0)
     , m_attributesBuffer(0)
 {
     glGenVertexArrays(1, &m_attributeVertexArray);
@@ -22,6 +23,7 @@ BasicMesh::BasicMesh()
 BasicMesh::~BasicMesh()
 {
     glBindVertexArray(m_attributeVertexArray);
+    glDeleteBuffers(1, &m_elementBuffer);
     glDeleteBuffers(1, &m_attributesBuffer);
     glDeleteVertexArrays(1, &m_attributeVertexArray);
 }
@@ -55,6 +57,11 @@ void BasicMesh::AddAttribute(const glm::vec3& point)
     m_points.push_back(point);
 }
 
+void BasicMesh::AddElementIndex(unsigned int index)
+{
+    m_indices.push_back(index);
+}
+
 void BasicMesh::FinalizeGeometry()
 {
     std::vector<float> attributes;
@@ -67,6 +74,9 @@ void BasicMesh::FinalizeGeometry()
     }
 
     glBindVertexArray(m_attributeVertexArray);
+    glGenBuffers(1, &m_elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), m_indices.data(), GL_STATIC_DRAW);
     glGenBuffers(1, &m_attributesBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_attributesBuffer);
     glBufferData(GL_ARRAY_BUFFER, attributes.size() * sizeof(float), attributes.data(), GL_STATIC_DRAW);
@@ -136,5 +146,13 @@ void BasicMesh::Draw(ShaderManager* shaderManager) const
     glBindVertexArray(m_attributeVertexArray);
     PrepareShader(m_material, shaderManager);
     glEnable(GL_DEPTH_TEST);
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m_points.size()));
+
+    if (m_indices.size() > 0)
+    {
+        glDrawElements(GL_TRIANGLES, static_cast<int>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+    else
+    {
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m_points.size()));
+    }
 }

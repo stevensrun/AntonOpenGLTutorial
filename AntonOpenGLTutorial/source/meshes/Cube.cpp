@@ -7,6 +7,7 @@ Cube::Cube(int stackCount, int segmentCount)
     float stackStep = 1.0f / stackCount;
     float segmentStep = 1.0f / segmentCount;
     glm::vec3 normal(0.0f, 0.0f, 1.0f);
+    int firstElementIndex = 0;
 
     for (int i = 0; i < stackCount; i++)
     {
@@ -35,9 +36,14 @@ Cube::Cube(int stackCount, int segmentCount)
             AddAttribute(a, normal);
             AddAttribute(b, normal);
             AddAttribute(c, normal);
-            AddAttribute(c, normal);
-            AddAttribute(b, normal);
             AddAttribute(d, normal);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 3);
+            firstElementIndex += 4;
         }
     }
 
@@ -70,9 +76,14 @@ Cube::Cube(int stackCount, int segmentCount)
             AddAttribute(a, normal);
             AddAttribute(b, normal);
             AddAttribute(c, normal);
-            AddAttribute(c, normal);
-            AddAttribute(b, normal);
             AddAttribute(d, normal);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 3);
+            firstElementIndex += 4;
         }
     }
 
@@ -105,9 +116,14 @@ Cube::Cube(int stackCount, int segmentCount)
             AddAttribute(a, normal);
             AddAttribute(b, normal);
             AddAttribute(c, normal);
-            AddAttribute(c, normal);
-            AddAttribute(b, normal);
             AddAttribute(d, normal);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 3);
+            firstElementIndex += 4;
         }
     }
 
@@ -140,9 +156,14 @@ Cube::Cube(int stackCount, int segmentCount)
             AddAttribute(a, normal);
             AddAttribute(b, normal);
             AddAttribute(c, normal);
-            AddAttribute(c, normal);
-            AddAttribute(b, normal);
             AddAttribute(d, normal);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 3);
+            firstElementIndex += 4;
         }
     }
 
@@ -175,9 +196,14 @@ Cube::Cube(int stackCount, int segmentCount)
             AddAttribute(a, normal);
             AddAttribute(b, normal);
             AddAttribute(c, normal);
-            AddAttribute(c, normal);
-            AddAttribute(b, normal);
             AddAttribute(d, normal);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 3);
+            firstElementIndex += 4;
         }
     }
 
@@ -210,9 +236,14 @@ Cube::Cube(int stackCount, int segmentCount)
             AddAttribute(a, normal);
             AddAttribute(b, normal);
             AddAttribute(c, normal);
-            AddAttribute(c, normal);
-            AddAttribute(b, normal);
             AddAttribute(d, normal);
+            AddElementIndex(firstElementIndex);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 2);
+            AddElementIndex(firstElementIndex + 1);
+            AddElementIndex(firstElementIndex + 3);
+            firstElementIndex += 4;
         }
     }
 

@@ -13,4 +13,5 @@ private:
 
 private:
     bool m_useVertexNormals;
+    int m_firstElementIndex;
 };

@@ -7,6 +7,7 @@
 
 struct GLFWwindow;
 class BasicMesh;
+class Mesh;
 class Scene;
 
 class Renderer
@@ -22,7 +23,7 @@ private:
     void DrawGizmos(Scene* scene);
     void DrawImGui();
     std::unordered_map<std::string, std::vector<const BasicMesh*>> CreateMeshShaderBatch(const std::vector<BasicMesh*>& meshes);
-    std::unordered_map<std::string, std::vector<const BasicMesh*>> CreateNormalsShaderBatch(const std::vector<BasicMesh*>& meshes);
+    std::unordered_map<std::string, std::vector<const Mesh*>> CreateNormalsShaderBatch(const std::vector<BasicMesh*>& meshes);
 
 public:
     GLenum m_polygonMode;
