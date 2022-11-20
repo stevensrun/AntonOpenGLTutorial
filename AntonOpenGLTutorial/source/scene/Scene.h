@@ -2,11 +2,14 @@
 
 #include <vector>
 
-class Camera;
+class BasicMesh;
 class Dot;
+class Gizmo;
 class Light;
-class Mesh;
+class SceneCamera;
+class ShaderManager;
 class TriangleShape;
+class UiCamera;
 
 class Scene
 {
@@ -14,20 +17,27 @@ public:
     Scene();
     virtual ~Scene();
 
-    Camera* GetCamera();
+    ShaderManager* GetShaderManager() const;
+    SceneCamera* GetSceneCamera();
+    UiCamera* GetUiCamera();
     const std::vector<Light*>& GetLights() const;
-    std::vector<Mesh*> GetMeshes() const;
-    void Setup();
+    std::vector<BasicMesh*> GetMeshes() const;
+    const std::vector<Gizmo*>& GetGizmos() const;
+    void Setup(int framebufferWidth, int framebufferHeight);
     void Update(float deltaSeconds);
     void OnMouseClick(float mouseX, float mouseY, int width, int height);
 
 protected:
+    void SetupGizmos();
     void SetupLights();
     void SetupMeshes();
 
 protected:
-    Camera* m_camera;
+    ShaderManager* m_shaderManager;
+    SceneCamera* m_sceneCamera;
+    UiCamera* m_uiCamera;
     std::vector<Light*> m_lights;
-    std::vector<Mesh*> m_meshes;
+    std::vector<BasicMesh*> m_meshes;
+    std::vector<Gizmo*> m_gizmos;
     Dot* m_dot;
 };

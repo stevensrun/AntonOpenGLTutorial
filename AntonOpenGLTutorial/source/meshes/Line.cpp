@@ -1,15 +1,11 @@
 #include "Line.h"
+#include <GL/glew.h>
 
 Line::Line(const glm::vec3& p0, const glm::vec3 p1)
 {
-    AddAttribute(p0, p0);
-    AddAttribute(p1, p0);
+    AddAttribute(p0);
+    AddAttribute(p1);
     FinalizeGeometry();
-}
-
-bool Line::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
-{
-    return false;
 }
 
 void Line::Draw(ShaderManager* shaderManager) const

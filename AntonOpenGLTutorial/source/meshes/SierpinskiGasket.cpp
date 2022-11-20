@@ -1,27 +1,22 @@
 #include "SierpinskiGasket.h"
+#include <GL/glew.h>
 #include <vector>
 
 SierpinskiGasket::SierpinskiGasket(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, int pointCount)
 {
     std::vector<glm::vec3> vertices{ a, b, c};
-    glm::vec3 normal(0.0f, 0.0f, 1.0f);
     
     glm::vec3 p(0.25f, 0.5f, 0.0f);
-    AddAttribute(p, normal);
+    AddAttribute(p);
 
     for (int i = 1; i < pointCount; i++)
     {
         int j = rand() % 3;
         p = (p + vertices[j]) / 2.0f;
-        AddAttribute(p, normal);
+        AddAttribute(p);
     }
 
     FinalizeGeometry();
-}
-
-bool SierpinskiGasket::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
-{
-    return false;
 }
 
 void SierpinskiGasket::Draw(ShaderManager* shaderManager) const

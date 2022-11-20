@@ -6,9 +6,8 @@
 #include <vector>
 
 struct GLFWwindow;
-class Mesh;
+class BasicMesh;
 class Scene;
-class ShaderManager;
 
 class Renderer
 {
@@ -20,16 +19,14 @@ public:
     bool TakeScreenshot(const std::string& filepath, int width, int height) const;
 
 private:
+    void DrawGizmos(Scene* scene);
     void DrawImGui();
-    std::unordered_map<std::string, std::vector<const Mesh*>> CreateMeshShaderBatch(const std::vector<Mesh*>& meshes);
-    std::unordered_map<std::string, std::vector<const Mesh*>> CreateNormalsShaderBatch(const std::vector<Mesh*>& meshes);
+    std::unordered_map<std::string, std::vector<const BasicMesh*>> CreateMeshShaderBatch(const std::vector<BasicMesh*>& meshes);
+    std::unordered_map<std::string, std::vector<const BasicMesh*>> CreateNormalsShaderBatch(const std::vector<BasicMesh*>& meshes);
 
 public:
     GLenum m_polygonMode;
     GLenum m_culledFace;
     bool m_isCullingFace;
     bool m_drawNormals;
-
-private:
-    ShaderManager* m_shaderManager;
 };

@@ -1,35 +1,20 @@
 #include "Mesh.h"
 #include "collisionShapes/TriangleShape.h"
-#include "components/Component.h"
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "materials/Material.h"
 #include "memory/MemoryTracker.h"
-#include "shaders/ShaderManager.h"
-#include <iostream>
 
 Mesh::Mesh()
-    : m_enabled(true)
-    , m_material(nullptr)
-    , m_normalMaterial(nullptr)
-    , m_attributesBuffer(0)
+    : m_normalMaterial(nullptr)
     , m_normalsBuffer(0)
-    , m_position(0.0f, 0.0f, 0.0f)
-    , m_scale(1.0f, 1.0f, 1.0f)
-    , m_sizeInBytes(0)
 {
-    glGenVertexArrays(1, &m_attributeVertexArray);
-    glBindVertexArray(m_attributeVertexArray);
     glGenVertexArrays(1, &m_normalVertexArray);
     glBindVertexArray(m_normalVertexArray);
 }
 
 Mesh::~Mesh()
 {
-    glBindVertexArray(m_attributeVertexArray);
-    glDeleteBuffers(1, &m_attributesBuffer);
-    glDeleteVertexArrays(1, &m_attributeVertexArray);
-
     glBindVertexArray(m_normalVertexArray);
     glDeleteBuffers(1, &m_normalsBuffer);
     glDeleteVertexArrays(1, &m_normalVertexArray);
@@ -49,19 +34,14 @@ void Mesh::operator delete(void* ptr)
     ::operator delete(ptr);
 }
 
-bool Mesh::IsEnabled() const
+void Mesh::AddAttribute(const glm::vec3& point)
 {
-    return m_enabled;
-}
-
-void Mesh::SetEnabled(bool enabled)
-{
-    m_enabled = enabled;
+    BasicMesh::AddAttribute(point);
 }
 
 void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal)
 {
-    m_points.push_back(point);
+    AddAttribute(point);
     m_normals.push_back(normal);
 }
 
@@ -69,12 +49,6 @@ void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const g
 {
     AddAttribute(point, normal);
     m_textureCoordinates.push_back(textureCoordinate);
-}
-
-void Mesh::AddComponent(Component* component)
-{
-    component->OnAdded(this);
-    m_components.push_back(component);
 }
 
 bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
@@ -131,73 +105,40 @@ void Mesh::FinalizeGeometry()
         normals.push_back(endPoint.z);
     }
 
-    int stride = (m_textureCoordinates.size() == 0) ? 6 * sizeof(float) : 8 * sizeof(float);
-    glBindVertexArray(m_attributeVertexArray);
-    glGenBuffers(1, &m_attributesBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_attributesBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * attributes.size(), attributes.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    int stride = 6 * sizeof(float);
 
     if (m_textureCoordinates.size() > 0)
     {
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, stride, (void*)(6 * sizeof(float)));
+        stride += 2 * sizeof(float);
+    }
+
+    glBindVertexArray(m_attributeVertexArray);
+    glGenBuffers(1, &m_attributesBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_attributesBuffer);
+    glBufferData(GL_ARRAY_BUFFER, attributes.size() * sizeof(float), attributes.data(), GL_STATIC_DRAW);
+
+    int offset = 0;
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offset);
+    glEnableVertexAttribArray(0);
+    offset += 3 * sizeof(float);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)offset);
+    glEnableVertexAttribArray(1);
+    offset += 3 * sizeof(float);
+
+    if (m_textureCoordinates.size() > 0)
+    {
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, stride, (void*)offset);
         glEnableVertexAttribArray(2);
+        offset += 2 * sizeof(float);
     }
 
     glBindVertexArray(m_normalVertexArray);
     glGenBuffers(1, &m_normalsBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_normalsBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * normals.size(), normals.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float), normals.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-}
-
-void Mesh::PrepareShader(Material* material, ShaderManager* shaderManager) const
-{
-    if (!material)
-    {
-        return;
-    }
-
-    const std::string& shaderName = material->GetShaderName();
-    shaderManager->UseShader(shaderName);
-
-    for (const std::pair<std::string, glm::vec3>& pair : material->GetVec3Uniforms())
-    {
-        glm::vec3 value = pair.second;
-        shaderManager->SetUniform(shaderName, pair.first, 3, glm::value_ptr(value));
-    }
-
-    for (const std::pair<std::string, glm::vec4>& pair : material->GetVec4Uniforms())
-    {
-        glm::vec4 value = pair.second;
-        shaderManager->SetUniform(shaderName, pair.first, 4, glm::value_ptr(value));
-    }
-
-    int textureSlot = 0;
-
-    for (const std::pair<std::string, std::pair<Texture*, unsigned int>>& pair : material->GetTextureUniforms())
-    {
-        const Texture* texture = pair.second.first;
-        shaderManager->SetUniform(shaderName, pair.first, 1, &textureSlot);
-        glActiveTexture(GL_TEXTURE0 + textureSlot);
-        glBindTexture(GL_TEXTURE_2D, pair.second.second);
-        textureSlot++;
-    }
-
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
-    shaderManager->SetUniform(shaderName, "model", 4, 4, false, glm::value_ptr(model));
-}
-
-void Mesh::Update(float deltaSeconds)
-{
-    for (Component* component : m_components)
-    {
-        component->Update(deltaSeconds);
-    }
 }
 
 void Mesh::Draw(ShaderManager* shaderManager) const

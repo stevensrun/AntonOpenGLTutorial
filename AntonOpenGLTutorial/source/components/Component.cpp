@@ -5,7 +5,7 @@ Component::Component()
 {
 }
 
-void Component::OnAdded(Mesh* mesh)
+void Component::OnAdded(BasicMesh* mesh)
 {
     m_mesh = mesh;
 }

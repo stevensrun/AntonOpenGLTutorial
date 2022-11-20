@@ -15,8 +15,6 @@ public:
     static Quaternion Identity();
     static Quaternion AngleAxis(float angleInDegrees, const glm::vec3& axis);
     static Quaternion Slerp(const Quaternion& q, const Quaternion& r, float t, bool shortestPath = true);
-    static float GetRotationAngleInDegrees(const glm::mat4& matrix);
-    static glm::vec3 GetRotationAxis(const glm::mat4& matrix, float angleInDegrees);
     static Quaternion FromEulerAngles(float rollInDegrees, float pitchInDegrees, float yawInDegrees);
 
     Quaternion();

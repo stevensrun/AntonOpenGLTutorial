@@ -1,4 +1,4 @@
-#include "camera/Camera.h"
+#include "camera/SceneCamera.h"
 #include <chrono>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -10,6 +10,9 @@ void KeyCallback(GLFWwindow* window, int keyCode, int scanCode, int action, int 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void MousePositionCallback(GLFWwindow* window, double xPosition, double yPosition);
 
+double previousXPosition = 1280.0f / 2.0;
+double previousYPosition = 760.0 / 2.0;
+
 int main(int argc, char** argv)
 {
     if (!glfwInit())
@@ -18,8 +21,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    int width = 1280;
+    int height = 760;
     glfwWindowHint(GLFW_SAMPLES, 8);
-    GLFWwindow* window = glfwCreateWindow(1280, 760, "OpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(width, height, "OpenGL", nullptr, nullptr);
 
     if (!window)
     {
@@ -47,8 +52,8 @@ int main(int argc, char** argv)
     std::pair<Renderer*, Scene*> pair = std::make_pair(renderer, scene);
     glfwSetWindowUserPointer(window, &pair);
 
-    scene->Setup();
-    Camera* camera = scene->GetCamera();
+    scene->Setup(width, height);
+    SceneCamera* camera = scene->GetSceneCamera();
     double previousSeconds = glfwGetTime();
 
     while (!glfwWindowShouldClose(window))
@@ -150,6 +155,23 @@ void KeyCallback(GLFWwindow* window, int keyCode, int scanCode, int action, int 
             std::cerr << "Failed to create screenshot image: " << ss.str() << "\n";
         }
     }
+    else if (keyCode == GLFW_KEY_END)
+    {
+        int inputMode = glfwGetInputMode(window, GLFW_CURSOR);
+
+        if (inputMode == GLFW_CURSOR_DISABLED)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetCursorPosCallback(window, nullptr);
+        }
+        else
+        {
+            previousXPosition = 1280.0 / 2.0;
+            previousYPosition = 760.0 / 2.0;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetCursorPosCallback(window, MousePositionCallback);
+        }
+    }
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -172,8 +194,6 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
 void MousePositionCallback(GLFWwindow* window, double xPosition, double yPosition)
 {
-    static double previousXPosition = 0.0;
-    static double previousYPosition = 0.0;
     double deltaX = xPosition - previousXPosition;
     double deltaY = yPosition - previousYPosition;
     previousXPosition = xPosition;
@@ -181,7 +201,7 @@ void MousePositionCallback(GLFWwindow* window, double xPosition, double yPositio
 
     std::pair<Renderer*, Scene*>* pair = static_cast<std::pair<Renderer*, Scene*>*>(glfwGetWindowUserPointer(window));
     Scene* scene = pair->second;
-    Camera* camera = scene->GetCamera();
+    SceneCamera* camera = scene->GetSceneCamera();
     camera->Yaw(static_cast<float>(deltaX));
     camera->Pitch(static_cast<float>(deltaY));
 }

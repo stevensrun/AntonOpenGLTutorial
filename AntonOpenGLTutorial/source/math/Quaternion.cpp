@@ -46,23 +46,6 @@ Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t, 
     return result;
 }
 
-float Quaternion::GetRotationAngleInDegrees(const glm::mat4& matrix)
-{
-    float trace = matrix[0][0] + matrix[1][1] + matrix[2][2] + matrix[3][3];
-    return glm::degrees(acos(trace / 2 - 1));
-}
-
-glm::vec3 Quaternion::GetRotationAxis(const glm::mat4& matrix, float angleInDegrees)
-{
-    float angleInRadians = glm::radians(angleInDegrees);
-    float denominator = 2.0f * sin(angleInRadians);
-    float x = (matrix[1][2] - matrix[2][1]) / denominator;
-    float y = (matrix[2][0] - matrix[0][2]) / denominator;
-    float z = (matrix[0][1] - matrix[1][0]) / denominator;
-
-    return glm::vec3(x, y, z);
-}
-
 Quaternion Quaternion::FromEulerAngles(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
 {
     float rollInRadians = glm::radians(rollInDegrees);

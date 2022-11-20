@@ -1,4 +1,5 @@
 #include "Dot.h"
+#include <GL/glew.h>
 
 Dot::Dot()
 {
@@ -16,16 +17,6 @@ void Dot::AddAttribute(const glm::vec3& point, const glm::vec3& normal)
     m_points.push_back(point);
     m_normals.push_back(normal);
     FinalizeGeometry();
-}
-
-void Dot::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const glm::vec2& textureCoordinate)
-{
-    Mesh::AddAttribute(point, normal, textureCoordinate);
-}
-
-bool Dot::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
-{
-    return false;
 }
 
 void Dot::Draw(ShaderManager* shaderManager) const

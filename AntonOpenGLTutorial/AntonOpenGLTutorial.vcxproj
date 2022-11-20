@@ -90,14 +90,19 @@
     <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="source\camera\Camera.cpp" />
+    <ClCompile Include="source\camera\SceneCamera.cpp" />
+    <ClCompile Include="source\camera\UiCamera.cpp" />
     <ClCompile Include="source\collisionShapes\TriangleShape.cpp" />
     <ClCompile Include="source\components\Component.cpp" />
     <ClCompile Include="source\components\Rotator.cpp" />
+    <ClCompile Include="source\gizmos\AxisGizmo.cpp" />
+    <ClCompile Include="source\gizmos\Gizmo.cpp" />
     <ClCompile Include="source\lights\Light.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\materials\Material.cpp" />
     <ClCompile Include="source\math\Quaternion.cpp" />
     <ClCompile Include="source\memory\MemoryTracker.cpp" />
+    <ClCompile Include="source\meshes\BasicMesh.cpp" />
     <ClCompile Include="source\meshes\Cone.cpp" />
     <ClCompile Include="source\meshes\Cube.cpp" />
     <ClCompile Include="source\meshes\Cylinder.cpp" />
@@ -136,13 +141,18 @@
     <ClInclude Include="dependencies\stb\stb_image.h" />
     <ClInclude Include="dependencies\stb\stb_image_write.h" />
     <ClInclude Include="source\camera\Camera.h" />
+    <ClInclude Include="source\camera\SceneCamera.h" />
+    <ClInclude Include="source\camera\UiCamera.h" />
     <ClInclude Include="source\collisionShapes\TriangleShape.h" />
     <ClInclude Include="source\components\Component.h" />
     <ClInclude Include="source\components\Rotator.h" />
+    <ClInclude Include="source\gizmos\AxisGizmo.h" />
+    <ClInclude Include="source\gizmos\Gizmo.h" />
     <ClInclude Include="source\lights\Light.h" />
     <ClInclude Include="source\materials\Material.h" />
     <ClInclude Include="source\math\Quaternion.h" />
     <ClInclude Include="source\memory\MemoryTracker.h" />
+    <ClInclude Include="source\meshes\BasicMesh.h" />
     <ClInclude Include="source\meshes\Cone.h" />
     <ClInclude Include="source\meshes\Cube.h" />
     <ClInclude Include="source\meshes\Cylinder.h" />
@@ -169,6 +179,7 @@
     <None Include="shaders\phongShading.glsl" />
     <None Include="shaders\textureMap.glsl" />
     <None Include="shaders\ambientReflectivity.glsl" />
+    <None Include="shaders\vertexColor.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\sandstone.png" />

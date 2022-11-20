@@ -1,6 +1,6 @@
 #pragma once
 
-class Mesh;
+class BasicMesh;
 
 class Component
 {
@@ -8,10 +8,10 @@ public:
     Component();
     virtual ~Component() = default;
 
-    virtual void OnAdded(Mesh* mesh);
+    virtual void OnAdded(BasicMesh* mesh);
     virtual void OnRemoved();
     virtual void Update(float delaTimeInSeconds) = 0;
 
 protected:
-    Mesh* m_mesh;
+    BasicMesh* m_mesh;
 };

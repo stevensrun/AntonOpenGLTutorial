@@ -1,5 +1,7 @@
 #include "Renderer.h"
-#include "camera/Camera.h"
+#include "camera/SceneCamera.h"
+#include "camera/UiCamera.h"
+#include "gizmos/Gizmo.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -10,7 +12,7 @@
 #include <imgui_impl_opengl3.h>
 #include "lights/Light.h"
 #include "materials/Material.h"
-#include "meshes/Mesh.h"
+#include "meshes/BasicMesh.h"
 #include "scene/Scene.h"
 #include "shaders/ShaderManager.h"
 #include <stb_image_write.h>
@@ -20,15 +22,7 @@ Renderer::Renderer(GLFWwindow* window)
     , m_culledFace(GL_BACK)
     , m_isCullingFace(false)
     , m_drawNormals(false)
-    , m_shaderManager(nullptr)
 {
-    m_shaderManager = new ShaderManager();
-    m_shaderManager->LoadShader("gouraudShading", "shaders/gouraudShading.glsl");
-    m_shaderManager->LoadShader("phongShading", "shaders/phongShading.glsl");
-    m_shaderManager->LoadShader("blinnPhongShading", "shaders/blinnPhongShading.glsl");
-    m_shaderManager->LoadShader("textureMap", "shaders/textureMap.glsl");
-    m_shaderManager->LoadShader("ambientReflectivity", "shaders/ambientReflectivity.glsl");
-
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     IMGUI_CHECKVERSION();
@@ -44,19 +38,13 @@ Renderer::~Renderer()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
-    if (m_shaderManager)
-    {
-        delete m_shaderManager;
-        m_shaderManager = nullptr;
-    }
 }
 
-std::unordered_map<std::string, std::vector<const Mesh*>> Renderer::CreateMeshShaderBatch(const std::vector<Mesh*>& meshes)
+std::unordered_map<std::string, std::vector<const BasicMesh*>> Renderer::CreateMeshShaderBatch(const std::vector<BasicMesh*>& meshes)
 {
-    std::unordered_map<std::string, std::vector<const Mesh*>> shadersBatch;
+    std::unordered_map<std::string, std::vector<const BasicMesh*>> shadersBatch;
 
-    for (const Mesh* mesh : meshes)
+    for (const BasicMesh* mesh : meshes)
     {
         if (!mesh->IsEnabled())
         {
@@ -67,21 +55,21 @@ std::unordered_map<std::string, std::vector<const Mesh*>> Renderer::CreateMeshSh
 
         if (shadersBatch.find(meshShaderName) == shadersBatch.end())
         {
-            shadersBatch[meshShaderName] = std::vector<const Mesh*>();
+            shadersBatch[meshShaderName] = std::vector<const BasicMesh*>();
         }
 
-        std::vector<const Mesh*>& meshDrawList = shadersBatch[meshShaderName];
+        std::vector<const BasicMesh*>& meshDrawList = shadersBatch[meshShaderName];
         meshDrawList.push_back(mesh);
     }
 
     return shadersBatch;
 }
 
-std::unordered_map<std::string, std::vector<const Mesh*>> Renderer::CreateNormalsShaderBatch(const std::vector<Mesh*>& meshes)
+std::unordered_map<std::string, std::vector<const BasicMesh*>> Renderer::CreateNormalsShaderBatch(const std::vector<BasicMesh*>& meshes)
 {
-    std::unordered_map<std::string, std::vector<const Mesh*>> shadersBatch;
+    std::unordered_map<std::string, std::vector<const BasicMesh*>> shadersBatch;
     
-    for (const Mesh* mesh : meshes)
+    /*for (const BasicMesh* mesh : meshes)
     {
         if (!mesh->IsEnabled() || !mesh->m_normalMaterial)
         {
@@ -92,21 +80,21 @@ std::unordered_map<std::string, std::vector<const Mesh*>> Renderer::CreateNormal
 
         if (shadersBatch.find(normalsShaderName) == shadersBatch.end())
         {
-            shadersBatch[normalsShaderName] = std::vector<const Mesh*>();
+            shadersBatch[normalsShaderName] = std::vector<const BasicMesh*>();
         }
 
-        std::vector<const Mesh*>& normalsDrawList = shadersBatch[normalsShaderName];
+        std::vector<const BasicMesh*>& normalsDrawList = shadersBatch[normalsShaderName];
         normalsDrawList.push_back(mesh);
-    }
+    }*/
 
     return shadersBatch;
 }
 
 void Renderer::Draw(Scene* scene)
 {
-    std::vector<Mesh*> meshes = scene->GetMeshes();
-    std::unordered_map<std::string, std::vector<const Mesh*>> meshShadersBatch = CreateMeshShaderBatch(meshes);
-    std::unordered_map<std::string, std::vector<const Mesh*>> normalsShadersBatch = CreateNormalsShaderBatch(meshes);
+    std::vector<BasicMesh*> meshes = scene->GetMeshes();
+    std::unordered_map<std::string, std::vector<const BasicMesh*>> meshShadersBatch = CreateMeshShaderBatch(meshes);
+    std::unordered_map<std::string, std::vector<const BasicMesh*>> normalsShadersBatch = CreateNormalsShaderBatch(meshes);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
@@ -121,60 +109,86 @@ void Renderer::Draw(Scene* scene)
         glDisable(GL_CULL_FACE);
     }
 
-    Camera* camera = scene->GetCamera();
+    ShaderManager* shaderManager = scene->GetShaderManager();
+    SceneCamera* camera = scene->GetSceneCamera();
     const std::vector<Light*>& lights = scene->GetLights();
 
-    for (const std::pair<std::string, std::vector<const Mesh*>>& batch : meshShadersBatch)
+    for (const std::pair<std::string, std::vector<const BasicMesh*>>& batch : meshShadersBatch)
     {
         std::string shaderName = batch.first;
-        m_shaderManager->UseShader(shaderName);
+        shaderManager->UseShader(shaderName);
 
         if (camera)
         {
             glm::vec3 position = camera->GetPosition();
             glm::mat4 view = camera->GetView();
             glm::mat4 projection = camera->GetProjection();
-            m_shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(position));
-            m_shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(view));
-            m_shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
+            shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(position));
+            shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(view));
+            shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
         }
 
         for (Light* light : lights)
         {
-            m_shaderManager->SetUniform(shaderName, "lightPosition", 3, glm::value_ptr(light->m_position));
-            m_shaderManager->SetUniform(shaderName, "ambientLightColor", 3, glm::value_ptr(light->m_ambientColor));
-            m_shaderManager->SetUniform(shaderName, "diffuseLightColor", 3, glm::value_ptr(light->m_diffuseColor));
-            m_shaderManager->SetUniform(shaderName, "specularLightColor", 3, glm::value_ptr(light->m_specularColor));
+            shaderManager->SetUniform(shaderName, "lightPosition", 3, glm::value_ptr(light->m_position));
+            shaderManager->SetUniform(shaderName, "ambientLightColor", 3, glm::value_ptr(light->m_ambientColor));
+            shaderManager->SetUniform(shaderName, "diffuseLightColor", 3, glm::value_ptr(light->m_diffuseColor));
+            shaderManager->SetUniform(shaderName, "specularLightColor", 3, glm::value_ptr(light->m_specularColor));
         }
 
-        for (const Mesh* mesh : batch.second)
+        for (const BasicMesh* mesh : batch.second)
         {
-            mesh->Draw(m_shaderManager);
+            mesh->Draw(shaderManager);
         }
     }
 
-    for (const std::pair<std::string, std::vector<const Mesh*>>& batch : normalsShadersBatch)
+    for (const std::pair<std::string, std::vector<const BasicMesh*>>& batch : normalsShadersBatch)
     {
         std::string shaderName = batch.first;
-        m_shaderManager->UseShader(shaderName);
+        shaderManager->UseShader(shaderName);
 
         if (camera)
         {
             glm::vec3 position = camera->GetPosition();
             glm::mat4 view = camera->GetView();
             glm::mat4 projection = camera->GetProjection();
-            m_shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(position));
-            m_shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(view));
-            m_shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
+            shaderManager->SetUniform(shaderName, "cameraPosition", 3, glm::value_ptr(position));
+            shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(view));
+            shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
         }
 
-        for (const Mesh* mesh : batch.second)
+        for (const BasicMesh* mesh : batch.second)
         {
-            mesh->DrawNormals(m_shaderManager);
+            //mesh->DrawNormals(shaderManager);
         }
     }
 
+    DrawGizmos(scene);
     DrawImGui();
+}
+
+void Renderer::DrawGizmos(Scene* scene)
+{
+    glDisable(GL_DEPTH_TEST);
+
+    ShaderManager* shaderManager = scene->GetShaderManager();
+    UiCamera* camera = scene->GetUiCamera();
+
+    for (Gizmo* gizmo : scene->GetGizmos())
+    {
+        std::string shaderName = gizmo->m_material->GetShaderName();
+        shaderManager->UseShader(shaderName);
+
+        if (camera)
+        {
+            glm::mat4 view = camera->GetView();
+            glm::mat4 projection = camera->GetProjection();
+            shaderManager->SetUniform(shaderName, "view", 4, 4, false, glm::value_ptr(view));
+            shaderManager->SetUniform(shaderName, "projection", 4, 4, false, glm::value_ptr(projection));
+        }
+
+        gizmo->Draw(shaderManager);
+    }
 }
 
 void Renderer::DrawImGui()
