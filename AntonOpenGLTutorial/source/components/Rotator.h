@@ -8,7 +8,8 @@ class Rotator : public Component
 {
 public:
     Rotator(float angleInDegrees, const glm::vec3& axis);
-    
+    virtual ~Rotator() = default;
+
     virtual void Update(float delaTimeInSeconds) override;
 
 private:
