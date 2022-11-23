@@ -33,7 +33,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetKeyCallback(window, KeyCallback);
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
     glfwSetCursorPosCallback(window, MousePositionCallback);
@@ -79,11 +78,11 @@ int main(int argc, char** argv)
 
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         {
-            camera->MoveUp();
+            camera->MoveDown();
         }
         else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
-            camera->MoveDown();
+            camera->MoveUp();
         }
 
         double currentSeconds = glfwGetTime();
@@ -155,41 +154,41 @@ void KeyCallback(GLFWwindow* window, int keyCode, int scanCode, int action, int 
             std::cerr << "Failed to create screenshot image: " << ss.str() << "\n";
         }
     }
-    else if (keyCode == GLFW_KEY_END)
-    {
-        int inputMode = glfwGetInputMode(window, GLFW_CURSOR);
-
-        if (inputMode == GLFW_CURSOR_DISABLED)
-        {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            glfwSetCursorPosCallback(window, nullptr);
-        }
-        else
-        {
-            previousXPosition = 1280.0 / 2.0;
-            previousYPosition = 760.0 / 2.0;
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            glfwSetCursorPosCallback(window, MousePositionCallback);
-        }
-    }
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (action != GLFW_PRESS || button != GLFW_MOUSE_BUTTON_LEFT)
-    {
-        return;
-    }
-
-    double mouseX;
-    double mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
-    int width;
-    int height;
-    glfwGetWindowSize(window, &width, &height);
     std::pair<Renderer*, Scene*>* pair = static_cast<std::pair<Renderer*, Scene*>*>(glfwGetWindowUserPointer(window));
     Scene* scene = pair->second;
-    scene->OnMouseClick(static_cast<float>(mouseX), static_cast<float>(mouseY), width, height);
+
+    if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS)
+    {
+        double mouseX;
+        double mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+        int width;
+        int height;
+        glfwGetWindowSize(window, &width, &height);
+        scene->OnMouseClick(static_cast<float>(mouseX), static_cast<float>(mouseY), width, height);
+    }
+    else if (button == GLFW_MOUSE_BUTTON_2)
+    {
+        SceneCamera* camera = scene->GetSceneCamera();
+
+        if (action == GLFW_PRESS)
+        {
+            camera->SetAllowCameraMovement(true);
+            glfwGetCursorPos(window, &previousXPosition, &previousYPosition);
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetCursorPosCallback(window, MousePositionCallback);
+        }
+        else
+        {
+            camera->SetAllowCameraMovement(false);
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetCursorPosCallback(window, nullptr);
+        }
+    }
 }
 
 void MousePositionCallback(GLFWwindow* window, double xPosition, double yPosition)
