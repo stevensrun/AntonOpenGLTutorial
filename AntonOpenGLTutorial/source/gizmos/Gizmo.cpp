@@ -42,16 +42,16 @@ void Gizmo::FinalizeGeometry()
         }
     }
 
-    int stride = 3 * sizeof(float);
+    int stride = 3;
 
     if (m_textureCoordinates.size() > 0)
     {
-        stride += 2 * sizeof(float);
+        stride += 2 ;
     }
 
     if (m_colors.size() > 0)
     {
-        stride += 4 * sizeof(float);
+        stride += 4;
     }
 
     glBindVertexArray(m_attributeVertexArray);
@@ -60,20 +60,20 @@ void Gizmo::FinalizeGeometry()
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * attributes.size(), attributes.data(), GL_STATIC_DRAW);
 
     int offset = 0;
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offset);
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, stride * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    offset += 3 * sizeof(float);
+    offset += 3;
 
     if (m_textureCoordinates.size() > 0)
     {
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, (void*)offset);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, stride * sizeof(float), (void*)(offset * sizeof(float)));
         glEnableVertexAttribArray(1);
-        offset += 2 * sizeof(float);
+        offset += 2;
     }
 
     if (m_colors.size() > 0)
     {
-        glVertexAttribPointer(2, 4, GL_FLOAT, false, stride, (void*)offset);
+        glVertexAttribPointer(2, 4, GL_FLOAT, false, stride * sizeof(float), (void*)(offset * sizeof(float)));
         glEnableVertexAttribArray(2);
     }
 }

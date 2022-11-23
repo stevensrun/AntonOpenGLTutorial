@@ -55,21 +55,46 @@ bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm:
 {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
 
-    for (int i = 0; i < m_points.size(); i += 3)
+    if (m_indices.size() > 0)
     {
-        glm::vec4 a = model * glm::vec4(m_points[i], 1.0f);
-        glm::vec4 b = model * glm::vec4(m_points[i + 1], 1.0f);
-        glm::vec4 c = model * glm::vec4(m_points[i + 2], 1.0f);
-        shape = new TriangleShape(a, b, c);
-        bool hit = shape->HitTest(rayOrigin, rayDirection, hitPoint, hitNormal, allowBackface);
-
-        if (hit)
+        for (int i = 0; i < m_indices.size(); i += 3)
         {
-            return true;
-        }
+            int index0 = m_indices[i];
+            int index1 = m_indices[i + 1];
+            int index2 = m_indices[i + 2];
+            glm::vec4 a = model * glm::vec4(m_points[index0], 1.0f);
+            glm::vec4 b = model * glm::vec4(m_points[index1], 1.0f);
+            glm::vec4 c = model * glm::vec4(m_points[index2], 1.0f);
+            shape = new TriangleShape(a, b, c);
+            bool hit = shape->HitTest(rayOrigin, rayDirection, hitPoint, hitNormal, allowBackface);
 
-        delete shape;
-        shape = nullptr;
+            if (hit)
+            {
+                return true;
+            }
+
+            delete shape;
+            shape = nullptr;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < m_points.size(); i += 3)
+        {
+            glm::vec4 a = model * glm::vec4(m_points[i], 1.0f);
+            glm::vec4 b = model * glm::vec4(m_points[i + 1], 1.0f);
+            glm::vec4 c = model * glm::vec4(m_points[i + 2], 1.0f);
+            shape = new TriangleShape(a, b, c);
+            bool hit = shape->HitTest(rayOrigin, rayDirection, hitPoint, hitNormal, allowBackface);
+
+            if (hit)
+            {
+                return true;
+            }
+
+            delete shape;
+            shape = nullptr;
+        }
     }
 
     return false;
@@ -105,11 +130,11 @@ void Mesh::FinalizeGeometry()
         normals.push_back(endPoint.z);
     }
 
-    int stride = 6 * sizeof(float);
+    int stride = 6;
 
     if (m_textureCoordinates.size() > 0)
     {
-        stride += 2 * sizeof(float);
+        stride += 2;
     }
 
     glBindVertexArray(m_attributeVertexArray);
@@ -121,19 +146,19 @@ void Mesh::FinalizeGeometry()
     glBufferData(GL_ARRAY_BUFFER, attributes.size() * sizeof(float), attributes.data(), GL_STATIC_DRAW);
 
     int offset = 0;
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, (void*)offset);
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, stride * sizeof(float), (void*)(offset * sizeof(float)));
     glEnableVertexAttribArray(0);
-    offset += 3 * sizeof(float);
+    offset += 3;
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, (void*)offset);
+    glVertexAttribPointer(1, 3, GL_FLOAT, false, stride * sizeof(float), (void*)(offset * sizeof(float)));
     glEnableVertexAttribArray(1);
-    offset += 3 * sizeof(float);
+    offset += 3;
 
     if (m_textureCoordinates.size() > 0)
     {
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, stride, (void*)offset);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, stride * sizeof(float), (void*)(offset * sizeof(float)));
         glEnableVertexAttribArray(2);
-        offset += 2 * sizeof(float);
+        offset += 2;
     }
 
     glBindVertexArray(m_normalVertexArray);
