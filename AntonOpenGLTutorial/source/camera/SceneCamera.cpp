@@ -16,6 +16,11 @@ SceneCamera::SceneCamera(const glm::vec3 position, float verticalFieldOfViewInDe
 
 void SceneCamera::MoveForward()
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     Quaternion inverse = m_rotation.GetInverse();
     Quaternion forward = inverse * m_forward * m_rotation;
     m_velocity += glm::vec3(forward.x, forward.y, forward.z) * m_moveSpeedInSeconds;
@@ -23,6 +28,11 @@ void SceneCamera::MoveForward()
 
 void SceneCamera::MoveBackward()
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     Quaternion inverse = m_rotation.GetInverse();
     Quaternion forward = inverse * m_forward * m_rotation;
     m_velocity += glm::vec3(-forward.x, -forward.y, -forward.z) * m_moveSpeedInSeconds;
@@ -30,6 +40,11 @@ void SceneCamera::MoveBackward()
 
 void SceneCamera::MoveLeft()
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     Quaternion inverse = m_rotation.GetInverse();
     Quaternion right = inverse * m_right * m_rotation;
     m_velocity += glm::vec3(-right.x, -right.y, -right.z) * m_moveSpeedInSeconds;
@@ -37,6 +52,11 @@ void SceneCamera::MoveLeft()
 
 void SceneCamera::MoveRight()
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     Quaternion inverse = m_rotation.GetInverse();
     Quaternion right = inverse * m_right * m_rotation;
     m_velocity += glm::vec3(right.x, right.y, right.z) * m_moveSpeedInSeconds;
@@ -44,6 +64,11 @@ void SceneCamera::MoveRight()
 
 void SceneCamera::MoveUp()
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     Quaternion inverse = m_rotation.GetInverse();
     Quaternion up = inverse * m_up * m_rotation;
     m_velocity += glm::vec3(up.x, up.y, up.z) * m_moveSpeedInSeconds;
@@ -51,6 +76,11 @@ void SceneCamera::MoveUp()
 
 void SceneCamera::MoveDown()
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     Quaternion inverse = m_rotation.GetInverse();
     Quaternion up = inverse * m_up * m_rotation;
     m_velocity += glm::vec3(-up.x, -up.y, -up.z) * m_moveSpeedInSeconds;
@@ -58,11 +88,21 @@ void SceneCamera::MoveDown()
 
 void SceneCamera::Yaw(float angleInDegrees)
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     m_currentYawInDegrees += angleInDegrees * 0.25f;
 }
 
 void SceneCamera::Pitch(float angleInDegrees)
 {
+    if (!m_allowCameraMovement)
+    {
+        return;
+    }
+
     m_currentPitchInDegrees += angleInDegrees * 0.25f;
 }
 
