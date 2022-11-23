@@ -20,21 +20,27 @@ uniform vec4 specularReflectivity;
 
 void main()
 {
+    vec3 ambientIntensity = ambientLightColor * ambientReflectivity;
+    vec3 specularIntensity = vec3(0.0, 0.0, 0.0);
+    vec3 diffuseIntensity = vec3(0.0, 0.0, 0.0);
+
     vec4 position = model * vec4(vertex_position, 1.0);
-    vec3 incidentRay = normalize(position.xyz - lightPosition);
     vec3 normal = vec3(inverse(transpose(model)) * vec4(vertex_normal, 0.0f));
     vec3 unitLengthNormal = normalize(normal);
-    float diffuseFactor = max(dot(-incidentRay, unitLengthNormal), 0.0);
-    vec3 ambientIntensity = ambientLightColor * ambientReflectivity;
-    vec3 diffuseIntensity = diffuseLightColor * diffuseReflectivity * diffuseFactor;
-    vec3 specularIntensity = vec3(0.0, 0.0, 0.0);
+    vec3 cameraRay = normalize(position.xyz - cameraPosition);
 
-    if (diffuseFactor > 0.0)
+    if (dot(-cameraRay, unitLengthNormal) > 0.0)
     {
-        vec3 reflectionRay = reflect(incidentRay, unitLengthNormal);
-        vec3 cameraRay = normalize(cameraPosition - position.xyz);
-        float specularFactor = max(dot(cameraRay, reflectionRay), 0.0);
-        specularIntensity = specularLightColor * specularReflectivity.rgb * pow(specularFactor, specularReflectivity.a);
+        vec3 incidentRay = normalize(position.xyz - lightPosition);
+        float diffuseFactor = max(dot(-incidentRay, unitLengthNormal), 0.0);
+        diffuseIntensity = diffuseLightColor * diffuseReflectivity * diffuseFactor;
+
+        if (diffuseFactor > 0.0)
+        {
+            vec3 reflectionRay = reflect(incidentRay, unitLengthNormal);
+            float specularFactor = max(dot(cameraRay, reflectionRay), 0.0);
+            specularIntensity = specularLightColor * specularReflectivity.rgb * pow(specularFactor, specularReflectivity.a);
+        }
     }
 
     color = vec4(ambientIntensity + diffuseIntensity + specularIntensity, 1.0);

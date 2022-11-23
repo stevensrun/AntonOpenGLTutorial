@@ -39,19 +39,24 @@ uniform vec4 specularReflectivity;
 
 void main()
 {
-    vec3 unitLengthNormal = normalize(normal);
     vec3 ambientIntensity = ambientLightColor * ambientReflectivity;
-    vec3 lightDirection = normalize(lightPosition - position);
-    float diffuseFactor = max(dot(lightDirection, unitLengthNormal), 0.0);
-    vec3 diffuseIntensity = diffuseLightColor * diffuseReflectivity * diffuseFactor;
+    vec3 diffuseIntensity = vec3(0.0, 0.0, 0.0);
     vec3 specularIntensity = vec3(0.0, 0.0, 0.0);
 
-    if (diffuseFactor > 0.0)
+    if (gl_FrontFacing)
     {
-        vec3 cameraDirection = normalize(cameraPosition - position);
-        vec3 halfWay = normalize(lightDirection + cameraDirection);
-        float specularFactor = max(dot(halfWay, unitLengthNormal), 0.0);
-        specularIntensity = specularLightColor * specularReflectivity.rgb * pow(specularFactor, specularReflectivity.a);
+        vec3 unitLengthNormal = normalize(normal);
+        vec3 lightDirection = normalize(lightPosition - position);
+        float diffuseFactor = max(dot(lightDirection, unitLengthNormal), 0.0);
+        diffuseIntensity = diffuseLightColor * diffuseReflectivity * diffuseFactor;
+
+        if (diffuseFactor > 0.0)
+        {
+            vec3 cameraDirection = normalize(cameraPosition - position);
+            vec3 halfWay = normalize(lightDirection + cameraDirection);
+            float specularFactor = max(dot(halfWay, unitLengthNormal), 0.0);
+            specularIntensity = specularLightColor * specularReflectivity.rgb * pow(specularFactor, specularReflectivity.a);
+        }
     }
 
     frag_color = vec4(ambientIntensity + diffuseIntensity + specularIntensity, 1.0);
