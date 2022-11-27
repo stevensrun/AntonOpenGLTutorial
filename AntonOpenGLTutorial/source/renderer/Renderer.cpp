@@ -12,6 +12,7 @@
 #include <imgui_impl_opengl3.h>
 #include "lights/Light.h"
 #include "materials/Material.h"
+#include "memory/MemoryTracker.h"
 #include "meshes/BasicMesh.h"
 #include "meshes/Mesh.h"
 #include "scene/Scene.h"
@@ -204,6 +205,8 @@ void Renderer::DrawImGui()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+
+    ImGui::Text("Memory Usage (bytes): %d", MemoryTracker::GetMemoryUsage(MemoryCategory::Meshes));
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
