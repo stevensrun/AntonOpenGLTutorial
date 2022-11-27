@@ -14,10 +14,7 @@ Texture::Texture(const std::string& filepath)
 
 Texture::~Texture()
 {
-    if (m_data)
-    {
-        delete m_data;
-    }
+    delete m_data;
 }
 
 const unsigned char* Texture::GetData() const

@@ -40,29 +40,10 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    if (m_shaderManager)
-    {
         delete m_shaderManager;
-        m_shaderManager = nullptr;
-    }
-
-    if (m_sceneCamera)
-    {
         delete m_sceneCamera;
-        m_sceneCamera = nullptr;
-    }
-
-    if (m_uiCamera)
-    {
         delete m_uiCamera;
-        m_uiCamera = nullptr;
-    }
-
-    if (m_dot)
-    {
         delete m_dot;
-        m_dot = nullptr;
-    }
 }
 
 void Scene::Setup(int framebufferWidth, int framebufferHeight)

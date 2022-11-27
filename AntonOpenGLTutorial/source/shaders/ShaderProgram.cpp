@@ -88,14 +88,12 @@ ShaderProgram::~ShaderProgram()
     {
         glDetachShader(m_id, m_vertexShader->GetId());
         delete m_vertexShader;
-        m_vertexShader = nullptr;
     }
 
     if (m_fragmentShader)
     {
         glDetachShader(m_id, m_fragmentShader->GetId());
         delete m_fragmentShader;
-        m_fragmentShader = nullptr;
     }
 
     glDeleteProgram(m_id);
