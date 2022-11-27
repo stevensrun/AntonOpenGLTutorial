@@ -7,6 +7,19 @@
 #include "memory/MemoryTracker.h"
 #include "shaders/ShaderManager.h"
 
+void* BasicMesh::operator new(size_t size)
+{
+    MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+    void* ptr = ::operator new(size);
+    return ptr;
+}
+
+void BasicMesh::operator delete(void* ptr, std::size_t size)
+{
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
+    ::operator delete(ptr);
+}
+
 BasicMesh::BasicMesh()
     : m_material(nullptr)
     , m_sizeInBytes(0)
@@ -26,20 +39,6 @@ BasicMesh::~BasicMesh()
     glDeleteBuffers(1, &m_elementBuffer);
     glDeleteBuffers(1, &m_attributesBuffer);
     glDeleteVertexArrays(1, &m_attributeVertexArray);
-}
-
-void* BasicMesh::operator new(size_t size)
-{
-    MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
-    BasicMesh* mesh = ::new BasicMesh();
-    return mesh;
-}
-
-void BasicMesh::operator delete(void* ptr)
-{
-    BasicMesh* mesh = reinterpret_cast<BasicMesh*>(ptr);
-    MemoryTracker::RemoveMemoryUsage(mesh->m_sizeInBytes, MemoryCategory::Meshes);
-    ::operator delete(ptr);
 }
 
 bool BasicMesh::IsEnabled() const

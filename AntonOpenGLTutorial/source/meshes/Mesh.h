@@ -8,11 +8,11 @@ class TriangleShape;
 class Mesh : public BasicMesh
 {
 public:
+    static void* operator new(size_t size);
+    static void operator delete(void* ptr, std::size_t size);
+
     Mesh();
     virtual ~Mesh();
-
-    void* operator new(size_t size);
-    void operator delete(void* ptr);
 
     virtual void AddAttribute(const glm::vec3& point) override;
     virtual void AddAttribute(const glm::vec3& point, const glm::vec3& normal);

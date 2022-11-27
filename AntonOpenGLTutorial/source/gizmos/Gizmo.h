@@ -7,11 +7,11 @@ class SceneCamera;
 class Gizmo : public BasicMesh
 {
 public:
+    static void* operator new(size_t size);
+    static void operator delete(void* ptr, std::size_t size);
+
     Gizmo() = default;
     virtual ~Gizmo() = default;
-
-    void* operator new(size_t size);
-    void operator delete(void* ptr);
 
     virtual void Update(float deltaTimeInSeconds, SceneCamera* camera);
 

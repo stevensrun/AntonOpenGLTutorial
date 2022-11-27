@@ -5,6 +5,19 @@
 #include <glm/ext.hpp>
 #include "memory/MemoryTracker.h"
 
+void* Mesh::operator new(size_t size)
+{
+    MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+    void* ptr = ::operator new(size);
+    return ptr;
+}
+
+void Mesh::operator delete(void* ptr, std::size_t size)
+{
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
+    ::operator delete(ptr);
+}
+
 Mesh::Mesh()
     : m_normalMaterial(nullptr)
     , m_normalsBuffer(0)
@@ -18,20 +31,6 @@ Mesh::~Mesh()
     glBindVertexArray(m_normalVertexArray);
     glDeleteBuffers(1, &m_normalsBuffer);
     glDeleteVertexArrays(1, &m_normalVertexArray);
-}
-
-void* Mesh::operator new(size_t size)
-{
-    MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
-    Mesh* mesh = ::new Mesh();
-    return mesh;
-}
-
-void Mesh::operator delete(void* ptr)
-{
-    Mesh* mesh = reinterpret_cast<Mesh*>(ptr);
-    MemoryTracker::RemoveMemoryUsage(mesh->m_sizeInBytes, MemoryCategory::Meshes);
-    ::operator delete(ptr);
 }
 
 void Mesh::AddAttribute(const glm::vec3& point)

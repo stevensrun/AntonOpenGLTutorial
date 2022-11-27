@@ -6,14 +6,13 @@
 void* Gizmo::operator new(size_t size)
 {
     MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
-    Gizmo* gizmo = ::new Gizmo();
-    return gizmo;
+    void* ptr = ::operator new(size);
+    return ptr;
 }
 
-void Gizmo::operator delete(void* ptr)
+void Gizmo::operator delete(void* ptr, std::size_t size)
 {
-    Gizmo* gizmo = reinterpret_cast<Gizmo*>(ptr);
-    MemoryTracker::RemoveMemoryUsage(gizmo->m_sizeInBytes, MemoryCategory::Meshes);
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
     ::operator delete(ptr);
 }
 

@@ -11,11 +11,11 @@ class ShaderManager;
 class BasicMesh
 {
 public:
+    static void* operator new(size_t size);
+    static void operator delete(void* ptr, std::size_t size);
+
     BasicMesh();
     virtual ~BasicMesh();
-
-    void* operator new(size_t size);
-    void operator delete(void* ptr);
 
     bool IsEnabled() const;
     void SetEnabled(bool enabled);
