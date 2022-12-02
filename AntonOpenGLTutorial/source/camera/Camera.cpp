@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-Camera::Camera(const glm::vec3& position)
+Camera::Camera(const glm::vec3& position) noexcept
     : m_forward(0.0f, 0.0f, 0.0f, -1.0f)
     , m_right(0.0f, 1.0f, 0.0f, 0.0f)
     , m_up(0.0f, 0.0f, 1.0f, 0.0f)
@@ -19,31 +19,31 @@ Camera::~Camera()
 {
 }
 
-void Camera::SetAllowCameraMovement(bool allowed)
+void Camera::SetAllowCameraMovement(bool allowed) noexcept
 {
     m_allowCameraMovement = allowed;
 }
 
-glm::vec3 Camera::GetPosition() const
+glm::vec3 Camera::GetPosition() const noexcept
 {
     return m_position;
 }
 
-glm::mat4 Camera::GetView() const
+glm::mat4 Camera::GetView() const noexcept
 {
     return m_view;
 }
 
-glm::mat4 Camera::GetProjection() const
+glm::mat4 Camera::GetProjection() const noexcept
 {
     return m_projection;
 }
 
-Quaternion Camera::GetRotation() const
+Quaternion Camera::GetRotation() const noexcept
 {
     return m_rotation;
 }
 
-void Camera::Update(float deltaTimeInSeconds)
+void Camera::Update(float deltaTimeInSeconds) noexcept
 {
 }

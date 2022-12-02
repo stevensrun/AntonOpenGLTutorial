@@ -6,15 +6,18 @@
 class Camera
 {
 public:
-    explicit Camera(const glm::vec3& position);
+    explicit Camera(const glm::vec3& position) noexcept;
+    Camera(const Camera& rhs) = delete;
     virtual ~Camera() = 0;
 
-    void SetAllowCameraMovement(bool allowed);
-    glm::vec3 GetPosition() const;
-    glm::mat4 GetView() const;
-    glm::mat4 GetProjection() const;
-    Quaternion GetRotation() const;
-    virtual void Update(float deltaTimeInSeconds);
+    Camera& operator=(Camera& rhs) = delete;
+
+    void SetAllowCameraMovement(bool allowed) noexcept;
+    glm::vec3 GetPosition() const noexcept;
+    glm::mat4 GetView() const noexcept;
+    glm::mat4 GetProjection() const noexcept;
+    Quaternion GetRotation() const noexcept;
+    virtual void Update(float deltaTimeInSeconds) noexcept;
 
 protected:
     const Quaternion m_forward;

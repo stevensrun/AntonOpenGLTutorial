@@ -3,10 +3,10 @@
 #include <GL/glew.h>
 #include <string>
 
-class Shader
+class Shader final
 {
 public:
-    Shader(GLenum type, const std::string& source);
+    Shader(GLenum type, const std::string& source) noexcept;
     ~Shader();
 
     bool IsValid() const;

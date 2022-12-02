@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Shader::Shader(GLenum type, const std::string& source)
+Shader::Shader(GLenum type, const std::string& source) noexcept
     : m_id(0)
 {
     const char* sourceString = source.c_str();
@@ -40,7 +40,6 @@ Shader::Shader(GLenum type, const std::string& source)
 Shader::~Shader()
 {
     glDeleteShader(m_id);
-    m_id = 0;
 }
 
 bool Shader::IsValid() const

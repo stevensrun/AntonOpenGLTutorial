@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-SceneCamera::SceneCamera(const glm::vec3 position, float verticalFieldOfViewInDegrees, float aspectRatio)
+SceneCamera::SceneCamera(const glm::vec3 position, float verticalFieldOfViewInDegrees, float aspectRatio) noexcept
     : Camera(position)
     , m_velocity(0.0f, 0.0f, 0.0f)
     , m_currentYawInDegrees(0.0f)
@@ -14,7 +14,7 @@ SceneCamera::SceneCamera(const glm::vec3 position, float verticalFieldOfViewInDe
     Update(0.0f);
 }
 
-void SceneCamera::MoveForward()
+void SceneCamera::MoveForward() noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -26,7 +26,7 @@ void SceneCamera::MoveForward()
     m_velocity += glm::vec3(forward.x, forward.y, forward.z) * m_moveSpeedInSeconds;
 }
 
-void SceneCamera::MoveBackward()
+void SceneCamera::MoveBackward() noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -38,7 +38,7 @@ void SceneCamera::MoveBackward()
     m_velocity += glm::vec3(-forward.x, -forward.y, -forward.z) * m_moveSpeedInSeconds;
 }
 
-void SceneCamera::MoveLeft()
+void SceneCamera::MoveLeft() noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -50,7 +50,7 @@ void SceneCamera::MoveLeft()
     m_velocity += glm::vec3(-right.x, -right.y, -right.z) * m_moveSpeedInSeconds;
 }
 
-void SceneCamera::MoveRight()
+void SceneCamera::MoveRight() noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -62,7 +62,7 @@ void SceneCamera::MoveRight()
     m_velocity += glm::vec3(right.x, right.y, right.z) * m_moveSpeedInSeconds;
 }
 
-void SceneCamera::MoveUp()
+void SceneCamera::MoveUp() noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -74,7 +74,7 @@ void SceneCamera::MoveUp()
     m_velocity += glm::vec3(up.x, up.y, up.z) * m_moveSpeedInSeconds;
 }
 
-void SceneCamera::MoveDown()
+void SceneCamera::MoveDown() noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -86,7 +86,7 @@ void SceneCamera::MoveDown()
     m_velocity += glm::vec3(-up.x, -up.y, -up.z) * m_moveSpeedInSeconds;
 }
 
-void SceneCamera::Yaw(float angleInDegrees)
+void SceneCamera::Yaw(float angleInDegrees) noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -96,7 +96,7 @@ void SceneCamera::Yaw(float angleInDegrees)
     m_currentYawInDegrees += angleInDegrees * 0.25f;
 }
 
-void SceneCamera::Pitch(float angleInDegrees)
+void SceneCamera::Pitch(float angleInDegrees) noexcept
 {
     if (!m_allowCameraMovement)
     {
@@ -106,7 +106,7 @@ void SceneCamera::Pitch(float angleInDegrees)
     m_currentPitchInDegrees += angleInDegrees * 0.25f;
 }
 
-void SceneCamera::Update(float deltaTimeInSeconds)
+void SceneCamera::Update(float deltaTimeInSeconds) noexcept
 {
     m_rotation = Quaternion::FromEulerAngles(0.0f, -m_currentPitchInDegrees, -m_currentYawInDegrees);
 

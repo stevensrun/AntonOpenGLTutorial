@@ -5,18 +5,18 @@
 class SceneCamera : public Camera
 {
 public:
-    SceneCamera(const glm::vec3 position, float verticalFieldOfViewInDegrees, float aspectRatio);
+    SceneCamera(const glm::vec3 position, float verticalFieldOfViewInDegrees, float aspectRatio) noexcept;
     virtual ~SceneCamera() = default;
 
-    void MoveForward();
-    void MoveBackward();
-    void MoveLeft();
-    void MoveRight();
-    void MoveUp();
-    void MoveDown();
-    void Yaw(float angleInDegrees);
-    void Pitch(float angleInDegrees);
-    virtual void Update(float deltaTimeInSeconds) override;
+    void MoveForward() noexcept;
+    void MoveBackward() noexcept;
+    void MoveLeft() noexcept;
+    void MoveRight() noexcept;
+    void MoveUp() noexcept;
+    void MoveDown() noexcept;
+    void Yaw(float angleInDegrees) noexcept;
+    void Pitch(float angleInDegrees) noexcept;
+    virtual void Update(float deltaTimeInSeconds) noexcept override;
 
 protected:
     glm::vec3 m_velocity;

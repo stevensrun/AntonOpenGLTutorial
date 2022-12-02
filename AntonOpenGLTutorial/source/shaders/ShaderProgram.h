@@ -1,22 +1,23 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 class Shader;
 
-class ShaderProgram
+class ShaderProgram final
 {
 public:
-    explicit ShaderProgram(const std::string& filepath);
+    explicit ShaderProgram(const std::string& filepath) noexcept;
     ~ShaderProgram();
 
-    bool IsValid() const;
-    unsigned int GetId() const;
-    void Bind() const;
-    void Unbind() const;
+    bool IsValid() const noexcept;
+    unsigned int GetId() const noexcept;
+    void Bind() const noexcept;
+    void Unbind() const noexcept;
 
 private:
     unsigned int m_id;
-    Shader* m_vertexShader;
-    Shader* m_fragmentShader;
+    std::unique_ptr<Shader> m_vertexShader;
+    std::unique_ptr<Shader> m_fragmentShader;
 };

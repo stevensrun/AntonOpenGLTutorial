@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-UiCamera::UiCamera(int width, int height)
+UiCamera::UiCamera(int width, int height) noexcept
     : Camera(glm::vec3(0.0f, 0.0f, 0.0f))
 {
     m_view = glm::lookAt(m_position, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));

@@ -5,7 +5,7 @@
 class Light
 {
 public:
-    explicit Light(const glm::vec3& position);
+    explicit Light(const glm::vec3& position) noexcept;
     virtual ~Light() = default;
 
 public:

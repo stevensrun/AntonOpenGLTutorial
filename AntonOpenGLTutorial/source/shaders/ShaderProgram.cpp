@@ -5,10 +5,8 @@
 #include "Shader.h"
 #include <sstream>
 
-ShaderProgram::ShaderProgram(const std::string& filepath)
+ShaderProgram::ShaderProgram(const std::string& filepath) noexcept
     : m_id(0)
-    , m_vertexShader(nullptr)
-    , m_fragmentShader(nullptr)
 {
     std::ifstream file(filepath);
 
@@ -50,8 +48,8 @@ ShaderProgram::ShaderProgram(const std::string& filepath)
 
     file.close();
 
-    m_vertexShader = new Shader(GL_VERTEX_SHADER, ss[0].str());
-    m_fragmentShader = new Shader(GL_FRAGMENT_SHADER, ss[1].str());
+    m_vertexShader.reset(new Shader(GL_VERTEX_SHADER, ss[0].str()));
+    m_fragmentShader.reset(new Shader(GL_FRAGMENT_SHADER, ss[1].str()));
 
     if (!m_vertexShader->IsValid() || !m_fragmentShader->IsValid())
     {
@@ -62,6 +60,8 @@ ShaderProgram::ShaderProgram(const std::string& filepath)
     glAttachShader(m_id, m_vertexShader->GetId());
     glAttachShader(m_id, m_fragmentShader->GetId());
     glLinkProgram(m_id);
+    glDetachShader(m_id, m_vertexShader->GetId());
+    glDetachShader(m_id, m_fragmentShader->GetId());
 
     int result;
     glGetProgramiv(m_id, GL_LINK_STATUS, &result);
@@ -83,39 +83,25 @@ ShaderProgram::ShaderProgram(const std::string& filepath)
 
 ShaderProgram::~ShaderProgram()
 {
-
-    if (m_vertexShader)
-    {
-        glDetachShader(m_id, m_vertexShader->GetId());
-        delete m_vertexShader;
-    }
-
-    if (m_fragmentShader)
-    {
-        glDetachShader(m_id, m_fragmentShader->GetId());
-        delete m_fragmentShader;
-    }
-
     glDeleteProgram(m_id);
-    m_id = 0;
 }
 
-bool ShaderProgram::IsValid() const
+bool ShaderProgram::IsValid() const noexcept
 {
     return m_id != 0;
 }
 
-unsigned int ShaderProgram::GetId() const
+unsigned int ShaderProgram::GetId() const noexcept
 {
     return m_id;
 }
 
-void ShaderProgram::Bind() const
+void ShaderProgram::Bind() const noexcept
 {
     glUseProgram(m_id);
 }
 
-void ShaderProgram::Unbind() const
+void ShaderProgram::Unbind() const noexcept
 {
     glUseProgram(0);
 }

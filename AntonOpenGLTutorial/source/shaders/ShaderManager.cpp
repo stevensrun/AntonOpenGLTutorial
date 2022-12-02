@@ -4,14 +4,9 @@
 #include <GL/glew.h>
 #include "ShaderProgram.h"
 
-ShaderManager::ShaderManager()
-    : m_activeShader(nullptr)
+bool ShaderManager::UseShader(const std::string& shaderName) noexcept
 {
-}
-
-bool ShaderManager::UseShader(const std::string& shaderName)
-{
-    std::unordered_map<std::string, ShaderProgram*>::const_iterator it = m_shaders.find(shaderName);
+    std::unordered_map<std::string, std::shared_ptr<ShaderProgram>>::const_iterator it = m_shaders.find(shaderName);
 
     if (it == m_shaders.end())
     {
@@ -29,13 +24,12 @@ bool ShaderManager::UseShader(const std::string& shaderName)
     return true;
 }
 
-bool ShaderManager::LoadShader(const std::string& shaderName, const std::string& filepath)
+bool ShaderManager::LoadShader(const std::string& shaderName, const std::string& filepath) noexcept
 {
-    ShaderProgram* program = new ShaderProgram(filepath);
+    std::shared_ptr<ShaderProgram> program = std::make_shared<ShaderProgram>(filepath);
 
     if (!program->IsValid())
     {
-        delete program;
         return false;
     }
 
@@ -43,7 +37,7 @@ bool ShaderManager::LoadShader(const std::string& shaderName, const std::string&
     return true;
 }
 
-void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int stride, float* value)
+void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int stride, float* value) noexcept
 {
     if (!UseShader(shaderName))
     {
@@ -77,7 +71,7 @@ void ShaderManager::SetUniform(const std::string& shaderName, const std::string&
     }
 }
 
-void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int stride, int* value)
+void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int stride, int* value) noexcept
 {
     if (!UseShader(shaderName))
     {
@@ -112,7 +106,7 @@ void ShaderManager::SetUniform(const std::string& shaderName, const std::string&
 
 }
 
-void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int stride, unsigned int* value)
+void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int stride, unsigned int* value) noexcept
 {
     if (!UseShader(shaderName))
     {
@@ -147,7 +141,7 @@ void ShaderManager::SetUniform(const std::string& shaderName, const std::string&
 
 }
 
-void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int rows, int columns, bool transpose, float* value)
+void ShaderManager::SetUniform(const std::string& shaderName, const std::string& uniformName, int rows, int columns, bool transpose, float* value) noexcept
 {
     if (!UseShader(shaderName))
     {
@@ -180,7 +174,7 @@ void ShaderManager::SetUniform(const std::string& shaderName, const std::string&
 
 }
 
-int ShaderManager::GetUniformLocation(const std::string& uniformName)
+int ShaderManager::GetUniformLocation(const std::string& uniformName) noexcept
 {
     if (m_shaderUniforms.find(m_activeShader) == m_shaderUniforms.end())
     {
