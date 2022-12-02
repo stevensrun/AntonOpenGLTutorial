@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "math/Quaternion.h"
+#include <memory>
 #include <vector>
 
 class Component;
@@ -22,23 +23,23 @@ public:
 
     virtual void AddAttribute(const glm::vec3& point);
     virtual void AddElementIndex(unsigned int index);
-    void AddComponent(Component* component);
+    void AddComponent(std::unique_ptr<Component> component);
     virtual void Update(float deltaSeconds);
     virtual void Draw(ShaderManager* shaderManager) const;
 
 protected:
     virtual void FinalizeGeometry();
-    virtual void PrepareShader(Material* material, ShaderManager* shaderManager) const;
+    virtual void PrepareShader(std::shared_ptr<Material> material, ShaderManager* shaderManager) const;
 
 public:
-    Material* m_material;
+    std::shared_ptr<Material> m_material;
     glm::vec3 m_position;
     Quaternion m_rotation;
     glm::vec3 m_scale;
 
 protected:
     size_t m_sizeInBytes;
-    std::vector<Component*> m_components;
+    std::vector<std::unique_ptr<Component>> m_components;
     bool m_enabled;
     std::vector<glm::vec3> m_points;
     std::vector<unsigned int> m_indices;

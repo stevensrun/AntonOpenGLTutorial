@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 class BasicMesh;
 
 class Component

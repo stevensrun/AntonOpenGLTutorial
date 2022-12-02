@@ -19,8 +19,7 @@ void Mesh::operator delete(void* ptr, std::size_t size)
 }
 
 Mesh::Mesh()
-    : m_normalMaterial(nullptr)
-    , m_normalsBuffer(0)
+    : m_normalsBuffer(0)
 {
     glGenVertexArrays(1, &m_normalVertexArray);
     glBindVertexArray(m_normalVertexArray);

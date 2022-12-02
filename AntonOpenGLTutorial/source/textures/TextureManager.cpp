@@ -1,14 +1,14 @@
 #include "TextureManager.h"
 #include "Texture.h"
 
-Texture* TextureManager::GetTexture(const std::string& filepath)
+std::shared_ptr<Texture> TextureManager::GetTexture(const std::string& filepath) noexcept
 {
     if (m_textures.find(filepath) != m_textures.end()) 
     {
         return m_textures[filepath];
     }
 
-    Texture* texture = new Texture(filepath);
+    std::shared_ptr<Texture> texture = std::make_shared<Texture>(filepath);
 
     if (texture->GetData() == nullptr)
     {

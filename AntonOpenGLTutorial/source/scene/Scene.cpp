@@ -40,10 +40,10 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-        delete m_shaderManager;
-        delete m_sceneCamera;
-        delete m_uiCamera;
-        delete m_dot;
+    delete m_shaderManager;
+    delete m_sceneCamera;
+    delete m_uiCamera;
+    delete m_dot;
 }
 
 void Scene::Setup(int framebufferWidth, int framebufferHeight)
@@ -57,8 +57,7 @@ void Scene::Setup(int framebufferWidth, int framebufferHeight)
 
 void Scene::SetupGizmos()
 {
-    Material* vertexColor = new Material("vertexColor");
-
+    std::shared_ptr<Material> vertexColor = std::make_shared<Material>("vertexColor");
     AxisGizmo* axisGizmo = new AxisGizmo();
     axisGizmo->m_material = vertexColor;
     axisGizmo->m_position = glm::vec3(-0.9f, -0.75f, 0.0f);
@@ -77,7 +76,7 @@ void Scene::SetupLights()
 
 void Scene::SetupMeshes()
 {
-    Material* blueCardboard = new Material("phongShading");
+    std::shared_ptr<Material> blueCardboard = std::make_shared<Material>("phongShading");
     blueCardboard->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
     blueCardboard->AddUniform("diffuseReflectivity", glm::vec3(0.0f, 0.0f, 1.0f));
     blueCardboard->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 250.0f));
@@ -106,7 +105,7 @@ void Scene::SetupMeshes()
     tetraSphere->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
     m_meshes.push_back(tetraSphere);
 
-    Material* lightGray = new Material("blinnPhongShading");
+    std::shared_ptr<Material> lightGray = std::make_shared<Material>("blinnPhongShading");
     lightGray->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
     lightGray->AddUniform("diffuseReflectivity", glm::vec3(0.8f, 0.8f, 0.8f));
     lightGray->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 400.0f));
@@ -225,7 +224,7 @@ void Scene::OnMouseClick(float mouseX, float mouseY, int width, int height)
 
         if (shape)
         {
-            Material* colorMaterial = new Material("ambientReflectivity");
+            std::shared_ptr<Material> colorMaterial = std::make_shared<Material>("ambientReflectivity");
             colorMaterial->AddUniform("ambientReflectivity", glm::vec3(0.0f, 1.0f, 1.0f));
             shape->m_material = colorMaterial;
             m_meshes.push_back(shape);

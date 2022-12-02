@@ -25,7 +25,7 @@ protected:
     virtual void FinalizeGeometry() override;
 
 public:
-    Material* m_normalMaterial;
+    std::shared_ptr<Material> m_normalMaterial;
 
 protected:
     unsigned int m_normalVertexArray;

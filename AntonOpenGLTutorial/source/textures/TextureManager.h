@@ -1,18 +1,19 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
 class Texture;
 
-class TextureManager
+class TextureManager final
 {
 public:
     TextureManager() = default;
     ~TextureManager() = default;
 
-    Texture* GetTexture(const std::string& filepath);
+    std::shared_ptr<Texture> GetTexture(const std::string& filepath) noexcept;
 
 private:
-    std::unordered_map<std::string, Texture*> m_textures;
+    std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
 };

@@ -21,8 +21,7 @@ void BasicMesh::operator delete(void* ptr, std::size_t size)
 }
 
 BasicMesh::BasicMesh()
-    : m_material(nullptr)
-    , m_sizeInBytes(0)
+    : m_sizeInBytes(0)
     , m_position(0.0f, 0.0f, 0.0f)
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_enabled(true)
@@ -84,21 +83,21 @@ void BasicMesh::FinalizeGeometry()
     glEnableVertexAttribArray(0);
 }
 
-void BasicMesh::AddComponent(Component* component)
+void BasicMesh::AddComponent(std::unique_ptr<Component> component)
 {
     component->OnAdded(this);
-    m_components.push_back(component);
+    m_components.push_back(std::move(component));
 }
 
 void BasicMesh::Update(float deltaSeconds)
 {
-    for (Component* component : m_components)
+    for (std::unique_ptr<Component>& component : m_components)
     {
         component->Update(deltaSeconds);
     }
 }
 
-void BasicMesh::PrepareShader(Material* material, ShaderManager* shaderManager) const
+void BasicMesh::PrepareShader(std::shared_ptr<Material> material, ShaderManager* shaderManager) const
 {
     if (!material)
     {
@@ -122,9 +121,9 @@ void BasicMesh::PrepareShader(Material* material, ShaderManager* shaderManager) 
 
     int textureSlot = 0;
 
-    for (const std::pair<std::string, std::pair<Texture*, unsigned int>>& pair : material->GetTextureUniforms())
+    for (const std::pair<std::string, std::pair<std::shared_ptr<Texture>, unsigned int>>& pair : material->GetTextureUniforms())
     {
-        const Texture* texture = pair.second.first;
+        const std::shared_ptr<Texture>& texture = pair.second.first;
         shaderManager->SetUniform(shaderName, pair.first, 1, &textureSlot);
         glActiveTexture(GL_TEXTURE0 + textureSlot);
         glBindTexture(GL_TEXTURE_2D, pair.second.second);

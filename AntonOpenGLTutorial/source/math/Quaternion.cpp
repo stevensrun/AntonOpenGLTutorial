@@ -2,12 +2,12 @@
 
 #include <algorithm>
 
-Quaternion Quaternion::Identity()
+Quaternion Quaternion::Identity() noexcept
 {
     return Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
 }
 
-Quaternion Quaternion::AngleAxis(float angleInDegrees, const glm::vec3& axis)
+Quaternion Quaternion::AngleAxis(float angleInDegrees, const glm::vec3& axis) noexcept
 {
     float halfAngle = glm::radians(angleInDegrees) / 2.0f;
     glm::vec3 rotationAxis = sin(halfAngle) * glm::normalize(axis);
@@ -19,7 +19,7 @@ Quaternion Quaternion::AngleAxis(float angleInDegrees, const glm::vec3& axis)
     return q;
 }
 
-Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t, bool shortestPath)
+Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t, bool shortestPath) noexcept
 {
     t = std::clamp(t, 0.0f, 1.0f);
 
@@ -46,7 +46,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q, const Quaternion& r, float t, 
     return result;
 }
 
-Quaternion Quaternion::FromEulerAngles(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+Quaternion Quaternion::FromEulerAngles(float rollInDegrees, float pitchInDegrees, float yawInDegrees) noexcept
 {
     float rollInRadians = glm::radians(rollInDegrees);
     float pitchInRadians = glm::radians(pitchInDegrees);
@@ -66,7 +66,7 @@ Quaternion Quaternion::FromEulerAngles(float rollInDegrees, float pitchInDegrees
     return q;
 }
 
-Quaternion::Quaternion()
+Quaternion::Quaternion() noexcept
     : w(1.0f)
     , x(0.0f)
     , y(0.0f)
@@ -74,7 +74,7 @@ Quaternion::Quaternion()
 {
 }
 
-Quaternion::Quaternion(float w, float x, float y, float z)
+Quaternion::Quaternion(float w, float x, float y, float z) noexcept
     : w(w)
     , x(x)
     , y(y)
@@ -82,12 +82,12 @@ Quaternion::Quaternion(float w, float x, float y, float z)
 {
 }
 
-Quaternion Quaternion::operator+(const Quaternion& rhs) const
+Quaternion Quaternion::operator+(const Quaternion& rhs) const noexcept
 {
     return Quaternion(w + rhs.w, x + rhs.x, y + rhs.y, z + rhs.z);
 }
 
-Quaternion Quaternion::operator*(const Quaternion& rhs) const
+Quaternion Quaternion::operator*(const Quaternion& rhs) const noexcept
 {
     float tempW = w * rhs.w - x * rhs.x - y * rhs.y - z * rhs.z;
     float tempX = w * rhs.x + x * rhs.w - y * rhs.z + z * rhs.y;
@@ -96,17 +96,17 @@ Quaternion Quaternion::operator*(const Quaternion& rhs) const
     return Quaternion(tempW, tempX, tempY, tempZ);
 }
 
-Quaternion Quaternion::operator*(float scalar) const
+Quaternion Quaternion::operator*(float scalar) const noexcept
 {
     return Quaternion(w * scalar, x * scalar, y * scalar, z * scalar);
 }
 
-Quaternion Quaternion::operator/(float scalar) const
+Quaternion Quaternion::operator/(float scalar) const noexcept
 {
     return Quaternion(w / scalar, x / scalar, y / scalar, z / scalar);
 }
 
-void Quaternion::GetAngleAxis(float& angleInDegrees, glm::vec3& axis) const
+void Quaternion::GetAngleAxis(float& angleInDegrees, glm::vec3& axis) const noexcept
 {
     float angleInRadians = 2 * acos(w);
     angleInDegrees = glm::degrees(angleInRadians);
@@ -116,12 +116,12 @@ void Quaternion::GetAngleAxis(float& angleInDegrees, glm::vec3& axis) const
     axis = glm::normalize(axis);
 }
 
-float Quaternion::GetLength() const
+float Quaternion::GetLength() const noexcept
 {
     return sqrt(w * w + x * x + y * y + z * z);
 }
 
-void Quaternion::Normalize()
+void Quaternion::Normalize() noexcept
 {
     float length = GetLength();
 
@@ -136,7 +136,7 @@ void Quaternion::Normalize()
     z /= length;
 }
 
-void Quaternion::Negate()
+void Quaternion::Negate() noexcept
 {
     w = -w;
     x = -x;
@@ -144,29 +144,29 @@ void Quaternion::Negate()
     z = -z;
 }
 
-Quaternion Quaternion::GetNegation() const
+Quaternion Quaternion::GetNegation() const noexcept
 {
     return Quaternion(-w, -x, -y, -z);
 }
 
-void Quaternion::Invert()
+void Quaternion::Invert()  noexcept
 {
     x = -x;
     y = -y;
     z = -z;
 }
 
-Quaternion Quaternion::GetInverse() const
+Quaternion Quaternion::GetInverse() const noexcept
 {
     return Quaternion(w, -x, -y, -z);
 }
 
-float Quaternion::DotProduct(const Quaternion& rhs) const
+float Quaternion::DotProduct(const Quaternion& rhs) const noexcept
 {
     return w * rhs.w + x * rhs.x + y * rhs.y + z * rhs.z;
 }
 
-glm::vec3 Quaternion::ToEulerAngles() const
+glm::vec3 Quaternion::ToEulerAngles() const noexcept
 {
     glm::vec3 angles;
 
@@ -192,7 +192,7 @@ glm::vec3 Quaternion::ToEulerAngles() const
     return angles;
 }
 
-glm::mat4 Quaternion::ToMatrix() const
+glm::mat4 Quaternion::ToMatrix() const noexcept
 {
     glm::mat4 matrix;
     matrix[0][0] = 1.0f - 2.0f * y * y - 2.0f * z * z;
@@ -218,7 +218,7 @@ glm::mat4 Quaternion::ToMatrix() const
     return matrix;
 }
 
-Quaternion operator*(float scalar, const Quaternion& q)
+Quaternion operator*(float scalar, const Quaternion& q) noexcept
 {
     return q * scalar;
 }
