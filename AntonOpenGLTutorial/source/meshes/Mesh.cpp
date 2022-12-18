@@ -5,11 +5,30 @@
 #include <glm/ext.hpp>
 #include "memory/MemoryTracker.h"
 
-void* Mesh::operator new(size_t size)
+void* Mesh::operator new(std::size_t size)
 {
-    MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
-    void* ptr = ::operator new(size);
-    return ptr;
+    if (size != sizeof(Mesh))
+    {
+        return ::operator new(size);
+    }
+
+    while (true)
+    {
+        void* ptr = ::operator new(size);
+
+        if (ptr)
+        {
+            MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+            return ptr;
+        }
+
+        std::new_handler handler = std::get_new_handler();
+
+        if (!handler)
+        {
+            throw std::bad_alloc();
+        }
+    }
 }
 
 void Mesh::operator delete(void* ptr, std::size_t size)

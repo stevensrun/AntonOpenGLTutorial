@@ -8,7 +8,7 @@ class TriangleShape;
 class Mesh : public BasicMesh
 {
 public:
-    static void* operator new(size_t size);
+    static void* operator new(std::size_t size);
     static void operator delete(void* ptr, std::size_t size);
 
     Mesh();

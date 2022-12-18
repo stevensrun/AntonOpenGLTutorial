@@ -7,11 +7,30 @@
 #include "memory/MemoryTracker.h"
 #include "shaders/ShaderManager.h"
 
-void* BasicMesh::operator new(size_t size)
+void* BasicMesh::operator new(std::size_t size)
 {
-    MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
-    void* ptr = ::operator new(size);
-    return ptr;
+    if (size != sizeof(BasicMesh))
+    {
+        return ::operator new(size);
+    }
+
+    while (true)
+    {
+        void* ptr = ::operator new(size);
+
+        if (ptr)
+        {
+            MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+            return ptr;
+        }
+
+        std::new_handler handler = std::get_new_handler();
+
+        if (!handler)
+        {
+            throw std::bad_alloc();
+        }
+    }
 }
 
 void BasicMesh::operator delete(void* ptr, std::size_t size)
