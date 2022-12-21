@@ -45,8 +45,8 @@ void Scene::Setup(int framebufferWidth, int framebufferHeight) noexcept
 
 void Scene::SetupGizmos() noexcept
 {
-    std::shared_ptr<Material> vertexColor = std::make_shared<Material>("vertexColor");
-    std::shared_ptr<AxisGizmo> axisGizmo = std::make_shared<AxisGizmo>();
+    std::shared_ptr<Material> vertexColor = std::shared_ptr<Material>(new Material("vertexColor"));
+    std::shared_ptr<AxisGizmo> axisGizmo = std::shared_ptr<AxisGizmo>(new AxisGizmo());
     axisGizmo->m_material = vertexColor;
     axisGizmo->m_position = glm::vec3(-0.9f, -0.75f, 0.0f);
     axisGizmo->m_scale = glm::vec3(0.05f, 0.05f, 0.05f);
@@ -55,7 +55,7 @@ void Scene::SetupGizmos() noexcept
 
 void Scene::SetupLights() noexcept
 {
-    std::shared_ptr<Light> light = std::make_shared<Light>(glm::vec3(0.0f, 3.0f, 4.0f));
+    std::shared_ptr<Light> light = std::shared_ptr<Light>(new Light(glm::vec3(0.0f, 3.0f, 4.0f)));
     light->m_ambientColor = glm::vec3(0.2f, 0.2f, 0.2f);
     light->m_diffuseColor = glm::vec3(0.7f, 0.7f, 0.7f);
     light->m_specularColor = glm::vec3(0.4f, 0.2f, 0.7f);
@@ -64,41 +64,41 @@ void Scene::SetupLights() noexcept
 
 void Scene::SetupMeshes() noexcept
 {
-    std::shared_ptr<Material> blueCardboard = std::make_shared<Material>("phongShading");
+    std::shared_ptr<Material> blueCardboard = std::shared_ptr<Material>(new Material("phongShading"));
     blueCardboard->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
     blueCardboard->AddUniform("diffuseReflectivity", glm::vec3(0.0f, 0.0f, 1.0f));
     blueCardboard->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 250.0f));
 
-    std::shared_ptr<Triangle> triangle = std::make_shared<Triangle>();
+    std::shared_ptr<Triangle> triangle = std::shared_ptr<Triangle>(new Triangle());
     triangle->m_material = blueCardboard;
     m_meshes.push_back(triangle);
 
-    std::shared_ptr<Cube> cube = std::make_shared<Cube>(2, 2);
+    std::shared_ptr<Cube> cube = std::shared_ptr<Cube>(new Cube(2, 2));
     cube->m_material = blueCardboard;
     cube->m_position = glm::vec3(-3.0f, 0.0f, 0.0f);
     m_meshes.push_back(cube);
 
-    std::shared_ptr<Torus> torus = std::make_shared<Torus>(0.3f, 0.2f, 16, 32);
+    std::shared_ptr<Torus> torus = std::shared_ptr<Torus>(new Torus(0.3f, 0.2f, 16, 32));
     torus->m_material = blueCardboard;
     torus->m_position = glm::vec3(-1.25f, 0.0f, 0.0f);
     m_meshes.push_back(torus);
 
-    std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>(0.5f, 16, 24);
+    std::shared_ptr<Sphere> sphere = std::shared_ptr<Sphere>(new Sphere(0.5f, 16, 24));
     sphere->m_material = blueCardboard;
     sphere->m_position = glm::vec3(1.0f, 0.0f, 0.0f);
     m_meshes.push_back(sphere);
 
-    std::shared_ptr<Tetrahedron> tetraSphere = std::make_shared<Tetrahedron>(4, true);
+    std::shared_ptr<Tetrahedron> tetraSphere = std::shared_ptr<Tetrahedron>(new Tetrahedron(4, true));
     tetraSphere->m_material = blueCardboard;
     tetraSphere->m_position = glm::vec3(3.0f, 0.0f, 0.0f);
     m_meshes.push_back(tetraSphere);
 
-    std::shared_ptr<Material> lightGray = std::make_shared<Material>("blinnPhongShading");
+    std::shared_ptr<Material> lightGray = std::shared_ptr<Material>(new Material("blinnPhongShading"));
     lightGray->AddUniform("ambientReflectivity", glm::vec3(0.2f, 0.2f, 0.2f));
     lightGray->AddUniform("diffuseReflectivity", glm::vec3(0.8f, 0.8f, 0.8f));
     lightGray->AddUniform("specularReflectivity", glm::vec4(1.0f, 1.0f, 1.0f, 400.0f));
 
-    std::shared_ptr<Plane> plane = std::make_shared<Plane>(3, 3);
+    std::shared_ptr<Plane> plane = std::shared_ptr<Plane>(new Plane(3, 3));
     plane->m_material = lightGray;
     plane->m_position = glm::vec3(0.0f, -2.0f, 0.0f);
     plane->m_scale = glm::vec3(15.0f, 1.0f, 10.0f);
