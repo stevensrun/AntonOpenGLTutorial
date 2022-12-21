@@ -13,10 +13,10 @@ public:
     Gizmo() = default;
     virtual ~Gizmo() = default;
 
-    virtual void Update(float deltaTimeInSeconds, SceneCamera* camera);
+    virtual void Update(float deltaTimeInSeconds, std::shared_ptr<SceneCamera>& camera) noexcept;
 
 protected:
-    virtual void FinalizeGeometry() override;
+    virtual void FinalizeGeometry() noexcept override;
 
 protected:
     std::vector<glm::vec4> m_colors;

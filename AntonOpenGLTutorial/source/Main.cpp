@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     glfwSetWindowUserPointer(window, &pair);
 
     scene->Setup(width, height);
-    SceneCamera* camera = scene->GetSceneCamera();
+    std::shared_ptr<SceneCamera>& camera = scene->GetSceneCamera();
     double previousSeconds = glfwGetTime();
 
     while (!glfwWindowShouldClose(window))
@@ -173,7 +173,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     }
     else if (button == GLFW_MOUSE_BUTTON_2)
     {
-        SceneCamera* camera = scene->GetSceneCamera();
+        std::shared_ptr<SceneCamera>& camera = scene->GetSceneCamera();
 
         if (action == GLFW_PRESS)
         {
@@ -200,7 +200,7 @@ void MousePositionCallback(GLFWwindow* window, double xPosition, double yPositio
 
     std::pair<Renderer*, Scene*>* pair = static_cast<std::pair<Renderer*, Scene*>*>(glfwGetWindowUserPointer(window));
     Scene* scene = pair->second;
-    SceneCamera* camera = scene->GetSceneCamera();
+    std::shared_ptr<SceneCamera>& camera = scene->GetSceneCamera();
     camera->Yaw(static_cast<float>(deltaX));
     camera->Pitch(static_cast<float>(deltaY));
 }

@@ -116,7 +116,7 @@ void BasicMesh::Update(float deltaSeconds)
     }
 }
 
-void BasicMesh::PrepareShader(std::shared_ptr<Material> material, ShaderManager* shaderManager) const
+void BasicMesh::PrepareShader(std::shared_ptr<Material> material, std::shared_ptr<ShaderManager>& shaderManager) const
 {
     if (!material)
     {
@@ -153,7 +153,7 @@ void BasicMesh::PrepareShader(std::shared_ptr<Material> material, ShaderManager*
     shaderManager->SetUniform(shaderName, "model", 4, 4, false, glm::value_ptr(model));
 }
 
-void BasicMesh::Draw(ShaderManager* shaderManager) const
+void BasicMesh::Draw(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     if (!m_material)
     {

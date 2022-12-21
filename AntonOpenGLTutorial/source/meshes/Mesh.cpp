@@ -68,7 +68,7 @@ void Mesh::AddAttribute(const glm::vec3& point, const glm::vec3& normal, const g
     m_textureCoordinates.push_back(textureCoordinate);
 }
 
-bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
+bool Mesh::HitTest(std::shared_ptr<TriangleShape>& shape, const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface) const
 {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_position) * m_rotation.ToMatrix() * glm::scale(glm::mat4(1.0f), m_scale);
 
@@ -82,7 +82,7 @@ bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm:
             glm::vec4 a = model * glm::vec4(m_points[index0], 1.0f);
             glm::vec4 b = model * glm::vec4(m_points[index1], 1.0f);
             glm::vec4 c = model * glm::vec4(m_points[index2], 1.0f);
-            shape = new TriangleShape(a, b, c);
+            shape.reset(new TriangleShape(a, b, c));
             bool hit = shape->HitTest(rayOrigin, rayDirection, hitPoint, hitNormal, allowBackface);
 
             if (hit)
@@ -90,8 +90,7 @@ bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm:
                 return true;
             }
 
-            delete shape;
-            shape = nullptr;
+            shape.reset();
         }
     }
     else
@@ -101,7 +100,7 @@ bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm:
             glm::vec4 a = model * glm::vec4(m_points[i], 1.0f);
             glm::vec4 b = model * glm::vec4(m_points[i + 1], 1.0f);
             glm::vec4 c = model * glm::vec4(m_points[i + 2], 1.0f);
-            shape = new TriangleShape(a, b, c);
+            shape.reset(new TriangleShape(a, b, c));
             bool hit = shape->HitTest(rayOrigin, rayDirection, hitPoint, hitNormal, allowBackface);
 
             if (hit)
@@ -109,8 +108,7 @@ bool Mesh::HitTest(TriangleShape*& shape, const glm::vec3& rayOrigin, const glm:
                 return true;
             }
 
-            delete shape;
-            shape = nullptr;
+            shape.reset();
         }
     }
 
@@ -186,7 +184,7 @@ void Mesh::FinalizeGeometry()
     glEnableVertexAttribArray(0);
 }
 
-void Mesh::Draw(ShaderManager* shaderManager) const
+void Mesh::Draw(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     if (!m_material)
     {
@@ -207,7 +205,7 @@ void Mesh::Draw(ShaderManager* shaderManager) const
     }
 }
 
-void Mesh::DrawNormals(ShaderManager* shaderManager) const
+void Mesh::DrawNormals(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     if (!m_normalMaterial)
     {

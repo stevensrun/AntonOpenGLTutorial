@@ -8,8 +8,8 @@ class TriangleShape : public Mesh
 {
 public:
     TriangleShape(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
-    ~TriangleShape() = default;
+    virtual ~TriangleShape() = default;
 
     bool HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, glm::vec3& hitPoint, glm::vec3& hitNormal, bool allowBackface);
-    virtual void Draw(ShaderManager* shaderManager) const override;
+    virtual void Draw(std::shared_ptr<ShaderManager>& shaderManager) const override;
 };

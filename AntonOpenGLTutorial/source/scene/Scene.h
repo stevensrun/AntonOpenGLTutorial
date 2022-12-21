@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 class BasicMesh;
@@ -15,29 +16,33 @@ class Scene
 {
 public:
     Scene();
-    virtual ~Scene();
+    Scene(const Scene& rhs) = delete;
+    Scene(const Scene&& rhs) = delete;
+    virtual ~Scene() = default;
 
-    ShaderManager* GetShaderManager() const;
-    SceneCamera* GetSceneCamera();
-    UiCamera* GetUiCamera();
-    const std::vector<Light*>& GetLights() const;
-    std::vector<BasicMesh*> GetMeshes() const;
-    const std::vector<Gizmo*>& GetGizmos() const;
-    void Setup(int framebufferWidth, int framebufferHeight);
-    void Update(float deltaSeconds);
-    void OnMouseClick(float mouseX, float mouseY, int width, int height);
+    Scene& operator=(const Scene& rhs) = delete;
+
+    std::shared_ptr<ShaderManager>& GetShaderManager() noexcept;
+    std::shared_ptr<SceneCamera>& GetSceneCamera() noexcept;
+    std::shared_ptr<UiCamera>& GetUiCamera() noexcept;
+    const std::vector< std::shared_ptr<Light>>& GetLights() const noexcept;
+    std::vector< std::shared_ptr<BasicMesh>> GetMeshes() const noexcept;
+    const std::vector<std::shared_ptr<Gizmo>>& GetGizmos() const noexcept;
+    void Setup(int framebufferWidth, int framebufferHeight) noexcept;
+    void Update(float deltaSeconds) noexcept;
+    void OnMouseClick(float mouseX, float mouseY, int width, int height) noexcept;
 
 protected:
-    void SetupGizmos();
-    void SetupLights();
-    void SetupMeshes();
+    void SetupGizmos() noexcept;
+    void SetupLights() noexcept;
+    void SetupMeshes() noexcept;
 
 protected:
-    ShaderManager* m_shaderManager;
-    SceneCamera* m_sceneCamera;
-    UiCamera* m_uiCamera;
-    std::vector<Light*> m_lights;
-    std::vector<BasicMesh*> m_meshes;
-    std::vector<Gizmo*> m_gizmos;
-    Dot* m_dot;
+    std::shared_ptr<ShaderManager> m_shaderManager;
+    std::shared_ptr<SceneCamera> m_sceneCamera;
+    std::shared_ptr<UiCamera> m_uiCamera;
+    std::vector< std::shared_ptr<Light>> m_lights;
+    std::vector< std::shared_ptr<BasicMesh>> m_meshes;
+    std::vector<std::shared_ptr<Gizmo>> m_gizmos;
+    std::shared_ptr<Dot> m_dot;
 };

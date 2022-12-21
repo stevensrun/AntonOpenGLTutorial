@@ -8,7 +8,7 @@ Line::Line(const glm::vec3& p0, const glm::vec3 p1)
     FinalizeGeometry();
 }
 
-void Line::Draw(ShaderManager* shaderManager) const
+void Line::Draw(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     PrepareShader(m_material, shaderManager);
     glBindVertexArray(m_attributeVertexArray);

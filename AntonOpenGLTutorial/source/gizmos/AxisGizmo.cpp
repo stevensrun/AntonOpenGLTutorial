@@ -26,12 +26,12 @@ void AxisGizmo::AddAttribute(const glm::vec3& point, const glm::vec4& color)
     m_colors.push_back(color);
 }
 
-void AxisGizmo::Update(float deltaTimeInSeconds, SceneCamera* camera)
+void AxisGizmo::Update(float deltaTimeInSeconds, std::shared_ptr<SceneCamera>& camera) noexcept
 {
     m_rotation = camera->GetRotation().GetInverse();
 }
 
-void AxisGizmo::Draw(ShaderManager* shaderManager) const
+void AxisGizmo::Draw(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     PrepareShader(m_material, shaderManager);
     glBindVertexArray(m_attributeVertexArray);

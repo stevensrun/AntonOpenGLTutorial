@@ -35,7 +35,7 @@ void Gizmo::operator delete(void* ptr, std::size_t size)
     ::operator delete(ptr);
 }
 
-void Gizmo::FinalizeGeometry()
+void Gizmo::FinalizeGeometry() noexcept
 {
     std::vector<float> attributes;
 
@@ -96,6 +96,6 @@ void Gizmo::FinalizeGeometry()
     }
 }
 
-void Gizmo::Update(float deltaTimeInSeconds, SceneCamera* camera)
+void Gizmo::Update(float deltaTimeInSeconds, std::shared_ptr<SceneCamera>& camera) noexcept
 {
 }

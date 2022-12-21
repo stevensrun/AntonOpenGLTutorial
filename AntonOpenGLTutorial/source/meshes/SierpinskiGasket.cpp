@@ -19,7 +19,7 @@ SierpinskiGasket::SierpinskiGasket(const glm::vec3& a, const glm::vec3& b, const
     FinalizeGeometry();
 }
 
-void SierpinskiGasket::Draw(ShaderManager* shaderManager) const
+void SierpinskiGasket::Draw(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     if (!m_material)
     {

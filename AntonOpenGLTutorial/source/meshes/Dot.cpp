@@ -19,7 +19,7 @@ void Dot::AddAttribute(const glm::vec3& point, const glm::vec3& normal)
     FinalizeGeometry();
 }
 
-void Dot::Draw(ShaderManager* shaderManager) const
+void Dot::Draw(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     if (!m_enabled)
     {

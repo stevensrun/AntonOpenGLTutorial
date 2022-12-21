@@ -4,7 +4,7 @@
 
 class SceneCamera;
 
-class AxisGizmo : public Gizmo
+class AxisGizmo final : public Gizmo
 {
 public:
     AxisGizmo();
@@ -12,6 +12,6 @@ public:
 
     virtual void AddAttribute(const glm::vec3& point);
     virtual void AddAttribute(const glm::vec3& point, const glm::vec4& color);
-    virtual void Update(float deltaTimeInSeconds, SceneCamera* camera) override;
-    virtual void Draw(ShaderManager* shaderManager) const;
+    virtual void Update(float deltaTimeInSeconds, std::shared_ptr<SceneCamera>& camera) noexcept override;
+    virtual void Draw(std::shared_ptr<ShaderManager>& shaderManager) const;
 };

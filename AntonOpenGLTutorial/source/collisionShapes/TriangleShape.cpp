@@ -58,7 +58,7 @@ bool TriangleShape::HitTest(const glm::vec3& rayOrigin, const glm::vec3& rayDire
     return false;
 }
 
-void TriangleShape::Draw(ShaderManager* shaderManager) const
+void TriangleShape::Draw(std::shared_ptr<ShaderManager>& shaderManager) const
 {
     if (!m_enabled)
     {

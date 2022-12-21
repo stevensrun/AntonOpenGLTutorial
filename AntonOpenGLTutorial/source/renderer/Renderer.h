@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -22,8 +23,8 @@ public:
 private:
     void DrawGizmos(Scene* scene);
     void DrawImGui();
-    std::unordered_map<std::string, std::vector<const BasicMesh*>> CreateMeshShaderBatch(const std::vector<BasicMesh*>& meshes);
-    std::unordered_map<std::string, std::vector<const Mesh*>> CreateNormalsShaderBatch(const std::vector<BasicMesh*>& meshes);
+    std::unordered_map<std::string, std::vector<std::shared_ptr<BasicMesh>>> CreateMeshShaderBatch(const std::vector<std::shared_ptr<BasicMesh>>& meshes);
+    std::unordered_map<std::string, std::vector<std::shared_ptr<Mesh>>> CreateNormalsShaderBatch(const std::vector<std::shared_ptr<BasicMesh>>& meshes);
 
 public:
     GLenum m_polygonMode;

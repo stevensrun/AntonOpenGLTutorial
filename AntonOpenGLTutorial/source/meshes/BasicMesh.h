@@ -25,11 +25,11 @@ public:
     virtual void AddElementIndex(unsigned int index);
     void AddComponent(std::unique_ptr<Component> component);
     virtual void Update(float deltaSeconds);
-    virtual void Draw(ShaderManager* shaderManager) const;
+    virtual void Draw(std::shared_ptr<ShaderManager>& shaderManager) const;
 
 protected:
     virtual void FinalizeGeometry();
-    virtual void PrepareShader(std::shared_ptr<Material> material, ShaderManager* shaderManager) const;
+    virtual void PrepareShader(std::shared_ptr<Material> material, std::shared_ptr<ShaderManager>& shaderManager) const;
 
 public:
     std::shared_ptr<Material> m_material;
@@ -38,7 +38,7 @@ public:
     glm::vec3 m_scale;
 
 protected:
-    size_t m_sizeInBytes;
+    std::size_t m_sizeInBytes;
     std::vector<std::unique_ptr<Component>> m_components;
     bool m_enabled;
     std::vector<glm::vec3> m_points;

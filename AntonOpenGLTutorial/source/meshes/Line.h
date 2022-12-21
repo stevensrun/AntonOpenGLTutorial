@@ -8,5 +8,5 @@ public:
     Line(const glm::vec3& p0, const glm::vec3 p1);
     virtual ~Line() = default;
 
-    virtual void Draw(ShaderManager* shaderManager) const override;
+    virtual void Draw(std::shared_ptr<ShaderManager>& shaderManager) const override;
 };
