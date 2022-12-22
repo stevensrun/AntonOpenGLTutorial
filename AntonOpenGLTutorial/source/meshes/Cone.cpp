@@ -1,6 +1,38 @@
 #include "Cone.h"
-
 #include <glm/ext.hpp>
+#include "memory/MemoryTracker.h"
+
+void* Cone::operator new(std::size_t size)
+{
+    if (size != sizeof(Cone))
+    {
+        return ::operator new(size);
+    }
+
+    while (true)
+    {
+        void* ptr = ::operator new(size);
+
+        if (ptr)
+        {
+            MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+            return ptr;
+        }
+
+        std::new_handler handler = std::get_new_handler();
+
+        if (!handler)
+        {
+            throw std::bad_alloc();
+        }
+    }
+}
+
+void Cone::operator delete(void* ptr, std::size_t size)
+{
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
+    ::operator delete(ptr);
+}
 
 Cone::Cone(float height, float radius, int stackCount, int segmentCount)
 {

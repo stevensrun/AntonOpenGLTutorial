@@ -7,6 +7,9 @@ class SceneCamera;
 class AxisGizmo final : public Gizmo
 {
 public:
+    static void* operator new(std::size_t size);
+    static void operator delete(void* ptr, std::size_t size);
+
     AxisGizmo();
     virtual ~AxisGizmo() = default;
 

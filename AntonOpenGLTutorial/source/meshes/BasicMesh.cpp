@@ -126,13 +126,13 @@ void BasicMesh::PrepareShader(std::shared_ptr<Material> material, std::shared_pt
     const std::string& shaderName = material->GetShaderName();
     shaderManager->UseShader(shaderName);
 
-    for (const std::pair<std::string, glm::vec3>& pair : material->GetVec3Uniforms())
+    for (const std::pair<const std::string, glm::vec3>& pair : material->GetVec3Uniforms())
     {
         glm::vec3 value = pair.second;
         shaderManager->SetUniform(shaderName, pair.first, 3, glm::value_ptr(value));
     }
 
-    for (const std::pair<std::string, glm::vec4>& pair : material->GetVec4Uniforms())
+    for (const std::pair<const std::string, glm::vec4>& pair : material->GetVec4Uniforms())
     {
         glm::vec4 value = pair.second;
         shaderManager->SetUniform(shaderName, pair.first, 4, glm::value_ptr(value));
@@ -140,7 +140,7 @@ void BasicMesh::PrepareShader(std::shared_ptr<Material> material, std::shared_pt
 
     int textureSlot = 0;
 
-    for (const std::pair<std::string, std::pair<std::shared_ptr<Texture>, unsigned int>>& pair : material->GetTextureUniforms())
+    for (const std::pair<const std::string, std::pair<std::shared_ptr<Texture>, unsigned int>>& pair : material->GetTextureUniforms())
     {
         const std::shared_ptr<Texture>& texture = pair.second.first;
         shaderManager->SetUniform(shaderName, pair.first, 1, &textureSlot);

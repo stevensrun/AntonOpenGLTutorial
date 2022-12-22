@@ -3,10 +3,12 @@
 #include <glm/glm.hpp>
 #include "meshes/Mesh.h"
 
-
 class TriangleShape : public Mesh
 {
 public:
+    static void* operator new(std::size_t size);
+    static void operator delete(void* ptr, std::size_t size);
+
     TriangleShape(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
     virtual ~TriangleShape() = default;
 

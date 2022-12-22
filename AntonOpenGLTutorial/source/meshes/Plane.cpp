@@ -1,4 +1,37 @@
 #include "Plane.h"
+#include "memory/MemoryTracker.h"
+
+void* Plane::operator new(std::size_t size)
+{
+    if (size != sizeof(Plane))
+    {
+        return ::operator new(size);
+    }
+
+    while (true)
+    {
+        void* ptr = ::operator new(size);
+
+        if (ptr)
+        {
+            MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+            return ptr;
+        }
+
+        std::new_handler handler = std::get_new_handler();
+
+        if (!handler)
+        {
+            throw std::bad_alloc();
+        }
+    }
+}
+
+void Plane::operator delete(void* ptr, std::size_t size)
+{
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
+    ::operator delete(ptr);
+}
 
 Plane::Plane(int rows, int columns)
 {

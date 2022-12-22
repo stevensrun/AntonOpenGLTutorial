@@ -122,7 +122,7 @@ void Renderer::Draw(Scene* scene)
     std::shared_ptr <SceneCamera>& camera = scene->GetSceneCamera();
     const std::vector<std::shared_ptr<Light>>& lights = scene->GetLights();
 
-    for (const std::pair<std::string, std::vector<std::shared_ptr<BasicMesh>>>& batch : meshShadersBatch)
+    for (const std::pair<const std::string, std::vector<std::shared_ptr<BasicMesh>>>& batch : meshShadersBatch)
     {
         std::string shaderName = batch.first;
         shaderManager->UseShader(shaderName);
@@ -151,7 +151,7 @@ void Renderer::Draw(Scene* scene)
         }
     }
 
-    for (const std::pair<std::string, std::vector<std::shared_ptr<Mesh>>>& batch : normalsShadersBatch)
+    for (const std::pair<const std::string, std::vector<std::shared_ptr<Mesh>>>& batch : normalsShadersBatch)
     {
         std::string shaderName = batch.first;
         shaderManager->UseShader(shaderName);

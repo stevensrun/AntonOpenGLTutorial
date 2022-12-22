@@ -1,5 +1,38 @@
 #include "Sphere.h"
 #include <glm/gtc/constants.hpp>
+#include "memory/MemoryTracker.h"
+
+void* Sphere::operator new(std::size_t size)
+{
+    if (size != sizeof(Sphere))
+    {
+        return ::operator new(size);
+    }
+
+    while (true)
+    {
+        void* ptr = ::operator new(size);
+
+        if (ptr)
+        {
+            MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+            return ptr;
+        }
+
+        std::new_handler handler = std::get_new_handler();
+
+        if (!handler)
+        {
+            throw std::bad_alloc();
+        }
+    }
+}
+
+void Sphere::operator delete(void* ptr, std::size_t size)
+{
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
+    ::operator delete(ptr);
+}
 
 Sphere::Sphere(float radius, int stackCount, int segmentCount)
 {

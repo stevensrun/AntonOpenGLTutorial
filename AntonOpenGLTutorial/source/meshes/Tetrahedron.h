@@ -5,6 +5,9 @@
 class Tetrahedron : public Mesh
 {
 public:
+    static void* operator new(std::size_t size);
+    static void operator delete(void* ptr, std::size_t size);
+
     Tetrahedron(int subdivisionCount, bool useVertexNormals);
     virtual ~Tetrahedron() = default;
 

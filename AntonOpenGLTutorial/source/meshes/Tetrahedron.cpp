@@ -1,4 +1,37 @@
 #include "Tetrahedron.h"
+#include "memory/MemoryTracker.h"
+
+void* Tetrahedron::operator new(std::size_t size)
+{
+    if (size != sizeof(Tetrahedron))
+    {
+        return ::operator new(size);
+    }
+
+    while (true)
+    {
+        void* ptr = ::operator new(size);
+
+        if (ptr)
+        {
+            MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+            return ptr;
+        }
+
+        std::new_handler handler = std::get_new_handler();
+
+        if (!handler)
+        {
+            throw std::bad_alloc();
+        }
+    }
+}
+
+void Tetrahedron::operator delete(void* ptr, std::size_t size)
+{
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
+    ::operator delete(ptr);
+}
 
 Tetrahedron::Tetrahedron(int subdivisionCount, bool useVertexNormals)
     : m_useVertexNormals(useVertexNormals)

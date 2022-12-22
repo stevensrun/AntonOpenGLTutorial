@@ -2,7 +2,40 @@
 #include "camera/SceneCamera.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "memory/MemoryTracker.h"
 #include <vector>
+
+void* AxisGizmo::operator new(std::size_t size)
+{
+    if (size != sizeof(AxisGizmo))
+    {
+        return ::operator new(size);
+    }
+
+    while (true)
+    {
+        void* ptr = ::operator new(size);
+
+        if (ptr)
+        {
+            MemoryTracker::AddMemoryUsage(size, MemoryCategory::Meshes);
+            return ptr;
+        }
+
+        std::new_handler handler = std::get_new_handler();
+
+        if (!handler)
+        {
+            throw std::bad_alloc();
+        }
+    }
+}
+
+void AxisGizmo::operator delete(void* ptr, std::size_t size)
+{
+    MemoryTracker::RemoveMemoryUsage(size, MemoryCategory::Meshes);
+    ::operator delete(ptr);
+}
 
 AxisGizmo::AxisGizmo()
 {
